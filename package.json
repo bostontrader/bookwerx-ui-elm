@@ -1,0 +1,34 @@
+{
+  "author": {
+    "name": "Thomas Radloff",
+    "email": "bostontrader@gmail.com",
+    "url": "https://github.com/bostontrader"
+  },
+  "dependencies": {
+    "restify": "7.2.0"
+  },
+  "devDependencies": {
+    "restify-clients": "2.0.2",
+    "standard": "11.0.1"
+  },
+  "description": "A browser based UI for bookwerx-core.",
+  "keywords": [
+    "bookkeeping",
+    "bookwerx",
+    "bitcoin",
+    "cryptocoins",
+    "elm",
+    "ethereum",
+    "litecoin",
+    "multi-currency",
+    "node"
+  ],
+  "license": "MIT",
+  "name": "bookwerx-ui-elm",
+  "scripts": {
+    "test": "standard && BW_PORT=3000 BW_MONGO=mongodb://127.0.0.1:27017/bookwerx-core-test BW_TEST=true node integrationTest.js",
+    "start": "MODE=development BW_PORT=3004 BWCORE_URL=locahost:3003 node startServer.js",
+    "lint": "standard"
+  },
+  "version": "0.0.1"
+}
