@@ -10,13 +10,40 @@
 
 The purpose of **bookwerx-ui-elm** is to provide an example user interface, using Elm, to the [bookwerx-core](https://github.com/bostontrader/bookwerx-core) bookkeeping engine.  This package provides a server that the actual user interacts with.  Said server than relays requests and responses to and from the **bookwerx-core** backend.
 
-# Getting Started
+# Getting started
 
-I wish I could tell you **npm install** and you're good to go.  Instead, we have a multi-step ramp up process whereby we find the various dependencies that we will need and to establish various types of service and testing, in our ultimate attempt to put this to use.
-
-```sh
-$ npm install
+```bash
+git clone https://github.com/bostontrader/bookwerx-ui-elm
+cd bookwerx-ui-elm
+npm install
 ```
+
+Next, run the testing for the elm components.  Doing so will automatically download required elm packages.
+
+```bash
+cd elm
+npx elm-test
+cd ..
+```
+
+Next, study the section on **runtime configuration** so that you are properly in control of your configurations.  Using this [new learning](https://www.youtube.com/watch?v=9D5_V72jMtM&t=1323), tweak the following example as necessary:
+
+```bash
+MODE=test BW_PORT=3004 BWCORE_URL=mongodb://127.0.0.1:27017/bookwerx-core-test-nnn node integrationTest.js
+```
+
+Append some string, perhaps a sequential integer, so start with a brand spankin' new db for the test.  Do forensic analysis and/or garbage collection on the earlier dbs.
+
+
+Next, tweak package.json scripts.start, as necessary.  And then:
+
+```bash
+npm start
+```
+
+Watch the console and you'll see a message telling you what port the server is listening to.
+
+Finally, you'll need a set of API Keys in order to use the API.  Please review the **API** section for this.
 
 
 ## Runtime Configuration
@@ -31,8 +58,36 @@ The following env variables are used by **bookwerx-ui-elm**:
 
 * BWCORE_URL - The url and port for the **bookwerx-core** server.
 
-# On require vs import
 
+# Basic Architecture
+
+Although it's possible to write a rudimentary server using only Elm and (elm-react or elm-live), these tools are only suitable for beginner projects and have various limitiations too numerous and tedious to enumerate here, so we need stronger tools.  That said, and considering that Elm transpiles to Javascript, this application is architected as follows:
+
+1. The app is a Single Page Application,  aka SPA.
+
+2. We use restify to provide the HTTP server.  The server will serve a small fragment of HTML that links to a lump o' Javascript as created by webpack.  Webpack enables us to integrate Elm (via transpilation) and Javascript, as well as all the other goodies such as access to CSS.
+
+# Testing
+
+There are two basic elements of testing:
+
+1. A suite of unit-testing level tests using Elm.
+
+2. An integration test using Javascript.  This test will start with an empty db and make a long sequence of CRUD operations intended to verify correct behavior.
+
+Integration testing needs a real **bookwerx-core** server so be sure to provide one.  Each run of integration testing will specify a database name that contains the present time.  In this way, each run will start with a fresh and empty db, enabling us to avoid the problem of trying to reset the db.  The **bookwerx-core** server needs to be running in development mode to enable this behavior.
+
+Other testing such as testing that the server starts, what error messages it emits, how it reacts to errors, whether or not it properly connects to the Elm code, etc.,  as well as test coverage generally, are hereby deemed to be not important enough to directly test.
+
+The fact that the server starts and is able to serve HTML that connects to the transpiled Elm code is indisputably established if the main testing succeeds.  Whatever error messages and reactions to errors the server emits are only clues to solving whatever underlying problem is has.  If the main tests succeed, then obviously there's no underlying problem, so the value in tediously testing these things is minimal.
+
+Regarding test coverage: Given TDD, the testing will cover what we want done.  As errors are found, the screws get tightened.  This will automatically increase test coverage, even if said coverage is not specially measured.  That's good enough in this context.
+
+
+
+
+# On require vs import
+`
 There exists a giant can of worms re: using the 'require' statement vs the 'import' statement.  The bottom line, IMHO, is that the 'import' statement, although shiny, new, and modern, just doesn't earn its keep.  Everybody else in the world already uses 'require' and that works well enough, especially in this particular context. At this time, the 'import' statement is not very well supported and requires too many contortions to use.  All this and for what benefit?  So we can load modules asynchonously? Homey don't play that.
 
 # Dependencies
@@ -41,5 +96,14 @@ There exists a giant can of worms re: using the 'require' statement vs the 'impo
 
 # devDependencies
 
+* bookwerx-testdata
+
+* elm-test - Use this to launch the elm testing.
+
+* elm-webpack-loader
+
 * standard - Code linter
 
+* webpack
+
+* webpack-cli
