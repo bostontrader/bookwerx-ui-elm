@@ -10,6 +10,7 @@ import Types exposing
         ( CurrenciesAdd
         , CurrenciesEdit
         , CurrenciesIndex
+        , Home
         , NotFound
         )
     )
@@ -23,6 +24,8 @@ routingTests =
             \_ -> Expect.equal (extractRoute (Location "" "" "" "" "" "" "currencies/5" "" "" "" "")) (CurrenciesEdit 5)
         , test "CurrenciesIndex" <|
             \_ -> Expect.equal (extractRoute (Location "" "" "" "" "" "" "currencies" "" "" "" "")) CurrenciesIndex
+        , test "Home" <|
+            \_ -> Expect.equal (extractRoute (Location "" "" "" "" "" "" "" "" "" "" "")) Home
         , test "NotFound" <|
             \_ -> Expect.equal (extractRoute (Location "" "" "" "" "" "" "catfood" "" "" "" "")) NotFound
         ]

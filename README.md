@@ -26,14 +26,19 @@ npx elm-test
 cd ..
 ```
 
+We use webpack, but not the dev server.  We need to run webpack the first time to create the bundle, and then we need to do this again whenever we change any of the relevant code.  Feel free to make webpack do fancy tricks on your own.
+
+```bash
+npx webpack
+```
+
 Next, study the section on **runtime configuration** so that you are properly in control of your configurations.  Using this [new learning](https://www.youtube.com/watch?v=9D5_V72jMtM&t=1323), tweak the following example as necessary:
 
 ```bash
-MODE=test BW_PORT=3004 BWCORE_URL=mongodb://127.0.0.1:27017/bookwerx-core-test-nnn node integrationTest.js
+BW_MODE=test BW_PORT=3004 BWCORE_URL=127.0.0.1:3003 node integrationTest.js
 ```
 
-Append some string, perhaps a sequential integer, so start with a brand spankin' new db for the test.  Do forensic analysis and/or garbage collection on the earlier dbs.
-
+Be sure that BWCORE_URL points to a functioning **bookwerx-core** server.
 
 Next, tweak package.json scripts.start, as necessary.  And then:
 
@@ -48,16 +53,18 @@ Finally, you'll need a set of API Keys in order to use the API.  Please review t
 
 ## Runtime Configuration
 
-Runtime configuration is provided via environment variables. There are no other defaults and if these variables are not correctly set, then the server will probably not do anything useful.  These parameters can be fed to node on the command line.  See package.json scripts.start for an example to start the server in "development" mode and scripts.test for an example to start the server in "test" mode.
+Runtime configuration is provided via environment variables. There are no other defaults and if these variables are missing or not correctly set, then the server will probably not do anything useful.  These parameters can be fed to node on the command line.  See package.json scripts.start for an example to start the server in "development" mode.
+
 
 The following env variables are used by **bookwerx-ui-elm**:
 
-* MODE - Which operating mode shall we use?  test? development? production?
+* BW_MODE - Which operating mode shall we use?  test? development? production?
 
 * BW_PORT - Which port shall **bookwerx-ui-elm** listen to?
 
 * BWCORE_URL - The url and port for the **bookwerx-core** server.
 
+The additional 'BW_' bit in the naming for MODE and PORT is a name collision avoidance gimmick, considering that these names must live in the env.
 
 # Basic Architecture
 
@@ -98,9 +105,15 @@ There exists a giant can of worms re: using the 'require' statement vs the 'impo
 
 * bookwerx-testdata
 
+* colors - Our tests want to print pretty colors on the console.
+
 * elm-test - Use this to launch the elm testing.
 
 * elm-webpack-loader
+
+* file-loader - Webpack uses this to load .html
+
+* selenium-webdriver - Need this for the integration test.
 
 * standard - Code linter
 

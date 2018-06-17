@@ -1,8 +1,8 @@
 module Views.Currencies.List exposing (view)
 
 import Types exposing (Model, Msg(DeleteCurrency, FetchCurrencies), Currency)
-import Html exposing (Html, a, br, button, div, h3, table, td, text, th, tr)
-import Html.Attributes exposing (href)
+import Html exposing (Html, a, br, button, div, h3, table, tbody, td, thead, text, th, tr)
+import Html.Attributes exposing (class, href, id)
 import Html.Events exposing (onClick)
 import Http
 import RemoteData
@@ -11,11 +11,11 @@ import RemoteData
 view : Model -> Html Msg
 view model =
     div []
-        [ button [ onClick FetchCurrencies ]
-            [ text "Refresh currencies" ]
-        , br [] []
-        , br [] []
-        , a [ href "/currencies/new" ]
+        --[ button [ onClick FetchCurrencies ]
+        --    [ text "Refresh currencies" ]
+        --, br [] []
+        --, br [] []
+        [ a [ id "currencies-add", href "/currencies/add" ]
             [ text "Create new currency" ]
         , viewCurrenciesOrError model
         ]
@@ -25,16 +25,19 @@ viewCurrenciesOrError : Model -> Html Msg
 viewCurrenciesOrError model =
     case model.currencies of
         RemoteData.NotAsked ->
-            text ""
+            -- text ""
+            h3 [] [ text "Not Asked..." ]
 
         RemoteData.Loading ->
-            h3 [] [ text "Loading..." ]
+            h3 [ class "loader" ] [ text "Loading..." ]
 
         RemoteData.Success currencies ->
             viewCurrencies currencies
+            --h3 [ id "currencies-index"] [ text "List currencies..." ]
 
         RemoteData.Failure httpError ->
-            viewError (createErrorMessage httpError)
+            -- viewError (createErrorMessage httpError)
+            h3 [] [ text "Currencies error..." ]
 
 
 viewError : String -> Html Msg
@@ -51,10 +54,14 @@ viewError errorMessage =
 
 viewCurrencies : List Currency -> Html Msg
 viewCurrencies currencies =
-    div []
+    div [ id "currencies-index"]
         [ h3 [] [ text "Currencies" ]
+        --, table []
+        --    ([ viewTableHeader ] ++ List.map viewCurrency currencies)
         , table []
-            ([ viewTableHeader ] ++ List.map viewCurrency currencies)
+            [ thead [][viewTableHeader]
+            , tbody [] (List.map viewCurrency currencies)
+            ]
         ]
 
 
@@ -64,9 +71,9 @@ viewTableHeader =
         [ th []
             [ text "ID" ]
         , th []
-            [ text "Title" ]
+            [ text "Symbol" ]
         , th []
-            [ text "Author" ]
+            [ text "Title" ]
         ]
 
 
@@ -80,12 +87,13 @@ viewCurrency currency =
             [ td []
                 [ text (toString currency.id) ]
             , td []
+                [ text currency.symbol ]
+            , td []
                 [ text currency.title ]
             , td []
-                [ a [ href currency.author.url ] [ text currency.author.name ] ]
-            , td []
                 [ a [ href currencyPath ] [ text "Edit" ] ]
-            , td []
+            -- All the buttons have this same id.  SHAME!  But the id is unique to a row.
+            , td [ id "deleteCurrency" ]
                 [ button [ onClick (DeleteCurrency currency.id) ]
                     [ text "Delete" ]
                 ]

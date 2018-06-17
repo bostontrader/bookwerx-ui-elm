@@ -9,8 +9,11 @@
   },
   "devDependencies": {
     "bookwerx-testdata": "git+https://git@github.com/bostontrader/bookwerx-testdata.git",
+    "colors": "1.3.0",
     "elm-test": "0.18.12",
     "elm-webpack-loader": "4.5.0",
+    "file-loader": "1.1.11",
+    "selenium-webdriver": "4.0.0-alpha.1",
     "standard": "11.0.1",
     "webpack": "4.12.0",
     "webpack-cli": "3.0.4"
@@ -30,11 +33,12 @@
   "license": "MIT",
   "name": "bookwerx-ui-elm",
   "scripts": {
-    "start": "MODE=development BW_PORT=3004 BWCORE_URL=locahost:3003 node startServer.js",
+    "start": "BW_MODE=development BW_PORT=3004 BWCORE_URL=locahost:3003 node startServer.js",
     "lint": "standard"
   },
   "standard": {
     "ignore": [
+      "/dist",
       "**/elm-stuff/"
     ]
   },

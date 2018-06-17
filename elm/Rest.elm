@@ -1,34 +1,35 @@
 --module Rest exposing (createCurrencyCommand, deleteCurrencyCommand, fetchCurrenciesCommand, updateCurrencyCommand, updateCurrencyRequest)
-module Rest exposing (fetchCurrenciesCommand)
+module Rest exposing (createCurrencyCommand, deleteCurrencyCommand, fetchCurrenciesCommand)
 
 import Http
 import RemoteData
 --import Types exposing (Author, Msg(CurrencyCreated, CurrencyDeleted, CurrenciesReceived, CurrencyUpdated), Currency)
 import Types exposing
     ( Currency
-    , Msg ( CurrenciesReceived
-
+    , Msg
+        ( CurrencyCreated
+        , CurrencyDeleted
+        , CurrenciesReceived
         )
     )
 
 import Json.Decode exposing (string, int, list, Decoder)
 import Json.Decode.Pipeline exposing (decode, required)
-
---import Json.Encode as Encode
+import Json.Encode as Encode
 
 -- How can I test this?
 currencyDecoder : Decoder Currency
 currencyDecoder =
     decode Currency
-        |> required "title" string
+        |> required "_id" string
         |> required "symbol" string
-        |> required "id" string
+        |> required "title" string
 
 -- How can I test this?
 fetchCurrenciesCommand : Cmd Msg
 fetchCurrenciesCommand =
     list currencyDecoder
-        |> Http.get "http://localhost:5019/currencies"
+        |> Http.get "http://localhost:3003/currencies"
         |> RemoteData.sendRequest
         |> Cmd.map CurrenciesReceived
 
@@ -63,7 +64,7 @@ authorEncoder author =
     Encode.object
         [ ( "name", Encode.string author.name )
         , ( "url", Encode.string author.url )
-        ]
+        ] -}
 
 deleteCurrencyCommand : Currency -> Cmd Msg
 deleteCurrencyCommand currency =
@@ -76,7 +77,7 @@ deleteCurrencyRequest currency =
     Http.request
         { method = "DELETE"
         , headers = []
-        , url = "http://localhost:5019/currencies/" ++ (toString currency.id)
+        , url = "http://localhost:3003/currencies/" ++ currency.id
         , body = Http.emptyBody
         , expect = Http.expectString
         , timeout = Nothing
@@ -88,24 +89,27 @@ createCurrencyCommand currency =
     createCurrencyRequest currency
         |> Http.send CurrencyCreated
 
+--createCurrencyRequest : Currency -> Http.Request Currency
+--createCurrencyRequest currency =
+    --Http.request
+        --{ method = "POST"
+        --, headers = []
+        --, url = "http://localhost:3003/currencies"
+        --, body = Http.jsonBody (newCurrencyEncoder currency)
+        --, expect = Http.expectJson currencyDecoder
+        --, timeout = Nothing
+        --, withCredentials = False
+        --}
 
 createCurrencyRequest : Currency -> Http.Request Currency
 createCurrencyRequest currency =
-    Http.request
-        { method = "CURRENCY"
-        , headers = []
-        , url = "http://localhost:5019/currencies"
-        , body = Http.jsonBody (newCurrencyEncoder currency)
-        , expect = Http.expectJson currencyDecoder
-        , timeout = Nothing
-        , withCredentials = False
-        }
-
+    Http.post
+        "http://localhost:3003/currencies"
+        (Http.jsonBody (newCurrencyEncoder currency)) currencyDecoder
 
 newCurrencyEncoder : Currency -> Encode.Value
 newCurrencyEncoder currency =
     Encode.object
-        [ ( "title", Encode.string currency.title )
-        , ( "author", authorEncoder currency.author )
+        [ ( "symbol", Encode.string currency.symbol )
+        , ( "title", Encode.string currency.title )
         ]
--}

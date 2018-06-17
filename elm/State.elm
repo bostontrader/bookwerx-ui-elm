@@ -4,12 +4,12 @@ import RemoteData exposing (WebData)
 
 import Types exposing (Currency, CurrencyId, Model, Msg(..), Route)
 --import Rest exposing (createPostCommand, deletePostCommand, fetchPostsCommand)
-import Rest exposing (fetchCurrenciesCommand)
+import Rest exposing (createCurrencyCommand, deleteCurrencyCommand, fetchCurrenciesCommand)
 
 import Navigation exposing (Location)
 import Routing exposing (extractRoute)
 --import Debug
---import Misc exposing (findPostById)
+import Misc exposing (findCurrencyById)
 --import Rest exposing (updatePostCommand, updatePostRequest)
 
 tempCurrencyId =
@@ -30,20 +30,19 @@ init : Location -> ( Model, Cmd Msg )
 init location =
     let
         currentRoute =
-            Routing.extractRoute location
+            Routing.extractRoute (Debug.log "location" location)
     in
         ( initialModel currentRoute, fetchCurrenciesCommand )
 
 -- How can I test this?
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    ( model, Cmd.none )
-    --case Debug.log "msg" msg of
-        --FetchCurrencies ->
-            --( { model | currencies = RemoteData.Loading }, fetchCurrenciesCommand )
+    case Debug.log "msg" msg of
+        FetchCurrencies ->
+            ( { model | currencies = RemoteData.Loading }, fetchCurrenciesCommand )
 
-        {-PostsReceived response ->
-            ( { model | posts = response }, Cmd.none )
+        CurrenciesReceived response ->
+            ( { model | currencies = response }, Cmd.none )
 
         LocationChanged location ->
             ( { model
@@ -52,7 +51,7 @@ update msg model =
             , Cmd.none
             )
 
-        UpdateTitle postId newTitle ->
+        {-UpdateTitle postId newTitle ->
             let
                 updatedPosts =
                     updateTitle postId newTitle model
@@ -82,69 +81,65 @@ update msg model =
                     ( model, Cmd.none )
 
         PostUpdated _ ->
-            ( model, Cmd.none )
+            ( model, Cmd.none ) -}
 
-        DeletePost postId ->
-            case findPostById postId model.posts of
-                Just post ->
-                    ( model, deletePostCommand post )
+        DeleteCurrency currencyId ->
+            case findCurrencyById currencyId model.currencies of
+                Just currency ->
+                    ( model, deleteCurrencyCommand currency )
 
                 Nothing ->
                     ( model, Cmd.none )
 
-        PostDeleted _ ->
-            ( model, fetchPostsCommand )
+        CurrencyDeleted _ ->
+            ( model, fetchCurrenciesCommand )
 
-        NewPostTitle newTitle ->
+        NewCurrencyTitle newTitle ->
             let
-                updatedNewPost =
-                    setTitle newTitle model.newPost
+                updatedNewCurrency =
+                    setTitle newTitle model.newCurrency
             in
-                ( { model | newPost = updatedNewPost }, Cmd.none )
+                ( { model | newCurrency = updatedNewCurrency }, Cmd.none )
 
-        NewAuthorName newName ->
+        NewCurrencySymbol newSymbol ->
             let
-                updatedNewPost =
-                    setAuthorName newName model.newPost
+                updatedNewCurrency =
+                    setSymbol newSymbol model.newCurrency
             in
-                ( { model | newPost = updatedNewPost }, Cmd.none )
+                ( { model | newCurrency = updatedNewCurrency }, Cmd.none )
 
-        NewAuthorUrl newUrl ->
-            let
-                updatedNewPost =
-                    setAuthorUrl newUrl model.newPost
-            in
-                ( { model | newPost = updatedNewPost }, Cmd.none )
+        CreateNewCurrency ->
+            ( model, createCurrencyCommand model.newCurrency )
 
-        CreateNewPost ->
-            ( model, createPostCommand model.newPost )
-
-        PostCreated (Ok post) ->
+        CurrencyCreated (Ok currency) ->
             ( { model
-                | posts = addNewPost post model.posts
-                , newPost = emptyPost
+                | currencies = addNewCurrency currency model.currencies
+                , newCurrency = emptyCurrency
               }
             , Cmd.none
             )
 
-        PostCreated (Err _) ->
-            ( model, Cmd.none ) -}
+        CurrencyCreated (Err _) ->
+            ( model, Cmd.none )
 
-{-addNewPost : Post -> WebData (List Post) -> WebData (List Post)
-addNewPost newPost posts =
+addNewCurrency : Currency -> WebData (List Currency) -> WebData (List Currency)
+addNewCurrency newCurrency currencies =
     let
-        appendPost : List Post -> List Post
-        appendPost listOfPosts =
-            List.append listOfPosts [ newPost ]
+        appendCurrency : List Currency -> List Currency
+        appendCurrency listOfCurrencies =
+            List.append listOfCurrencies [ newCurrency ]
     in
-        RemoteData.map appendPost posts
+        RemoteData.map appendCurrency currencies
 
-setTitle : String -> Post -> Post
-setTitle newTitle post =
-    { post | title = newTitle }
+setSymbol : String -> Currency -> Currency
+setSymbol newSymbol currency =
+    { currency | symbol = newSymbol }
 
+setTitle : String -> Currency -> Currency
+setTitle newTitle currency =
+    { currency | title = newTitle }
 
-setAuthorName : String -> Post -> Post
+{-setAuthorName : String -> Post -> Post
 setAuthorName newName post =
     let
         oldAuthor =

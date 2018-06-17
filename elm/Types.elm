@@ -24,16 +24,16 @@ type alias Model =
     }
 
 type alias CurrencyId =
-    Int
+    String
 
 type Msg
     = FetchCurrencies
     | CurrenciesReceived (WebData (List Currency))
     | LocationChanged Location
-    | UpdateCurrencySymbol CurrencyId String
-    | UpdateCurrencyTitle CurrencyId String
-    | SubmitUpdatedCurrency CurrencyId
-    | CurrencyUpdated (Result Http.Error Currency)
+    --| UpdateCurrencySymbol CurrencyId String
+    --| UpdateCurrencyTitle CurrencyId String
+    --| SubmitUpdatedCurrency CurrencyId
+    --| CurrencyUpdated (Result Http.Error Currency)
     | DeleteCurrency CurrencyId
     | CurrencyDeleted (Result Http.Error String)
     | NewCurrencySymbol String
@@ -45,4 +45,5 @@ type Route
     = CurrenciesAdd
     | CurrenciesEdit Int
     | CurrenciesIndex
+    | Home
     | NotFound

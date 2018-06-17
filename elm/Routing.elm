@@ -19,7 +19,8 @@ extractRoute location =
 matchRoute : Parser (Route -> a) a
 matchRoute =
     oneOf
-        [ map CurrenciesAdd (s "currencies" </> s "add")
+        [ map Home top
+        , map CurrenciesAdd (s "currencies" </> s "add")
         , map CurrenciesEdit (s "currencies" </> int)
         , map CurrenciesIndex (s "currencies")
         ]
