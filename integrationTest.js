@@ -1,6 +1,6 @@
 /* In order to perform integration testing we're going to start with a completely empty db and perform many operations on it. The testing follows the following phases:
 
-1. Prolog.  We need to obtain an empty db and generate some keys.  We 'empty' the db by enumerating all existing items and deleting them.
+1. Prolog. Start the server and brainwipe the db.  In this context, we will use the UI to individually find and delete records because it's probably not a good idea to tap directly into the underlying db.
 
 2. GenericCRU testing.  Here we attempt to create, read, and update the documents in the various collections.  I didn't say delete because we want to keep these records for subsequent testing and we'll do the delete testing after all the other tests.
 
@@ -15,12 +15,6 @@
 6. GenericDelete testing.
 
 7. Verify that the db is now completely empty.  No documents in any collection.
-
-For some of these categories, generally for the generic tests, we will run the tests twice, once for each of our example piKeys. The testing will fail if the documents from one key are mixed up with documents from another key.
-
-For some of these categories, generally for the specialized constraint testing, we only run the test once for a single api key. The CRUD operations are tested elsewhere and in these tests we only want to focus on the integrity constraints.
-
-Almost all routes (except for the key generating routes) should be separately tested for no key, bad key, and good key but bad signature.
 
  */
 const colors = require('colors/safe')
@@ -46,149 +40,51 @@ if (!process.env.BWCORE_URL) {
   process.exit(1)
 }
 
+if (!process.env.BWUI_DOMAIN) {
+  console.log(serverConstants.NO_BWUI_DOMAIN_DEFINED)
+  process.exit(1)
+}
+
 run().catch(error => console.error(error))
 
 async function run () {
+  // 1. Prolog
+
+  // 1.1 We will need the UI server running
   const restifyCore = await server(
     process.env.BW_MODE,
     process.env.BW_PORT,
     process.env.BWCORE_URL
   )
 
-  // import genericCRUDTest    from './app/integrationTest/generic_crud_test'
-  // import accountsCategories from './app/integrationTest/accountsCategories'
-  // import prolog             from './app/integrationTest/prolog'
-  // import genericCRU         from './app/integrationTests/basicCRUD/genericCRU'
-  // const genericCRU = require('./app/integrationTests/basicCRUD/genericCRU.js')
-  // import genericDel         from './app/integrationTests/basicCRUD/genericDel'
+  // 1.2 We need a connection to a browser to make it play tricks
+  let seleniumDriver = await new Builder().forBrowser('firefox').build()
 
-  // const jsonClient = restifyClients.createJsonClient({url: 'http://127.0.0.1:' + process.env.BW_PORT});
+  // 1.3 Now delete everything
 
-  // Get two sets of keys to play with.
-  //  .then(result => {
-  //   const pReadDawgFood =  new Promise((resolve, reject) => {
-  //     jsonClient.post('/dawgfood', {}, function (err, req, res, obj) {
-  //       if (err) resolve(err) // in this case I expect an error
-  //     })
-  //   })
-  // const pReadKeys =  new Promise((resolve, reject) => {
-  //  jsonClient.post('/keys', {}, function (err, req, res, obj) {
-  //    if (err) reject(err)
-  //    console.log('%d -> %j', res.statusCode, res.headers);
-  //    console.log('%j', obj);
-  //    resolve(obj)
-  //  })
-  // })
+  // Look at the list of currencies.  Wait for the loader, wait for the list, delete any existing entries.
+  let finished = false
+  const bwURL = 'http://' + process.env.BWUI_DOMAIN + ':' + process.env.BW_PORT
 
-  // const p2 = pReadDawgFood.then((result)=>{
-  // console.log('72 dawgfood error',result)
-  // Promise.resolve(result)
-  // })
-  //    const key1 = await (async (jsonClient) => {
-  // const pPostKey1 = new Promise((resolve, reject) => {
-  //      return new Promise((resolve, reject) => {
-  //        jsonClient.post('/keys', {}, function (err, req, res, obj) {
-  //          if (err) reject(err)
-  //          console.log('%d -> %j', res.statusCode, res.headers)
-  //          console.log('%j', obj)
-  //          resolve(obj)
-  //        })
-  //      })
-  //    })(jsonClient)
+  do {
+    await seleniumDriver.get(bwURL + '/currencies')
 
-  //    const key2 = await (async (jsonClient) => {
-  //      return new Promise((resolve, reject) => {
-  //        jsonClient.post('/keys', {}, function (err, req, res, obj) {
-  //          if (err) reject(err)
-  //          console.log('%d -> %j', res.statusCode, res.headers)
-  //          console.log('%j', obj)
-  //          resolve(obj)
-  //        })
-  //      })
-  //    })(jsonClient)
+    await seleniumDriver.wait(until.elementLocated(By.css('.loader')))
+    await seleniumDriver.wait(until.elementLocated(By.css('#currencies-index')))
+    const currencyRows = await seleniumDriver.findElements(By.css('tbody > tr'))
+    if (currencyRows.length > 0) {
+      // There must be at least one row, so delete the first row.  This only looks for "button" but if we specify the id, we can't find it.  Why?
+      const deleteButton = await currencyRows[0].findElement(By.css('button'))
+      await deleteButton.sendKeys('', Key.ENTER)
+    } else {
+      finished = true
+    }
+  } while (!finished)
 
-  //     const pPostKey2 = new Promise((resolve, reject) => {
-  //       jsonClient.post('/keys', {}, function (err, req, res, obj) {
-  //         if (err) reject(err)
-  //         console.log('%d -> %j', res.statusCode, res.headers)
-  //         console.log('%j', obj)
-  //         resolve(obj)
-  //       })
-  //     })
-
-  // return Promise.all([pReadDawgFood,pReadKey1,pReadKey2])
-  //     return Promise.all([pPostKey1, pPostKey2])
-  //   })
-  //   .then((result) => {
-  //     keys = [
-  //       result[0],
-  //       result[1]
-  //     ]
-  //     console.log(134, result[0], result[1])
-  //   })
-
-  // 2. GenericCRU testing
-  //    await (async (jsonClient, keys) => {
-  // .then(result => {
-  //  return genericCRU({collName: 'accounts', jsonClient, keys, newDoc1: testData.accountBank, newDoc2: testData.accountCash, pn: 20})
-  // })
-  // .then(result => {return genericCRU({collName:'categories', jsonClient,  keys, newDoc1: testData.categoryAsset, newDoc2: testData.categoryExpense, pn:21})})
-  // await genericCRU({collName: 'categories', jsonClient,  keys, newDoc1: testData.categoryAsset, newDoc2: testData.categoryExpense, pn:21})
-
-  //   .then(result => { return genericCRU({ collName: 'currencies', jsonClient, keys, newDoc1: testData.currencyCNY, newDoc2: testData.currencyRUB, pn: 22 }) })
-  let driver = await new Builder().forBrowser('firefox').build()
-
-  // 1. Look at the list of currencies.  Wait for the loader, wait for the list, delete any existing entries.
-    let finished = false
-    do {
-      await driver.get('http://localhost:3004/currencies')
-      await driver.wait(until.elementLocated(By.css('.loader')))
-      await driver.wait(until.elementLocated(By.css('#currencies-index')))
-      const currencyRows = await driver.findElements(By.css('tbody > tr'))
-      if (currencyRows.length > 0) {
-        // There must be at least one row, so delete the first row.  This only looks for "button" but if we specify the id, we can't find it.  Why?
-        const deleteButton = await currencyRows[0].findElement(By.css('button'))
-        await deleteButton.sendKeys('', Key.ENTER)
-      } else {
-        finished = true
-      }
-    } while (!finished)
-
-
-  // 2. Find the "/currencies/add" link
-  await driver.wait(until.elementLocated(By.css('a#currencies-add')))
-  const addLink = await driver.findElements(By.css('a#currencies-add'))
-  await addLink[0].sendKeys('', Key.RETURN)
-
-  await driver.wait(until.elementLocated(By.css('div#currencies-add')))
-  const currenciesAdd = await driver.findElements(By.css('div#currencies-add'))
-  if (currenciesAdd.length !== 1) throw new Error('There should be exactly 1 element like this.')
-
-  // 3. Enter a new currency
-  // 3.1 Enter a new symbol
-  await driver.wait(until.elementLocated(By.css('input#symbol')))
-  const symbolInput = await driver.findElements(By.css('input#symbol'))
-  if (symbolInput.length !== 1) throw new Error('There should be exactly 1 element like this.')
-  await symbolInput[0].sendKeys(testData.currencyCNY.symbol)
-
-  // 3.2 Enter a new title
-  await driver.wait(until.elementLocated(By.css('input#title')))
-  const titleInput = await driver.findElements(By.css('input#title'))
-  if (titleInput.length !== 1) throw new Error('There should be exactly 1 element like this.')
-  await titleInput[0].sendKeys(testData.currencyCNY.title)
-
-  // 3.3 Save the new currency
-  await driver.wait(until.elementLocated(By.css('button#save')))
-  const saveButton = await driver.findElements(By.css('button#save'))
-  if (saveButton.length !== 1) throw new Error('There should be exactly 1 element like this.')
-  await saveButton[0].sendKeys('', Key.ENTER)
-
-  // 4. Go there and wait for the loader to finish.  Verify what we see.
-  await driver.get('http://localhost:3004/currencies')
-  await driver.wait(until.elementLocated(By.css('.loader')))
-  await driver.wait(until.elementLocated(By.css('#currencies-index')))
-  const currencyRows1 = await driver.findElements(By.css('tbody > tr'))
-  if (currencyRows1.length !== 1) throw new Error('There should be exactly 1 element like this.')
+  // 2. genericCRU
+  // await genericCRU({collName: 'currencies', httpClient: jsonClient, newDoc1: testData.currencyCNY, newDoc2: testData.currencyRUB, pn: 22})
+  const genericCRU = require('./integrationTests/basicCRUD/genericCRU')
+  await genericCRU({bwURL, collName: 'currencies', seleniumDriver, newDoc1: testData.currencyCNY, newDoc2: testData.currencyRUB})
 
   //      await genericCRU({ collName: 'currencies', httpClient: jsonClient, keys, newDoc1: testData.currencyCNY, newDoc2: testData.currencyRUB, pn: 22 })
 
@@ -236,8 +132,7 @@ async function run () {
   //   .then(result => {
   //     process.exit()
   //   })
-
-  // 7. Verify that the db is now completely empty.
+  seleniumDriver.close()
   console.log(colors.green('All tests passed'))
 
   await restifyCore.close()

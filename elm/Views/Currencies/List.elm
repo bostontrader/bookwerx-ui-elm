@@ -81,11 +81,11 @@ viewCurrency : Currency -> Html Msg
 viewCurrency currency =
     let
         currencyPath =
-            "/currencies/" ++ (toString currency.id)
+            "/currencies/" ++ currency.id
     in
         tr []
             [ td []
-                [ text (toString currency.id) ]
+                [ text currency.id ]
             , td []
                 [ text currency.symbol ]
             , td []
