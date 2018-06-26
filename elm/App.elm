@@ -1,10 +1,10 @@
 module App exposing (main)
 
 import Html exposing (program)
-import State exposing (init, update)
-import View exposing (view)
-import Types exposing (Model, Msg(LocationChanged))
 import Navigation
+import State exposing (init, update)
+import Types exposing (Model, Msg(LocationChanged))
+import View exposing (view)
 
 
 main : Program Never Model Msg

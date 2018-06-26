@@ -1,14 +1,49 @@
 module Types exposing
-    ( Model
+    ( BWCore_Error
+    , Model
     , Msg(..)
-    , Currency
-    , CurrencyId
     , Route(..)
+    , Account
+    , AccountId
+    , Currency
+    , CurrencyEditHttpResponse(..)
+    , CurrencyId
     )
 
+import Http
 import Navigation exposing (Location)
 import RemoteData exposing (WebData)
-import Http
+
+type CurrencyEditHttpResponse
+    = ValidCurrencyEditResponse Currency
+    | ErrorCurrencyEditResponse (List BWCore_Error)
+
+type alias BWCore_Error =
+    { key : String, value : String}
+
+type alias Model =
+    { currentRoute : Route
+     
+    , accounts : WebData (List Account)
+    , account : WebData (Account)
+    , newAccount : Account
+
+    , currencies : WebData (List Currency)
+    , currency : WebData CurrencyEditHttpResponse
+    , newCurrency : Currency
+
+    }
+
+type alias AccountId =
+    String
+
+type alias Account =
+    { id : String
+    , title : String
+    }
+
+type alias CurrencyId =
+    String
 
 type alias Currency =
     { id : String
@@ -16,20 +51,33 @@ type alias Currency =
     , title : String
     }
 
-
-type alias Model =
-    { currencies : WebData (List Currency)
-    , currentRoute : Route
-    , newCurrency : Currency
-    }
-
-type alias CurrencyId =
-    String
-
 type Msg
-    = FetchCurrencies
+    = LocationChanged Location
+
+    -- Accounts
+    | FetchAccounts
+    | FetchAccount AccountId
+    | AccountsReceived (WebData (List Account))
+    | AccountReceived (WebData Account)
+    --| UpdateAccountSymbol AccountId String
+    --| UpdateAccountTitle AccountId String
+    --| SubmitUpdatedAccount AccountId
+    --| AccountUpdated (Result Http.Error Account)
+    | DeleteAccount AccountId
+    | AccountDeleted (Result Http.Error String)
+    --| NewAccountSymbol String
+    | NewAccountTitle String
+    | CreateNewAccount
+    | AccountCreated (Result Http.Error Account)
+
+    -- Currencies
+    -- index
+    | FetchCurrencies
     | CurrenciesReceived (WebData (List Currency))
-    | LocationChanged Location
+
+    -- edit
+    | CurrencyReceived (WebData CurrencyEditHttpResponse)
+
     --| UpdateCurrencySymbol CurrencyId String
     --| UpdateCurrencyTitle CurrencyId String
     --| SubmitUpdatedCurrency CurrencyId
@@ -42,8 +90,15 @@ type Msg
     | CurrencyCreated (Result Http.Error Currency)
 
 type Route
-    = CurrenciesAdd
-    | CurrenciesEdit Int
-    | CurrenciesIndex
-    | Home
+    = Home
     | NotFound
+
+    -- Accounts
+    | AccountsAdd
+    | AccountsEdit String
+    | AccountsIndex
+
+    -- Currencies
+    | CurrenciesIndex
+    | CurrenciesAdd
+    | CurrenciesEdit String

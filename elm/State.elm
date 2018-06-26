@@ -2,15 +2,43 @@ module State exposing (init, update)
 
 import RemoteData exposing (WebData)
 
-import Types exposing (Currency, CurrencyId, Model, Msg(..), Route)
---import Rest exposing (createPostCommand, deletePostCommand, fetchPostsCommand)
-import Rest exposing (createCurrencyCommand, deleteCurrencyCommand, fetchCurrenciesCommand)
+import Types exposing
+    ( Account
+    , Currency
+    , CurrencyEditHttpResponse(..)
+    , CurrencyId
+    , Model
+    , Msg(..)
+    , Route
+        ( CurrenciesEdit
+        , CurrenciesIndex
+        )
+    )
+
+import Rest exposing
+    ( createAccountCommand
+    , deleteAccountCommand
+    , fetchAccountsCommand
+    , fetchAccountCommand
+    , createCurrencyCommand
+    , deleteCurrencyCommand
+    , fetchCurrenciesCommand
+    , fetchCurrencyCommand
+    )
 
 import Navigation exposing (Location)
 import Routing exposing (extractRoute)
---import Debug
-import Misc exposing (findCurrencyById)
---import Rest exposing (updatePostCommand, updatePostRequest)
+import Misc exposing
+    ( --findAccountById
+    findCurrencyById
+    )
+
+tempAccountId =
+    "-1"
+
+emptyAccount : Account
+emptyAccount =
+    Account tempAccountId ""
 
 tempCurrencyId =
     "-1"
@@ -21,8 +49,14 @@ emptyCurrency =
 
 initialModel : Route -> Model
 initialModel route =
-    { currencies = RemoteData.Loading
-    , currentRoute = route
+    { currentRoute = route
+
+    , accounts = RemoteData.Loading
+    , account = RemoteData.NotAsked
+    , newAccount = emptyAccount
+
+    , currencies = RemoteData.Loading
+    , currency = RemoteData.Loading
     , newCurrency = emptyCurrency
     }
 
@@ -30,26 +64,130 @@ init : Location -> ( Model, Cmd Msg )
 init location =
     let
         currentRoute =
-            Routing.extractRoute (Debug.log "location" location)
-    in
-        ( initialModel currentRoute, fetchCurrenciesCommand )
+            Routing.extractRoute (Debug.log "State init location" location)
+        _ = Debug.log "State init currentRoute" currentRoute
 
--- How can I test this?
+    in
+        case currentRoute of
+            CurrenciesIndex ->
+                ( initialModel currentRoute, fetchCurrenciesCommand )
+
+            CurrenciesEdit id ->
+                ( initialModel currentRoute, fetchCurrencyCommand id )
+
+            _ ->
+                ( initialModel currentRoute, Cmd.none)
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case Debug.log "msg" msg of
+    case Debug.log "State update msg" msg of
+        LocationChanged location ->
+            ( { model | currentRoute = Routing.extractRoute location }
+            , Cmd.none
+            )
+
+
+        -- Accounts
+        FetchAccounts ->
+            ( { model | accounts = RemoteData.Loading }, fetchAccountsCommand )
+
+        AccountsReceived response ->
+            ( { model | accounts = response }, Cmd.none )
+
+        FetchAccount accountId ->
+            ( { model | account = RemoteData.Loading }, fetchAccountCommand accountId)
+
+        AccountReceived response ->
+            ( { model | account = response }, Cmd.none )
+
+        {-UpdateTitle postId newTitle ->
+            let
+                updatedPosts =
+                    updateTitle postId newTitle model
+            in
+                ( { model | posts = updatedPosts }, Cmd.none )
+
+        UpdateAuthorName postId newName ->
+            let
+                updatedPosts =
+                    updateAuthorName postId newName model
+            in
+                ( { model | posts = updatedPosts }, Cmd.none )
+
+        UpdateAuthorUrl postId newUrl ->
+            let
+                updatedPosts =
+                    updateAuthorUrl postId newUrl model
+            in
+                ( { model | posts = updatedPosts }, Cmd.none )
+
+        SubmitUpdatedPost postId ->
+            case findPostById postId model.posts of
+                Just post ->
+                    ( model, updatePostCommand post )
+
+                Nothing ->
+                    ( model, Cmd.none )
+
+        PostUpdated _ ->
+            ( model, Cmd.none ) -}
+
+        DeleteAccount accountId ->
+            --case findAccountById accountId model.accounts of
+                --Just account ->
+                    --( model, deleteAccountCommand account )
+
+                --Nothing ->
+                    ( model, Cmd.none )
+
+        AccountDeleted _ ->
+            ( model, fetchAccountsCommand )
+
+        NewAccountTitle newTitle ->
+            let
+                updatedNewAccount =
+                    setAccountTitle newTitle model.newAccount
+            in
+                ( { model | newAccount = updatedNewAccount }, Cmd.none )
+
+        --NewAccountSymbol newSymbol ->
+        --    let
+        --        updatedNewAccount =
+        --            setSymbol newSymbol model.newAccount
+        --    in
+        --        ( { model | newAccount = updatedNewAccount }, Cmd.none )
+
+        CreateNewAccount ->
+            ( model, createAccountCommand model.newAccount )
+
+        AccountCreated (Ok account) ->
+            ( { model
+                | accounts = addNewAccount account model.accounts
+                , newAccount = emptyAccount
+              }
+            , Cmd.none
+            )
+
+        AccountCreated (Err _) ->
+            ( model, Cmd.none )
+
+
+        -- Currencies
         FetchCurrencies ->
             ( { model | currencies = RemoteData.Loading }, fetchCurrenciesCommand )
 
         CurrenciesReceived response ->
             ( { model | currencies = response }, Cmd.none )
 
-        LocationChanged location ->
-            ( { model
-                | currentRoute = Routing.extractRoute location
-              }
-            , Cmd.none
-            )
+        --FetchCurrencyX currencyId ->
+        --    ( { model | currencyX = RemoteData.Loading }, fetchCurrencyCommandX currencyId)
+
+        --CurrencyReceivedX response ->
+        --    ( { model | currencyX = response }, Cmd.none )
+
+        CurrencyReceived response ->
+            ( { model | currency = response }, Cmd.none )
 
         {-UpdateTitle postId newTitle ->
             let
@@ -97,7 +235,7 @@ update msg model =
         NewCurrencyTitle newTitle ->
             let
                 updatedNewCurrency =
-                    setTitle newTitle model.newCurrency
+                    setCurrencyTitle newTitle model.newCurrency
             in
                 ( { model | newCurrency = updatedNewCurrency }, Cmd.none )
 
@@ -122,6 +260,18 @@ update msg model =
         CurrencyCreated (Err _) ->
             ( model, Cmd.none )
 
+
+
+addNewAccount : Account -> WebData (List Account) -> WebData (List Account)
+addNewAccount newAccount accounts =
+    let
+        appendAccount : List Account -> List Account
+        appendAccount listOfAccounts =
+            List.append listOfAccounts [ newAccount ]
+    in
+        RemoteData.map appendAccount accounts
+
+
 addNewCurrency : Currency -> WebData (List Currency) -> WebData (List Currency)
 addNewCurrency newCurrency currencies =
     let
@@ -131,12 +281,17 @@ addNewCurrency newCurrency currencies =
     in
         RemoteData.map appendCurrency currencies
 
+
 setSymbol : String -> Currency -> Currency
 setSymbol newSymbol currency =
     { currency | symbol = newSymbol }
 
-setTitle : String -> Currency -> Currency
-setTitle newTitle currency =
+setAccountTitle : String -> Account -> Account
+setAccountTitle newTitle account =
+    { account | title = newTitle }
+
+setCurrencyTitle : String -> Currency -> Currency
+setCurrencyTitle newTitle currency =
     { currency | title = newTitle }
 
 {-setAuthorName : String -> Post -> Post
