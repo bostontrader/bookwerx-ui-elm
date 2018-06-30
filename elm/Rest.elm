@@ -1,13 +1,13 @@
-module Rest exposing
-    ( createAccountCommand
-    , deleteAccountCommand
-    , fetchAccountsCommand
-    , fetchAccountCommand
-    , createCurrencyCommand
-    , deleteCurrencyCommand
-    , fetchCurrenciesCommand
-    , fetchCurrencyCommand
-    )
+module Rest exposing (..)
+    --( createAccountCommand
+    --, deleteAccountCommand
+    --, fetchAccountsCommand
+    --, fetchAccountCommand
+    --, createCurrencyCommand
+    --, deleteCurrencyCommand
+    --, fetchCurrenciesCommand
+    --, fetchCurrencyCommand
+    --)
 
 import Http
 import RemoteData
@@ -25,6 +25,7 @@ import Types exposing
         , CurrencyDeleted
         , CurrenciesReceived
         , CurrencyReceived
+        , CurrencyUpdated
         )
     )
 
@@ -156,19 +157,12 @@ type alias ErrorResponse =
     }
 
 
------
 
---userResponseDecoder : Json.Decode.Decoder UserValidResponse
---userResponseDecoder =
---    Json.Decode.Pipeline.decode UserValidResponse
---        |> Json.Decode.Pipeline.required "data" userDecoder
 
 currencyEditResponseDecoder : Json.Decode.Decoder CurrencyEditValidResponse
 currencyEditResponseDecoder =
     Json.Decode.Pipeline.decode CurrencyEditValidResponse
         |> Json.Decode.Pipeline.required "data" currencyDecoder
-
------
 
 errorDecoder : Json.Decode.Decoder Error
 errorDecoder =
@@ -213,7 +207,6 @@ currencyDecoder =
         |> required "title" string
 
 
--- How can I test this?
 fetchCurrenciesCommand : Cmd Msg
 fetchCurrenciesCommand =
     list currencyDecoder
@@ -230,7 +223,7 @@ fetchCurrencyCommand currency_id =
         |> Cmd.map CurrencyReceived
 
 
-{-updateCurrencyCommand : Currency -> Cmd Msg
+updateCurrencyCommand : Currency -> Cmd Msg
 updateCurrencyCommand currency =
     updateCurrencyRequest currency
         |> Http.send CurrencyUpdated
@@ -240,7 +233,7 @@ updateCurrencyRequest currency =
     Http.request
         { method = "PATCH"
         , headers = []
-        , url = "http://localhost:5019/currencies/" ++ (toString currency.id)
+        , url = "http://localhost:3003/currencies/" ++ currency.id
         , body = Http.jsonBody (currencyEncoder currency)
         , expect = Http.expectJson currencyDecoder
         , timeout = Nothing
@@ -250,18 +243,11 @@ updateCurrencyRequest currency =
 currencyEncoder : Currency -> Encode.Value
 currencyEncoder currency =
     Encode.object
-        [ ( "id", Encode.int currency.id )
-        , ( "title", Encode.string currency.title )
-        , ( "author", authorEncoder currency.author )
+        [ ("id", Encode.string currency.id)
+        , ("symbol", Encode.string currency.symbol)
+        , ("title", Encode.string currency.title)
         ]
 
-
-authorEncoder : Author -> Encode.Value
-authorEncoder author =
-    Encode.object
-        [ ( "name", Encode.string author.name )
-        , ( "url", Encode.string author.url )
-        ] -}
 
 deleteCurrencyCommand : Currency -> Cmd Msg
 deleteCurrencyCommand currency =

@@ -24,6 +24,7 @@ import Rest exposing
     , deleteCurrencyCommand
     , fetchCurrenciesCommand
     , fetchCurrencyCommand
+    , updateCurrencyCommand
     )
 
 import Navigation exposing (Location)
@@ -56,8 +57,9 @@ initialModel route =
     , newAccount = emptyAccount
 
     , currencies = RemoteData.Loading
-    , currency = RemoteData.Loading
-    , newCurrency = emptyCurrency
+    , wdCurrency = RemoteData.Loading
+    , editCurrency = emptyCurrency
+    --, newCurrency = emptyCurrency
     }
 
 init : Location -> ( Model, Cmd Msg )
@@ -101,37 +103,6 @@ update msg model =
         AccountReceived response ->
             ( { model | account = response }, Cmd.none )
 
-        {-UpdateTitle postId newTitle ->
-            let
-                updatedPosts =
-                    updateTitle postId newTitle model
-            in
-                ( { model | posts = updatedPosts }, Cmd.none )
-
-        UpdateAuthorName postId newName ->
-            let
-                updatedPosts =
-                    updateAuthorName postId newName model
-            in
-                ( { model | posts = updatedPosts }, Cmd.none )
-
-        UpdateAuthorUrl postId newUrl ->
-            let
-                updatedPosts =
-                    updateAuthorUrl postId newUrl model
-            in
-                ( { model | posts = updatedPosts }, Cmd.none )
-
-        SubmitUpdatedPost postId ->
-            case findPostById postId model.posts of
-                Just post ->
-                    ( model, updatePostCommand post )
-
-                Nothing ->
-                    ( model, Cmd.none )
-
-        PostUpdated _ ->
-            ( model, Cmd.none ) -}
 
         DeleteAccount accountId ->
             --case findAccountById accountId model.accounts of
@@ -172,93 +143,89 @@ update msg model =
         AccountCreated (Err _) ->
             ( model, Cmd.none )
 
-
         -- Currencies
+        -- index
         FetchCurrencies ->
             ( { model | currencies = RemoteData.Loading }, fetchCurrenciesCommand )
 
         CurrenciesReceived response ->
             ( { model | currencies = response }, Cmd.none )
 
-        --FetchCurrencyX currencyId ->
-        --    ( { model | currencyX = RemoteData.Loading }, fetchCurrencyCommandX currencyId)
-
-        --CurrencyReceivedX response ->
-        --    ( { model | currencyX = response }, Cmd.none )
-
-        CurrencyReceived response ->
-            ( { model | currency = response }, Cmd.none )
-
-        {-UpdateTitle postId newTitle ->
-            let
-                updatedPosts =
-                    updateTitle postId newTitle model
-            in
-                ( { model | posts = updatedPosts }, Cmd.none )
-
-        UpdateAuthorName postId newName ->
-            let
-                updatedPosts =
-                    updateAuthorName postId newName model
-            in
-                ( { model | posts = updatedPosts }, Cmd.none )
-
-        UpdateAuthorUrl postId newUrl ->
-            let
-                updatedPosts =
-                    updateAuthorUrl postId newUrl model
-            in
-                ( { model | posts = updatedPosts }, Cmd.none )
-
-        SubmitUpdatedPost postId ->
-            case findPostById postId model.posts of
-                Just post ->
-                    ( model, updatePostCommand post )
-
-                Nothing ->
-                    ( model, Cmd.none )
-
-        PostUpdated _ ->
-            ( model, Cmd.none ) -}
-
-        DeleteCurrency currencyId ->
-            case findCurrencyById currencyId model.currencies of
-                Just currency ->
-                    ( model, deleteCurrencyCommand currency )
-
-                Nothing ->
-                    ( model, Cmd.none )
-
-        CurrencyDeleted _ ->
-            ( model, fetchCurrenciesCommand )
+        -- add
+        CreateNewCurrency ->
+            (model, createCurrencyCommand model.editCurrency)
 
         NewCurrencyTitle newTitle ->
             let
                 updatedNewCurrency =
-                    setCurrencyTitle newTitle model.newCurrency
+                    setCurrencyTitle newTitle model.editCurrency
+
             in
-                ( { model | newCurrency = updatedNewCurrency }, Cmd.none )
+                ( { model | editCurrency = updatedNewCurrency}, Cmd.none )
 
         NewCurrencySymbol newSymbol ->
             let
                 updatedNewCurrency =
-                    setSymbol newSymbol model.newCurrency
+                    setSymbol newSymbol model.editCurrency
             in
-                ( { model | newCurrency = updatedNewCurrency }, Cmd.none )
+                ( { model | editCurrency = updatedNewCurrency }, Cmd.none )
 
-        CreateNewCurrency ->
-            ( model, createCurrencyCommand model.newCurrency )
-
-        CurrencyCreated (Ok currency) ->
+        CurrencyCreated (Ok wdCurrency) ->
             ( { model
-                | currencies = addNewCurrency currency model.currencies
-                , newCurrency = emptyCurrency
+                | currencies = addNewCurrency wdCurrency model.currencies
               }
             , Cmd.none
             )
 
         CurrencyCreated (Err _) ->
             ( model, Cmd.none )
+
+        -- edit
+        CurrencyReceived response ->
+            case Debug.log "State update wdCurrency:" response of
+                RemoteData.NotAsked ->
+                    ( {model | wdCurrency = response}, Cmd.none )
+                RemoteData.Loading ->
+                    ( {model | wdCurrency = response}, Cmd.none )
+                RemoteData.Failure e ->
+                    ( {model | wdCurrency = response}, Cmd.none )
+                RemoteData.Success cehr ->
+                    case Debug.log "State update cehr:" cehr of
+                        ErrorCurrencyEditResponse e ->
+                            ({model | wdCurrency = response}, Cmd.none)
+                        ValidCurrencyEditResponse currency ->
+                            ( {model | wdCurrency = response, editCurrency = currency}, Cmd.none )
+
+        UpdateCurrencySymbol newSymbol ->
+            let
+                nc = model.editCurrency
+            in
+                ( {model | editCurrency = {nc | symbol = newSymbol}}, Cmd.none)
+
+        UpdateCurrencyTitle newTitle ->
+            let
+                nc = model.editCurrency
+            in
+                ({model | editCurrency = {nc | title = newTitle}}, Cmd.none)
+
+
+        SubmitUpdatedCurrency ->
+            (model, updateCurrencyCommand model.editCurrency)
+
+        CurrencyUpdated _ ->
+            ( model, Cmd.none )
+
+        -- delete
+        DeleteCurrency currencyId ->
+            case findCurrencyById currencyId model.currencies of
+                Just wdCurrency ->
+                    ( model, deleteCurrencyCommand wdCurrency )
+
+                Nothing ->
+                    ( model, Cmd.none )
+
+        CurrencyDeleted _ ->
+            ( model, fetchCurrenciesCommand )
 
 
 
@@ -286,6 +253,10 @@ setSymbol : String -> Currency -> Currency
 setSymbol newSymbol currency =
     { currency | symbol = newSymbol }
 
+setEditSymbol : String -> Currency -> Currency
+setEditSymbol newSymbol currency =
+    { currency | symbol = newSymbol }
+
 setAccountTitle : String -> Account -> Account
 setAccountTitle newTitle account =
     { account | title = newTitle }
@@ -293,95 +264,3 @@ setAccountTitle newTitle account =
 setCurrencyTitle : String -> Currency -> Currency
 setCurrencyTitle newTitle currency =
     { currency | title = newTitle }
-
-{-setAuthorName : String -> Post -> Post
-setAuthorName newName post =
-    let
-        oldAuthor =
-            post.author
-    in
-        { post | author = { oldAuthor | name = newName } }
-
-
-setAuthorUrl : String -> Post -> Post
-setAuthorUrl newUrl post =
-    let
-        oldAuthor =
-            post.author
-    in
-        { post | author = { oldAuthor | url = newUrl } }
-
-updateTitle : PostId -> String -> Model -> WebData (List Post)
-updateTitle postId newTitle model =
-    let
-        updatePost post =
-            if post.id == postId then
-                { post | title =  Debug.log "newTitle: " newTitle }
-            else
-                post
-
-        updatePosts posts =
-            List.map updatePost posts
-    in
-        RemoteData.map updatePosts model.posts
-
-map : (a -> b) -> RemoteData e a -> RemoteData e b
-map f data =
-    case data of
-        Success value ->
-            Success (f value)
-
-        Loading ->
-            Loading
-
-        NotAsked ->
-            NotAsked
-
-        Failure error ->
-            Failure error
-
-type RemoteData e a
-    = NotAsked
-    | Loading
-    | Failure e
-    | Success a
-
-
-updateAuthorName : PostId -> String -> Model -> WebData (List Post)
-updateAuthorName postId newName model =
-    let
-        updatePost post =
-            if post.id == postId then
-                let
-                    oldAuthor =
-                        post.author
-                in
-                    { post | author = { oldAuthor | name = newName } }
-            else
-                post
-
-        updatePosts posts =
-            List.map updatePost posts
-    in
-        RemoteData.map updatePosts model.posts
-
-
-updateAuthorUrl : PostId -> String -> Model -> WebData (List Post)
-updateAuthorUrl postId newUrl model =
-    let
-        updatePost post =
-            if post.id == postId then
-                let
-                    oldAuthor =
-                        post.author
-                in
-                    { post | author = { oldAuthor | url = newUrl } }
-            else
-                post
-
-        updatePosts posts =
-            List.map updatePost posts
-    in
-        RemoteData.map updatePosts model.posts
-
--}

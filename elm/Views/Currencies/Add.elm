@@ -1,28 +1,32 @@
 module Views.Currencies.Add exposing (view)
 
 import Html exposing (Html, a, br, button, div, h3, input, text)
-import Html.Attributes exposing (href, id, type_)
+import Html.Attributes exposing (href, id, type_, value)
 import Html.Events exposing (onClick, onInput)
-import Types exposing (Msg(CreateNewCurrency, NewCurrencySymbol, NewCurrencyTitle))
+import Types exposing
+    ( Currency
+    , Model
+    , Msg(CreateNewCurrency, NewCurrencySymbol, NewCurrencyTitle)
+    )
 
 
-view : Html Msg
-view =
+view : Model -> Html Msg
+view model =
     div [ id "currencies-add" ]
-        [ a [ href "/currencies" ] [ text "Back" ]
+        [ a [ id "currencies-index", href "/currencies" ] [ text "Currencies index" ]
         , h3 [] [ text "Create New Currency" ]
-        , newCurrencyForm
+        , newCurrencyForm model.editCurrency
         ]
 
 
-newCurrencyForm : Html Msg
-newCurrencyForm =
+newCurrencyForm : Currency -> Html Msg
+newCurrencyForm currency =
     Html.form []
         [ div []
             [ text "Symbol"
             , br [] []
             , input
-                [ id "symbol", type_ "text"
+                [ id "symbol", type_ "text", value currency.symbol
                 , onInput NewCurrencySymbol
                 ]
                 []
@@ -32,7 +36,7 @@ newCurrencyForm =
             [ text "Title"
             , br [] []
             , input
-                [ id "title", type_ "text"
+                [ id "title", type_ "text", value currency.title
                 , onInput NewCurrencyTitle
                 ]
                 []

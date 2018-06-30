@@ -3,22 +3,27 @@ module Views.Currencies.Edit exposing (view)
 import Html exposing (Html, a, br, button, div, h3, input, table, tbody, td, text, th, thead, tr)
 import Html.Attributes exposing (class, href, id, type_, value)
 import Html.Events exposing (onClick, onInput)
-import Types exposing (Currency, CurrencyEditHttpResponse(..), BWCore_Error, Model, Msg(NewCurrencySymbol, NewCurrencyTitle))
+import Types exposing
+    ( BWCore_Error
+    , Currency
+    , CurrencyEditHttpResponse(..)
+    , Model
+    , Msg(SubmitUpdatedCurrency, UpdateCurrencySymbol, UpdateCurrencyTitle)
+    )
 import RemoteData
 
 view : Model -> Html Msg
 view model =
     div [ id "currencies-edit"]
-        -- [ a [ href "/currencies" ] [ text "Back" ]
-        --[ h3 [] [ text "Edit Currency" ]
-        --, editForm currency
-        [ viewCurrencyOrError model
+        [ a [ id "currencies-index", href "/currencies" ] [ text "Currencies index" ]
+        , h3 [] [ text "Edit Currency" ]
+        , viewCurrencyOrError model
         ]
 
 
 viewCurrencyOrError : Model -> Html Msg
 viewCurrencyOrError model =
-    case model.currency of
+    case model.wdCurrency of
         RemoteData.NotAsked ->
             h3 [] [ text "Not Asked..." ]
 
@@ -27,8 +32,8 @@ viewCurrencyOrError model =
 
         RemoteData.Success cehr ->
             case cehr of
-                ValidCurrencyEditResponse currency ->
-                    editForm currency
+                ValidCurrencyEditResponse wdCurrency ->
+                    editForm model.editCurrency
 
                 ErrorCurrencyEditResponse errors ->
                     viewErrors errors
@@ -73,7 +78,7 @@ editForm currency =
             , input
                 [ type_ "text"
                 , value currency.symbol
-                , onInput NewCurrencySymbol
+                , onInput UpdateCurrencySymbol
                 ]
                 []
             ]
@@ -83,14 +88,17 @@ editForm currency =
             , br [] []
             , input
                 [ type_ "text"
-                , value currency.title
-                , onInput NewCurrencyTitle
+                , value (Debug.log "editForm title:"  currency.title)
+                , onInput UpdateCurrencyTitle
                 ]
                 []
             ]
         , br [] []
         , div []
-            [ --button [ onClick (SubmitUpdatedCurrency currency.id) ]
-                --[ text "Submit" ]
+            [ button
+                [ id "save"
+                , onClick SubmitUpdatedCurrency
+                ]
+                [ text "Submit" ]
             ]
         ]

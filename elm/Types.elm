@@ -29,8 +29,11 @@ type alias Model =
     , newAccount : Account
 
     , currencies : WebData (List Currency)
-    , currency : WebData CurrencyEditHttpResponse
-    , newCurrency : Currency
+    , wdCurrency : WebData CurrencyEditHttpResponse
+
+    -- Use this to assemble a new record or edit an existing one
+    , editCurrency : Currency
+    -- , newCurrency : Currency
 
     }
 
@@ -75,19 +78,23 @@ type Msg
     | FetchCurrencies
     | CurrenciesReceived (WebData (List Currency))
 
-    -- edit
-    | CurrencyReceived (WebData CurrencyEditHttpResponse)
-
-    --| UpdateCurrencySymbol CurrencyId String
-    --| UpdateCurrencyTitle CurrencyId String
-    --| SubmitUpdatedCurrency CurrencyId
-    --| CurrencyUpdated (Result Http.Error Currency)
-    | DeleteCurrency CurrencyId
-    | CurrencyDeleted (Result Http.Error String)
+    -- add
+    | CreateNewCurrency
     | NewCurrencySymbol String
     | NewCurrencyTitle String
-    | CreateNewCurrency
     | CurrencyCreated (Result Http.Error Currency)
+
+    -- edit
+    | CurrencyReceived (WebData CurrencyEditHttpResponse)
+    | UpdateCurrencySymbol String
+    | UpdateCurrencyTitle String
+    | SubmitUpdatedCurrency
+    | CurrencyUpdated (Result Http.Error Currency)
+
+    -- delete
+    | DeleteCurrency CurrencyId
+    | CurrencyDeleted (Result Http.Error String)
+
 
 type Route
     = Home

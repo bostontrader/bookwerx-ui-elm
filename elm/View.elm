@@ -42,8 +42,9 @@ view model =
         CurrenciesIndex ->
             Views.Currencies.List.view model
 
+        -- This message provides a parameter, but we don't use it in the view.
         CurrenciesEdit id ->
             Views.Currencies.Edit.view model
 
         CurrenciesAdd ->
-            Views.Currencies.Add.view
+            Views.Currencies.Add.view model
