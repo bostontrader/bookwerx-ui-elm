@@ -1,4 +1,4 @@
-module Views.Currencies.Add exposing (view)
+module Currencies.Views.Add exposing (view)
 
 import Html exposing (Html, a, br, button, div, h3, input, text)
 import Html.Attributes exposing (href, id, type_, value)
@@ -24,14 +24,14 @@ newCurrencyForm currency =
     Html.form []
         [ div []
             [ text "Symbol"
-            , br [] []
+            , br [][]
             , input
                 [ id "symbol", type_ "text", value currency.symbol
                 , onInput NewCurrencySymbol
                 ]
                 []
             ]
-        , br [] []
+        , br [][]
         , div []
             [ text "Title"
             , br [] []
@@ -41,7 +41,7 @@ newCurrencyForm currency =
                 ]
                 []
             ]
-        , br [] []
+        , br [][]
         , div []
             [ button
                 [ id "save"

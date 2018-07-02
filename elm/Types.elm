@@ -3,16 +3,25 @@ module Types exposing
     , Model
     , Msg(..)
     , Route(..)
-    , Account
-    , AccountId
-    , Currency
-    , CurrencyEditHttpResponse(..)
-    , CurrencyId
+
+    -- Accounts
+      , Account
+      , AccountId
+      , AccountEditHttpResponse(..)
+      
+    -- Currencies
+      , Currency
+      , CurrencyEditHttpResponse(..)
+      , CurrencyId
     )
 
 import Http
 import Navigation exposing (Location)
 import RemoteData exposing (WebData)
+
+type AccountEditHttpResponse
+    = ValidAccountEditResponse Account
+    | ErrorAccountEditResponse (List BWCore_Error)
 
 type CurrencyEditHttpResponse
     = ValidCurrencyEditResponse Currency
@@ -24,16 +33,19 @@ type alias BWCore_Error =
 type alias Model =
     { currentRoute : Route
      
-    , accounts : WebData (List Account)
-    , account : WebData (Account)
-    , newAccount : Account
+    -- accounts 
+      , accounts : WebData (List Account)
+      , wdAccount : WebData AccountEditHttpResponse
 
-    , currencies : WebData (List Currency)
-    , wdCurrency : WebData CurrencyEditHttpResponse
+      -- Use this to assemble a new record or edit an existing one
+      , editAccount : Account
 
-    -- Use this to assemble a new record or edit an existing one
-    , editCurrency : Currency
-    -- , newCurrency : Currency
+    -- currencies
+      , currencies : WebData (List Currency)
+      , wdCurrency : WebData CurrencyEditHttpResponse
+
+      -- Use this to assemble a new record or edit an existing one
+      , editCurrency : Currency
 
     }
 
@@ -58,20 +70,24 @@ type Msg
     = LocationChanged Location
 
     -- Accounts
+    -- index
     | FetchAccounts
-    | FetchAccount AccountId
     | AccountsReceived (WebData (List Account))
-    | AccountReceived (WebData Account)
-    --| UpdateAccountSymbol AccountId String
-    --| UpdateAccountTitle AccountId String
-    --| SubmitUpdatedAccount AccountId
-    --| AccountUpdated (Result Http.Error Account)
+
+    -- add
+    | CreateNewAccount
+    | NewAccountTitle String
+    | AccountCreated (Result Http.Error Account)
+
+    -- edit
+    | AccountReceived (WebData AccountEditHttpResponse)
+    | UpdateAccountTitle String
+    | SubmitUpdatedAccount
+    | AccountUpdated (Result Http.Error Account)
+
+    -- delete
     | DeleteAccount AccountId
     | AccountDeleted (Result Http.Error String)
-    --| NewAccountSymbol String
-    | NewAccountTitle String
-    | CreateNewAccount
-    | AccountCreated (Result Http.Error Account)
 
     -- Currencies
     -- index
@@ -101,9 +117,9 @@ type Route
     | NotFound
 
     -- Accounts
+    | AccountsIndex
     | AccountsAdd
     | AccountsEdit String
-    | AccountsIndex
 
     -- Currencies
     | CurrenciesIndex

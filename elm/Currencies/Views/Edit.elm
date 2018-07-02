@@ -1,16 +1,17 @@
-module Views.Currencies.Edit exposing (view)
+module Currencies.Views.Edit exposing (view)
 
 import Html exposing (Html, a, br, button, div, h3, input, table, tbody, td, text, th, thead, tr)
 import Html.Attributes exposing (class, href, id, type_, value)
 import Html.Events exposing (onClick, onInput)
+import RemoteData
+
 import Types exposing
     ( BWCore_Error
-    , Currency
-    , CurrencyEditHttpResponse(..)
     , Model
     , Msg(SubmitUpdatedCurrency, UpdateCurrencySymbol, UpdateCurrencyTitle)
+    , Currency
+    , CurrencyEditHttpResponse(..)
     )
-import RemoteData
 
 view : Model -> Html Msg
 view model =
@@ -74,7 +75,7 @@ editForm currency =
     Html.form []
         [ div []
             [ text "Symbol"
-            , br [] []
+            , br [][]
             , input
                 [ type_ "text"
                 , value currency.symbol
@@ -82,10 +83,10 @@ editForm currency =
                 ]
                 []
             ]
-        , br [] []
+        , br [][]
         , div []
             [ text "Title"
-            , br [] []
+            , br [][]
             , input
                 [ type_ "text"
                 , value (Debug.log "editForm title:"  currency.title)
@@ -93,7 +94,7 @@ editForm currency =
                 ]
                 []
             ]
-        , br [] []
+        , br [][]
         , div []
             [ button
                 [ id "save"

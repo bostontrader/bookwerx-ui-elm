@@ -20,6 +20,9 @@ matchRoute : Parser (Route -> a) a
 matchRoute =
     oneOf
         [ map Home top
+        , map AccountsAdd (s "accounts" </> s "add")
+        , map AccountsEdit (s "accounts" </> string)
+        , map AccountsIndex (s "accounts")
         , map CurrenciesAdd (s "currencies" </> s "add")
         , map CurrenciesEdit (s "currencies" </> string)
         , map CurrenciesIndex (s "currencies")

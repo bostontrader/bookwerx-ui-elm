@@ -7,28 +7,27 @@ const verifyIndex = async ({collName, seleniumDriver, expectedCnt, verifyDoc}) =
   await seleniumDriver.wait(until.elementLocated(By.css('div#' + collName + '-index')))
   const documentRows = await seleniumDriver.findElements(By.css('tbody > tr'))
 
+  if (documentRows.length !== expectedCnt) throw new Error('There should be exactly ' + expectedCnt + ' elements like this.')
+
   // Possibly verify that the first row contains the expected values.
   if (verifyDoc) {
-    await documentRows[0].findElement(By.xpath('//td[contains(text(), "' + verifyDoc.symbol+ '")]'))
-    await documentRows[0].findElement(By.xpath('//td[contains(text(), "' + verifyDoc.title+ '")]'))
+    await documentRows[0].findElement(By.xpath('//td[contains(text(), "' + verifyDoc.symbol + '")]'))
+    await documentRows[0].findElement(By.xpath('//td[contains(text(), "' + verifyDoc.title + '")]'))
   }
-
 }
 
 // Starting from the index page of the collection, navigate to the add new document page, add a new document, and click the button to return to collection-index
 const addNew = async ({seleniumDriver, collName, newDoc}) => {
-
   await seleniumDriver.wait(until.elementLocated(By.css('a#' + collName + '-add')))
-  addLink = await seleniumDriver.findElement(By.css('a#' + collName + '-add'))
+  const addLink = await seleniumDriver.findElement(By.css('a#' + collName + '-add'))
   await addLink.sendKeys('', Key.RETURN)
   await seleniumDriver.wait(until.elementLocated(By.css('div#' + collName + '-add')))
   await seleniumDriver.findElement(By.css('div#' + collName + '-add'))
 
-
   // 1. Enter a new symbol
-  await seleniumDriver.wait(until.elementLocated(By.css('input#symbol')))
-  const symbolInput = await seleniumDriver.findElement(By.css('input#symbol'))
-  await symbolInput.sendKeys(newDoc.symbol)
+  // await seleniumDriver.wait(until.elementLocated(By.css('input#symbol')))
+  // const symbolInput = await seleniumDriver.findElement(By.css('input#symbol'))
+  // await symbolInput.sendKeys(newDoc.symbol)
 
   // 2. Enter a new title
   await seleniumDriver.wait(until.elementLocated(By.css('input#title')))
@@ -42,14 +41,12 @@ const addNew = async ({seleniumDriver, collName, newDoc}) => {
 
   // 4. Now return to collection-index
   await seleniumDriver.wait(until.elementLocated(By.css('a#' + collName + '-index')))
-  indexLink = await seleniumDriver.findElement(By.css('a#' + collName + '-index'))
+  const indexLink = await seleniumDriver.findElement(By.css('a#' + collName + '-index'))
   await indexLink.sendKeys('', Key.RETURN)
 }
 
 // Perform a basic CRU test
 module.exports = async ({bwURL, collName, seleniumDriver}) => {
-  let addLink
-
   // 1. Now read the documents collection and post new documents and demonstrate that we correctly have 0, 1, or 2 documents in the collection.
 
   // Go to the index.  Do we have exactly zero documents now?
@@ -57,48 +54,41 @@ module.exports = async ({bwURL, collName, seleniumDriver}) => {
   await verifyIndex({bwURL, collName, seleniumDriver, expectedCnt: 0})
 
   // Navigate to the add form, add a new document, and navigate back to the index.
-  await addNew({seleniumDriver, collName, newDoc: testData.currencyCNY})
+  await addNew({seleniumDriver, collName, newDoc: testData.accountBank})
 
   // Starting from the index, do we have exactly one document now? Are the fields correct?
-  // await seleniumDriver.get(bwURL + '/' + collName)
-  await verifyIndex({collName, seleniumDriver, expectedCnt: 1, verify: testData.currencyCNY})
+  await verifyIndex({collName, seleniumDriver, expectedCnt: 1, verify: testData.accountCNY})
 
   // Navigate to the add form, add a new document, and navigate back to the index.
-  await addNew({seleniumDriver, collName, newDoc: testData.currencyRUB})
+  await addNew({seleniumDriver, collName, newDoc: testData.accountCash})
 
   // Starting from the index, do we have exactly two documents now?
-  // await seleniumDriver.get(bwURL + '/' + collName)
   await verifyIndex({collName, seleniumDriver, expectedCnt: 2})
-
 
   // 2. GET a document, using a good id for an existing document via the UI, a well formed id that refers to a non-existent document via hacking the URL, and a mal-formed id.
 
-  // 2.1 We should presently be on the /currencies index page. Follow the UI, pick the first currency in the list, and attempt to edit it.
+  // 2.1 We should presently be on the /accounts index page. Follow the UI, pick the first account in the list, and attempt to edit it.
   const documentRows = await seleniumDriver.findElements(By.css('tbody > tr'))
-  if (documentRows.length <= 0) throw new Error('There should be more than 0 elements like this.')
+  if (documentRows.length < 0) throw new Error('There should be more than 0 elements like this.')
   const editLink = await seleniumDriver.findElement(By.css('a#' + collName + '-edit'))
   await editLink.sendKeys('', Key.RETURN)
   await seleniumDriver.wait(until.elementLocated(By.css('.loader')))
   await seleniumDriver.wait(until.elementLocated(By.css('div#' + collName + '-edit')))
-  //await getOne({collName, expectedError: undefined, fExpectSuccess: true, httpClient, id: priorResults.goodId[0], pn, priorResults})
 
   // 2.2 Now try to retrieve a well-formed, but non-existent id
-  await seleniumDriver.get(bwURL + '/currencies/666666666666666666666666')
+  await seleniumDriver.get(bwURL + '/accounts/666666666666666666666666')
   await seleniumDriver.wait(until.elementLocated(By.css('.loader')))
   await seleniumDriver.wait(until.elementLocated(By.css('div#errors')))
   let errorRows
   errorRows = await seleniumDriver.findElements(By.css('tbody > tr'))
-  if (errorRows.length !== 1) throw new Error('There should be exactly 1 elements like this.')
-  //await getOne({collName, expectedError: 'currency 666666666666666666666666 does not exist', fExpectSuccess: false, httpClient, id: '666666666666666666666666', pn, priorResults})
+  if (errorRows.length !== 1) throw new Error('There should be exactly 1 element like this.')
 
   // 2.3 Now try to retrieve a badly formed id
-  await seleniumDriver.get(bwURL + '/currencies/catfood')
+  await seleniumDriver.get(bwURL + '/accounts/catfood')
   await seleniumDriver.wait(until.elementLocated(By.css('.loader')))
   await seleniumDriver.wait(until.elementLocated(By.css('div#errors')))
   errorRows = await seleniumDriver.findElements(By.css('tbody > tr'))
-  if (errorRows.length !== 1) throw new Error('There should be exactly 1 elements like this.')
-  //await getOne({collName, expectedError: 'Argument passed in must be a single String of 12 bytes or a string of 24 hex characters', fExpectSuccess: false, httpClient, id: 'catfood', pn, priorResults})
-
+  if (errorRows.length !== 1) throw new Error('There should be exactly 1 element like this.')
 
   // 3. PATCH  a document, using a good id for an existing document, a well formed id that refers to a non-existent document, and a mal-formed id
   // await patch({collName, document: newDoc2, expectedError: undefined, fExpectSuccess: true, httpClient, id: priorResults.goodId[0], pn, priorResults})

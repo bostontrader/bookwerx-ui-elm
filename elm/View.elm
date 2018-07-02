@@ -3,13 +3,13 @@ module View exposing (view)
 import Html exposing (Html, h3, text)
 import Types exposing (Model, Msg(..), Route(..))
 
-import Views.Accounts.Add
-import Views.Accounts.Edit
-import Views.Accounts.List
+import Accounts.Views.Add
+import Accounts.Views.Edit
+import Accounts.Views.List
 
-import Views.Currencies.Add
-import Views.Currencies.Edit
-import Views.Currencies.List
+import Currencies.Views.Add
+import Currencies.Views.Edit
+import Currencies.Views.List
 
 view : Model -> Html Msg
 view model =
@@ -23,28 +23,23 @@ view model =
 
         -- Accounts
         AccountsIndex ->
-            Views.Accounts.List.view model
+            Accounts.Views.List.view model
 
+        -- This message provides a parameter, but we don't use it in the view.
         AccountsEdit id ->
-            h3 [] [ text "Accounts edit" ]
-            --case findAccountById id model.accounts of
-            --    Just account ->
-            --        Views.Accounts.Edit.view model
-
-            --   Nothing ->
-            --        h3 [] [ text "Oops! The page you requested was not found!" ]
+            Accounts.Views.Edit.view model
 
         AccountsAdd ->
-            Views.Accounts.Add.view
+            Accounts.Views.Add.view model
 
 
         -- Currencies
         CurrenciesIndex ->
-            Views.Currencies.List.view model
+            Currencies.Views.List.view model
 
         -- This message provides a parameter, but we don't use it in the view.
         CurrenciesEdit id ->
-            Views.Currencies.Edit.view model
+            Currencies.Views.Edit.view model
 
         CurrenciesAdd ->
-            Views.Currencies.Add.view model
+            Currencies.Views.Add.view model

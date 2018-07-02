@@ -67,6 +67,21 @@ async function run () {
   const bwURL = 'http://' + process.env.BWUI_DOMAIN + ':' + process.env.BW_PORT
 
   do {
+    await seleniumDriver.get(bwURL + '/accounts')
+
+    await seleniumDriver.wait(until.elementLocated(By.css('.loader')))
+    await seleniumDriver.wait(until.elementLocated(By.css('#accounts-index')))
+    const accountRows = await seleniumDriver.findElements(By.css('tbody > tr'))
+    if (accountRows.length > 0) {
+      // There must be at least one row, so delete the first row.  This only looks for "button" but if we specify the id, we can't find it.  Why?
+      const deleteButton = await accountRows[0].findElement(By.css('button'))
+      await deleteButton.sendKeys('', Key.ENTER)
+    } else {
+      finished = true
+    }
+  } while (!finished)
+
+  do {
     await seleniumDriver.get(bwURL + '/currencies')
 
     await seleniumDriver.wait(until.elementLocated(By.css('.loader')))
@@ -82,22 +97,12 @@ async function run () {
   } while (!finished)
 
   // 2. genericCRU
-  // await genericCRU({collName: 'currencies', httpClient: jsonClient, newDoc1: testData.currencyCNY, newDoc2: testData.currencyRUB, pn: 22})
-  const genericCRU = require('./integrationTests/basicCRUD/genericCRU')
+  let genericCRU
+  genericCRU = require('./integrationTests/basicCRUD/accounts/genericCRU')
+  await genericCRU({bwURL, collName: 'accounts', seleniumDriver, newDoc1: testData.accountBank, newDoc2: testData.accountCash})
+
+  genericCRU = require('./integrationTests/basicCRUD/currencies/genericCRU')
   await genericCRU({bwURL, collName: 'currencies', seleniumDriver, newDoc1: testData.currencyCNY, newDoc2: testData.currencyRUB})
-
-  //      await genericCRU({ collName: 'currencies', httpClient: jsonClient, keys, newDoc1: testData.currencyCNY, newDoc2: testData.currencyRUB, pn: 22 })
-
-  // .then(result => {return genericCRU({collName:'transactions', jsonClient, keys, newDoc1: testData.transaction1, newDoc2: testData.transaction2, pn: 23})})
-  //    })(jsonClient, [key1, key2])
-
-  //    process.exit(0)
-  //  } catch (e) {
-  // Deal with the fact the chain failed
-  //    console.log(e)
-  //    process.exit(1)
-  //  }
-  // })()
 
   // 3. CustomCRU testing specialized for particular collections./
   // .then(() => {return accountsCategories({jsonClient,  keys, pn:30})})

@@ -3,35 +3,41 @@ module State exposing (init, update)
 import RemoteData exposing (WebData)
 
 import Types exposing
-    ( Account
-    , Currency
-    , CurrencyEditHttpResponse(..)
-    , CurrencyId
-    , Model
+    ( Model
     , Msg(..)
     , Route
-        ( CurrenciesEdit
+        ( AccountsEdit
+        , AccountsIndex
+        , CurrenciesEdit
         , CurrenciesIndex
         )
+    , Account
+    , AccountEditHttpResponse(..)
+    , Currency
+    , CurrencyEditHttpResponse(..)
     )
 
-import Rest exposing
+import Accounts.Rest exposing
     ( createAccountCommand
     , deleteAccountCommand
-    , fetchAccountsCommand
     , fetchAccountCommand
-    , createCurrencyCommand
+    , fetchAccountsCommand
+    , updateAccountCommand
+    )
+
+import Currencies.Rest exposing
+    ( createCurrencyCommand
     , deleteCurrencyCommand
-    , fetchCurrenciesCommand
     , fetchCurrencyCommand
+    , fetchCurrenciesCommand
     , updateCurrencyCommand
     )
 
 import Navigation exposing (Location)
 import Routing exposing (extractRoute)
 import Misc exposing
-    ( --findAccountById
-    findCurrencyById
+    ( findAccountById
+    , findCurrencyById
     )
 
 tempAccountId =
@@ -53,13 +59,12 @@ initialModel route =
     { currentRoute = route
 
     , accounts = RemoteData.Loading
-    , account = RemoteData.NotAsked
-    , newAccount = emptyAccount
+    , wdAccount = RemoteData.Loading
+    , editAccount = emptyAccount
 
     , currencies = RemoteData.Loading
     , wdCurrency = RemoteData.Loading
     , editCurrency = emptyCurrency
-    --, newCurrency = emptyCurrency
     }
 
 init : Location -> ( Model, Cmd Msg )
@@ -71,6 +76,12 @@ init location =
 
     in
         case currentRoute of
+            AccountsIndex ->
+                ( initialModel currentRoute, fetchAccountsCommand )
+
+            AccountsEdit id ->
+                ( initialModel currentRoute, fetchAccountCommand id )
+
             CurrenciesIndex ->
                 ( initialModel currentRoute, fetchCurrenciesCommand )
 
@@ -91,57 +102,75 @@ update msg model =
 
 
         -- Accounts
+        -- index
         FetchAccounts ->
             ( { model | accounts = RemoteData.Loading }, fetchAccountsCommand )
 
         AccountsReceived response ->
             ( { model | accounts = response }, Cmd.none )
 
-        FetchAccount accountId ->
-            ( { model | account = RemoteData.Loading }, fetchAccountCommand accountId)
-
-        AccountReceived response ->
-            ( { model | account = response }, Cmd.none )
-
-
-        DeleteAccount accountId ->
-            --case findAccountById accountId model.accounts of
-                --Just account ->
-                    --( model, deleteAccountCommand account )
-
-                --Nothing ->
-                    ( model, Cmd.none )
-
-        AccountDeleted _ ->
-            ( model, fetchAccountsCommand )
+        -- add
+        CreateNewAccount ->
+            ( model, createAccountCommand model.editAccount )
 
         NewAccountTitle newTitle ->
             let
                 updatedNewAccount =
-                    setAccountTitle newTitle model.newAccount
+                    setAccountTitle newTitle model.editAccount
             in
-                ( { model | newAccount = updatedNewAccount }, Cmd.none )
+                ( { model | editAccount = updatedNewAccount }, Cmd.none )
 
-        --NewAccountSymbol newSymbol ->
-        --    let
-        --        updatedNewAccount =
-        --            setSymbol newSymbol model.newAccount
-        --    in
-        --        ( { model | newAccount = updatedNewAccount }, Cmd.none )
-
-        CreateNewAccount ->
-            ( model, createAccountCommand model.newAccount )
-
-        AccountCreated (Ok account) ->
+        AccountCreated (Ok wdAccount) ->
             ( { model
-                | accounts = addNewAccount account model.accounts
-                , newAccount = emptyAccount
+                | accounts = addNewAccount wdAccount model.accounts
+                , editAccount = emptyAccount
               }
             , Cmd.none
             )
 
         AccountCreated (Err _) ->
             ( model, Cmd.none )
+
+        -- edit
+        AccountReceived response ->
+            case Debug.log "State update wdAccount:" response of
+                RemoteData.NotAsked ->
+                    ( {model | wdAccount = response}, Cmd.none )
+                RemoteData.Loading ->
+                    ( {model | wdAccount = response}, Cmd.none )
+                RemoteData.Failure e ->
+                    ( {model | wdAccount = response}, Cmd.none )
+                RemoteData.Success cehr ->
+                    case Debug.log "State update cehr:" cehr of
+                        ErrorAccountEditResponse e ->
+                            ({model | wdAccount = response}, Cmd.none)
+                        ValidAccountEditResponse account ->
+                            ( {model | wdAccount = response, editAccount = account}, Cmd.none )
+
+        UpdateAccountTitle newTitle ->
+            let
+                nc = model.editAccount
+            in
+                ({model | editAccount = {nc | title = newTitle}}, Cmd.none)
+
+        SubmitUpdatedAccount ->
+            (model, updateAccountCommand model.editAccount)
+
+        AccountUpdated _ ->
+            ( model, Cmd.none )
+
+        -- delete
+        DeleteAccount accountId ->
+            case findAccountById accountId model.accounts of
+                Just account ->
+                    ( model, deleteAccountCommand account )
+
+                Nothing ->
+                    ( model, Cmd.none )
+
+        AccountDeleted _ ->
+            ( model, fetchAccountsCommand )
+
 
         -- Currencies
         -- index

@@ -1,43 +1,37 @@
-module Views.Accounts.Add exposing (view)
+module Accounts.Views.Add exposing (view)
 
 import Html exposing (Html, a, br, button, div, h3, input, text)
 import Html.Attributes exposing (href, id, type_)
 import Html.Events exposing (onClick, onInput)
-import Types exposing (Msg(CreateNewAccount, NewAccountTitle))
+import Types exposing
+    ( Account
+    , Model
+    , Msg(CreateNewAccount, NewAccountTitle)
+    )
 
 
-view : Html Msg
-view =
+view : Model -> Html Msg
+view model =
     div [ id "accounts-add" ]
-        [ a [ href "/accounts" ] [ text "Back" ]
+        [ a [ id "accounts-index",  href "/accounts" ] [ text "Accounts" ]
         , h3 [] [ text "Create New Account" ]
-        , newAccountForm
+        , newAccountForm model.editAccount
         ]
 
 
-newAccountForm : Html Msg
-newAccountForm =
+newAccountForm : Account -> Html Msg
+newAccountForm account =
     Html.form []
-        [ div [] []
-            --[ text "Symbol"
-            --, br [] []
-            --, input
-            --    [ id "symbol", type_ "text"
-            --    , onInput NewAccountSymbol
-            --    ]
-            --    []
-            --]
-        , br [] []
-        , div []
+        [ div []
             [ text "Title"
-            , br [] []
+            , br [][]
             , input
                 [ id "title", type_ "text"
                 , onInput NewAccountTitle
                 ]
                 []
             ]
-        , br [] []
+        , br [][]
         , div []
             [ button
                 [ id "save"

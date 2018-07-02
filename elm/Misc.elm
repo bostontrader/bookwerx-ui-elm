@@ -1,6 +1,6 @@
 module Misc exposing
-    ( --findAccountById
-    findCurrencyById
+    ( findAccountById
+    , findCurrencyById
     )
 
 import Types exposing (Account, AccountId, Currency, CurrencyId)
