@@ -6,7 +6,7 @@ import Html.Events exposing (onClick, onInput)
 import Types exposing
     ( Transaction
     , Model
-    , Msg(CreateNewTransaction, NewTransactionDesc)
+    , Msg(CreateNewTransaction, NewTransactionNote)
     )
 
 
@@ -23,11 +23,11 @@ newTransactionForm : Transaction -> Html Msg
 newTransactionForm transaction =
     Html.form []
         [ div []
-            [ text "Description"
+            [ text "Note"
             , br [][]
             , input
-                [ id "desc", type_ "text"
-                , onInput NewTransactionDesc
+                [ id "note", type_ "text"
+                , onInput NewTransactionNote
                 ]
                 []
             ]

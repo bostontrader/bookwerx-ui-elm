@@ -8,7 +8,7 @@ import RemoteData
 import Types exposing
     ( BWCore_Error
     , Model
-    , Msg(SubmitUpdatedTransaction, UpdateTransactionDesc)
+    , Msg(SubmitUpdatedTransaction, UpdateTransactionNote)
     , Transaction
     , TransactionEditHttpResponse(..)
     )
@@ -16,7 +16,7 @@ import Types exposing
 view : Model -> Html Msg
 view model =
     div [ id "transactions-edit"]
-        [ a [ href "/transactions" ] [ text "Transactions index" ]
+        [ a [ id "transactions-index", href "/transactions" ] [ text "Transactions index" ]
         , h3 [] [ text "Edit Transaction" ]
         , viewTransactionOrError model
         ]
@@ -74,18 +74,21 @@ editForm : Transaction -> Html Msg
 editForm transaction =
     Html.form []
         [ div []
-            [ text "Description"
+            [ text "Note"
             , br [][]
             , input
-                [ type_ "text"
-                , value transaction.desc
-                , onInput (UpdateTransactionDesc)
+                [ id "note", type_ "text"
+                , value transaction.note
+                , onInput (UpdateTransactionNote)
                 ]
                 []
             ]
         , br [][]
         , div []
-            [ button [ onClick (SubmitUpdatedTransaction) ]
+            [ button
+                [ id "save"
+                , onClick (SubmitUpdatedTransaction)
+                ]
                 [ text "Submit" ]
             ]
         ]

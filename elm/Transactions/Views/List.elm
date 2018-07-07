@@ -27,7 +27,12 @@ viewTransactionsOrError model =
             h3 [ class "loader" ] [ text "Loading..." ]
 
         RemoteData.Success transactions ->
-            viewTransactions transactions
+            if List.isEmpty transactions then
+              div [ id "transactions-index" ]
+              [ h3 [ id "transactions-empty" ][ text "No transactions present" ] ]
+            else
+              div [ id "transactions-index" ]
+              (viewTransactions transactions)
 
         RemoteData.Failure httpError ->
             h3 [] [ text "Transactions error..." ]
@@ -45,15 +50,14 @@ viewError errorMessage =
             ]
 
 
-viewTransactions : List Transaction -> Html Msg
+viewTransactions : List Transaction -> List (Html Msg)
 viewTransactions transactions =
-    div [ id "transactions-index"]
-        [ h3 [] [ text "Transactions" ]
-        , table []
-            [ thead [][viewTableHeader]
-            , tbody [] (List.map viewTransaction transactions)
-            ]
+    [ h3 [] [ text "Transactions" ]
+    , table []
+        [ thead [][viewTableHeader]
+        , tbody [] (List.map viewTransaction transactions)
         ]
+    ]
 
 
 viewTableHeader : Html Msg
@@ -62,7 +66,7 @@ viewTableHeader =
         [ th []
             [ text "ID" ]
         , th []
-            [ text "Description" ]
+            [ text "Note" ]
         ]
 
 
@@ -76,7 +80,7 @@ viewTransaction transaction =
             [ td []
                 [ text transaction.id ]
             , td []
-                [ text transaction.desc ]
+                [ text transaction.note ]
             , td []
                 [ a [ id "transactions-edit", href transactionPath ] [ text "Edit" ] ]
             -- All the buttons have this same id.  SHAME!  But the id is unique to a row.

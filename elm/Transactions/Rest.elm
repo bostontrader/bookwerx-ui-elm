@@ -78,7 +78,7 @@ transactionDecoder : Decoder Transaction
 transactionDecoder =
     decode Transaction
         |> required "_id" string
-        |> required "title" string
+        |> required "note" string
 
 fetchTransactionsCommand : Cmd Msg
 fetchTransactionsCommand =
@@ -115,7 +115,7 @@ transactionEncoder : Transaction -> Encode.Value
 transactionEncoder transaction =
     Encode.object
         [ ("id", Encode.string transaction.id)
-        , ("desc", Encode.string transaction.desc)
+        , ("note", Encode.string transaction.note)
         ]
 
 deleteTransactionCommand : Transaction -> Cmd Msg
@@ -149,5 +149,5 @@ createTransactionRequest transaction =
 newTransactionEncoder : Transaction -> Encode.Value
 newTransactionEncoder transaction =
     Encode.object
-        [ ( "desc", Encode.string transaction.desc )
+        [ ( "note", Encode.string transaction.note )
         ]

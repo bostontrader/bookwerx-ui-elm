@@ -297,10 +297,10 @@ update msg model =
         CreateNewTransaction ->
             (model, createTransactionCommand model.editTransaction)
 
-        NewTransactionDesc newDesc ->
+        NewTransactionNote newNote ->
             let
                 updatedNewTransaction =
-                    setTransactionDesc newDesc model.editTransaction
+                    setTransactionNote newNote model.editTransaction
 
             in
                 ( { model | editTransaction = updatedNewTransaction}, Cmd.none )
@@ -331,11 +331,11 @@ update msg model =
                         ValidTransactionEditResponse transaction ->
                             ( {model | wdTransaction = response, editTransaction = transaction}, Cmd.none )
 
-        UpdateTransactionDesc newDesc ->
+        UpdateTransactionNote newNote ->
             let
                 nc = model.editTransaction
             in
-                ({model | editTransaction = {nc | desc = newDesc}}, Cmd.none)
+                ({model | editTransaction = {nc | note = newNote}}, Cmd.none)
 
 
         SubmitUpdatedTransaction ->
@@ -397,6 +397,6 @@ setCurrencyTitle : String -> Currency -> Currency
 setCurrencyTitle newTitle currency =
     { currency | title = newTitle }
 
-setTransactionDesc : String -> Transaction -> Transaction
-setTransactionDesc newDesc transaction =
-    { transaction | desc = newDesc }
+setTransactionNote : String -> Transaction -> Transaction
+setTransactionNote newNote transaction =
+    { transaction | note = newNote }

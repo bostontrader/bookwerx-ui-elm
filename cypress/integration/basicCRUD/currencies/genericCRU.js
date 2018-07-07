@@ -24,8 +24,8 @@ const addNew = ({cy, collName, newDoc}) => {
   cy.get('div#' + collName + '-add')
 
   // 2. Enter the field values
-  cy.get('input#symbol').type(newDoc.symbol, {delay:100})
-  cy.get('input#title').type(newDoc.title, {delay:100})
+  cy.get('input#symbol').type(newDoc.symbol, {delay: 50})
+  cy.get('input#title').type(newDoc.title, {delay: 50})
 
   // 3. Save the new document
   cy.get('button#save').click()
@@ -90,8 +90,8 @@ module.exports = ({bwURL, collName, cy}) => {
   cy.get('.loader')
 
   // 3.3 Update the fields
-  cy.get('input#symbol').clear().type('newsymbol', {delay:100})
-  cy.get('input#title').clear().type('newtitle', {delay:100})
+  cy.get('input#symbol').clear().type('newsymbol', {delay: 50})
+  cy.get('input#title').clear().type('newtitle', {delay: 50})
 
   // 3.4 Save the changed document
   cy.get('button#save').click()
