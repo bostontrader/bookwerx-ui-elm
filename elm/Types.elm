@@ -13,6 +13,11 @@ module Types exposing
       , Currency
       , CurrencyEditHttpResponse(..)
       , CurrencyId
+
+    -- Transactions
+      , Transaction
+      , TransactionEditHttpResponse(..)
+      , TransactionId
     )
 
 import Http
@@ -26,6 +31,10 @@ type AccountEditHttpResponse
 type CurrencyEditHttpResponse
     = ValidCurrencyEditResponse Currency
     | ErrorCurrencyEditResponse (List BWCore_Error)
+
+type TransactionEditHttpResponse
+    = ValidTransactionEditResponse Transaction
+    | ErrorTransactionEditResponse (List BWCore_Error)
 
 type alias BWCore_Error =
     { key : String, value : String}
@@ -47,6 +56,12 @@ type alias Model =
       -- Use this to assemble a new record or edit an existing one
       , editCurrency : Currency
 
+    -- transactions
+      , transactions : WebData (List Transaction)
+      , wdTransaction : WebData TransactionEditHttpResponse
+
+      -- Use this to assemble a new record or edit an existing one
+      , editTransaction : Transaction
     }
 
 type alias AccountId =
@@ -64,6 +79,14 @@ type alias Currency =
     { id : String
     , symbol : String
     , title : String
+    }
+
+type alias TransactionId =
+    String
+
+type alias Transaction =
+    { id : String
+    , desc : String
     }
 
 type Msg
@@ -111,6 +134,25 @@ type Msg
     | DeleteCurrency CurrencyId
     | CurrencyDeleted (Result Http.Error String)
 
+    -- Transactions
+    -- index
+    | FetchTransactions
+    | TransactionsReceived (WebData (List Transaction))
+
+    -- add
+    | CreateNewTransaction
+    | NewTransactionDesc String
+    | TransactionCreated (Result Http.Error Transaction)
+
+    -- edit
+    | TransactionReceived (WebData TransactionEditHttpResponse)
+    | UpdateTransactionDesc String
+    | SubmitUpdatedTransaction
+    | TransactionUpdated (Result Http.Error Transaction)
+
+    -- delete
+    | DeleteTransaction TransactionId
+    | TransactionDeleted (Result Http.Error String)
 
 type Route
     = Home
@@ -125,3 +167,8 @@ type Route
     | CurrenciesIndex
     | CurrenciesAdd
     | CurrenciesEdit String
+
+    -- Transactions
+    | TransactionsIndex
+    | TransactionsAdd
+    | TransactionsEdit String

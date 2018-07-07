@@ -1,6 +1,6 @@
-module Accounts.Views.List exposing (view)
+module Transactions.Views.List exposing (view)
 
-import Types exposing (Model, Msg(DeleteAccount, FetchAccounts), Account)
+import Types exposing (Model, Msg(DeleteTransaction, FetchTransactions), Transaction)
 import Html exposing (Html, a, br, button, div, h3, table, tbody, td, thead, text, th, tr)
 import Html.Attributes exposing (class, href, id)
 import Html.Events exposing (onClick)
@@ -11,32 +11,26 @@ import RemoteData
 view : Model -> Html Msg
 view model =
     div []
-        [ a [ id "accounts-add", href "/accounts/add" ]
-            [ text "Create new account" ]
-        , viewAccountsOrError model
+        [ a [ id "transactions-add", href "/transactions/add" ]
+            [ text "Create new transaction" ]
+        , viewTransactionsOrError model
         ]
 
 
-viewAccountsOrError : Model -> Html Msg
-viewAccountsOrError model =
-    case model.accounts of
+viewTransactionsOrError : Model -> Html Msg
+viewTransactionsOrError model =
+    case model.transactions of
         RemoteData.NotAsked ->
             h3 [] [ text "Not Asked..." ]
 
         RemoteData.Loading ->
             h3 [ class "loader" ] [ text "Loading..." ]
 
-        RemoteData.Success accounts ->
-            --viewAccounts accounts
-            if List.isEmpty accounts then
-              div [ id "accounts-index" ]
-              [ h3 [ id "accounts-empty" ][ text "No accounts present" ] ]
-            else
-              div [ id "accounts-index" ]
-              (viewAccounts accounts)
+        RemoteData.Success transactions ->
+            viewTransactions transactions
 
         RemoteData.Failure httpError ->
-            h3 [] [ text "Accounts error..." ]
+            h3 [] [ text "Transactions error..." ]
 
 
 viewError : String -> Html Msg
@@ -51,14 +45,15 @@ viewError errorMessage =
             ]
 
 
-viewAccounts : List Account -> List (Html Msg)
-viewAccounts accounts =
-    [ h3 [] [ text "Accounts" ]
-    , table []
-        [ thead [][viewTableHeader]
-        , tbody [] (List.map viewAccount accounts)
+viewTransactions : List Transaction -> Html Msg
+viewTransactions transactions =
+    div [ id "transactions-index"]
+        [ h3 [] [ text "Transactions" ]
+        , table []
+            [ thead [][viewTableHeader]
+            , tbody [] (List.map viewTransaction transactions)
+            ]
         ]
-    ]
 
 
 viewTableHeader : Html Msg
@@ -67,26 +62,26 @@ viewTableHeader =
         [ th []
             [ text "ID" ]
         , th []
-            [ text "Title" ]
+            [ text "Description" ]
         ]
 
 
-viewAccount : Account -> Html Msg
-viewAccount account =
+viewTransaction : Transaction -> Html Msg
+viewTransaction transaction =
     let
-        accountPath =
-            "/accounts/" ++ account.id
+        transactionPath =
+            "/transactions/" ++ transaction.id
     in
         tr []
             [ td []
-                [ text account.id ]
+                [ text transaction.id ]
             , td []
-                [ text account.title ]
+                [ text transaction.desc ]
             , td []
-                [ a [ id "accounts-edit", href accountPath ] [ text "Edit" ] ]
+                [ a [ id "transactions-edit", href transactionPath ] [ text "Edit" ] ]
             -- All the buttons have this same id.  SHAME!  But the id is unique to a row.
-            , td [ id "deleteAccount" ]
-                [ button [ onClick (DeleteAccount account.id) ]
+            , td [ id "deleteTransaction" ]
+                [ button [ onClick (DeleteTransaction transaction.id) ]
                     [ text "Delete" ]
                 ]
             ]

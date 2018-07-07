@@ -37,7 +37,7 @@ Next, study the section on **runtime configuration** so that you are properly in
 Note: Be sure you have a **bookwerx-core** server, that is suitable for testing, at this configured location!
 
 ```bash
-BW_MODE=test BW_PORT=3004 BWCORE_URL=127.0.0.1:3003 BWUI_DOMAIN=localhost node integrationTest.js
+BW_MODE=test BW_PORT=3004 BWCORE_URL=http://127.0.0.1:3003 BWUI_DOMAIN=localhost node integrationTest.js
 ```
 
 Be sure that BWCORE_URL points to a functioning **bookwerx-core** server.
@@ -60,17 +60,15 @@ Runtime configuration is provided via environment variables. There are no other 
 
 The following env variables are used by **bookwerx-ui-elm**:
 
-* BW_MODE - Which operating mode shall we use?  test? development? production?
+* BWUI_MODE - Which operating mode shall we use? Any string is suitable but test, development, and production are customary.
 
-* BW_PORT - Which port shall **bookwerx-ui-elm** listen to?
+* BWUI_PORT - Which port shall **bookwerx-ui-elm** listen to?
 
-* BWCORE_URL - The url and port for the **bookwerx-core** server.
+* BWCORE_URL - The url for the **bookwerx-core** server.  This means 'http://' and hostname and port.
 
-In addition to the above, in order to get the testing to work, we need:
+In addition to the above, in order for testing to work we need:
 
-* BWUI_DOMAIN - The domain portion of the url for the **bookwerx-ui** server.  For example: 127.0.0.1.  Testing will assume 'http' and use the value of BW_PORT.
-
-The additional 'BW_' bit in the naming for MODE and PORT is a name collision avoidance gimmick, considering that these names must live in the env.
+*
 
 # Basic Architecture
 

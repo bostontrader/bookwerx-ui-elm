@@ -11,6 +11,10 @@ import Currencies.Views.Add
 import Currencies.Views.Edit
 import Currencies.Views.List
 
+import Transactions.Views.Add
+import Transactions.Views.Edit
+import Transactions.Views.List
+
 view : Model -> Html Msg
 view model =
     case model.currentRoute of
@@ -43,3 +47,14 @@ view model =
 
         CurrenciesAdd ->
             Currencies.Views.Add.view model
+
+        -- Transactions
+        TransactionsIndex ->
+            Transactions.Views.List.view model
+
+        -- This message provides a parameter, but we don't use it in the view.
+        TransactionsEdit id ->
+            Transactions.Views.Edit.view model
+
+        TransactionsAdd ->
+            Transactions.Views.Add.view model

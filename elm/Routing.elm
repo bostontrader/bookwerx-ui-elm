@@ -26,4 +26,7 @@ matchRoute =
         , map CurrenciesAdd (s "currencies" </> s "add")
         , map CurrenciesEdit (s "currencies" </> string)
         , map CurrenciesIndex (s "currencies")
+        , map TransactionsAdd (s "transactions" </> s "add")
+        , map TransactionsEdit (s "transactions" </> string)
+        , map TransactionsIndex (s "transactions")
         ]

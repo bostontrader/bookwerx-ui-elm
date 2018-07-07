@@ -10,11 +10,15 @@ import Types exposing
         , AccountsIndex
         , CurrenciesEdit
         , CurrenciesIndex
+        , TransactionsEdit
+        , TransactionsIndex
         )
     , Account
     , AccountEditHttpResponse(..)
     , Currency
     , CurrencyEditHttpResponse(..)
+    , Transaction
+    , TransactionEditHttpResponse(..)
     )
 
 import Accounts.Rest exposing
@@ -33,11 +37,20 @@ import Currencies.Rest exposing
     , updateCurrencyCommand
     )
 
+import Transactions.Rest exposing
+    ( createTransactionCommand
+    , deleteTransactionCommand
+    , fetchTransactionCommand
+    , fetchTransactionsCommand
+    , updateTransactionCommand
+    )
+
 import Navigation exposing (Location)
 import Routing exposing (extractRoute)
 import Misc exposing
     ( findAccountById
     , findCurrencyById
+    , findTransactionById
     )
 
 tempAccountId =
@@ -54,6 +67,13 @@ emptyCurrency : Currency
 emptyCurrency =
     Currency tempCurrencyId "" ""
 
+tempTransactionId =
+    "-1"
+
+emptyTransaction : Transaction
+emptyTransaction =
+    Transaction tempTransactionId ""
+
 initialModel : Route -> Model
 initialModel route =
     { currentRoute = route
@@ -65,14 +85,17 @@ initialModel route =
     , currencies = RemoteData.Loading
     , wdCurrency = RemoteData.Loading
     , editCurrency = emptyCurrency
+
+    , transactions = RemoteData.Loading
+    , wdTransaction = RemoteData.Loading
+    , editTransaction = emptyTransaction
     }
 
 init : Location -> ( Model, Cmd Msg )
 init location =
     let
         currentRoute =
-            Routing.extractRoute (Debug.log "State init location" location)
-        _ = Debug.log "State init currentRoute" currentRoute
+            Routing.extractRoute location
 
     in
         case currentRoute of
@@ -87,6 +110,12 @@ init location =
 
             CurrenciesEdit id ->
                 ( initialModel currentRoute, fetchCurrencyCommand id )
+
+            TransactionsIndex ->
+                ( initialModel currentRoute, fetchTransactionsCommand )
+
+            TransactionsEdit id ->
+                ( initialModel currentRoute, fetchTransactionCommand id )
 
             _ ->
                 ( initialModel currentRoute, Cmd.none)
@@ -195,7 +224,7 @@ update msg model =
         NewCurrencySymbol newSymbol ->
             let
                 updatedNewCurrency =
-                    setSymbol newSymbol model.editCurrency
+                    setCurrencySymbol newSymbol model.editCurrency
             in
                 ( { model | editCurrency = updatedNewCurrency }, Cmd.none )
 
@@ -256,6 +285,76 @@ update msg model =
         CurrencyDeleted _ ->
             ( model, fetchCurrenciesCommand )
 
+        -- Transactions
+        -- index
+        FetchTransactions ->
+            ( { model | transactions = RemoteData.Loading }, fetchTransactionsCommand )
+
+        TransactionsReceived response ->
+            ( { model | transactions = response }, Cmd.none )
+
+        -- add
+        CreateNewTransaction ->
+            (model, createTransactionCommand model.editTransaction)
+
+        NewTransactionDesc newDesc ->
+            let
+                updatedNewTransaction =
+                    setTransactionDesc newDesc model.editTransaction
+
+            in
+                ( { model | editTransaction = updatedNewTransaction}, Cmd.none )
+
+        TransactionCreated (Ok wdTransaction) ->
+            ( { model
+                | transactions = addNewTransaction wdTransaction model.transactions
+              }
+            , Cmd.none
+            )
+
+        TransactionCreated (Err _) ->
+            ( model, Cmd.none )
+
+        -- edit
+        TransactionReceived response ->
+            case Debug.log "State update wdTransaction:" response of
+                RemoteData.NotAsked ->
+                    ( {model | wdTransaction = response}, Cmd.none )
+                RemoteData.Loading ->
+                    ( {model | wdTransaction = response}, Cmd.none )
+                RemoteData.Failure e ->
+                    ( {model | wdTransaction = response}, Cmd.none )
+                RemoteData.Success cehr ->
+                    case Debug.log "State update cehr:" cehr of
+                        ErrorTransactionEditResponse e ->
+                            ({model | wdTransaction = response}, Cmd.none)
+                        ValidTransactionEditResponse transaction ->
+                            ( {model | wdTransaction = response, editTransaction = transaction}, Cmd.none )
+
+        UpdateTransactionDesc newDesc ->
+            let
+                nc = model.editTransaction
+            in
+                ({model | editTransaction = {nc | desc = newDesc}}, Cmd.none)
+
+
+        SubmitUpdatedTransaction ->
+            (model, updateTransactionCommand model.editTransaction)
+
+        TransactionUpdated _ ->
+            ( model, Cmd.none )
+
+        -- delete
+        DeleteTransaction transactionId ->
+            case findTransactionById transactionId model.transactions of
+                Just wdTransaction ->
+                    ( model, deleteTransactionCommand wdTransaction )
+
+                Nothing ->
+                    ( model, Cmd.none )
+
+        TransactionDeleted _ ->
+            ( model, fetchTransactionsCommand )
 
 
 addNewAccount : Account -> WebData (List Account) -> WebData (List Account)
@@ -277,13 +376,17 @@ addNewCurrency newCurrency currencies =
     in
         RemoteData.map appendCurrency currencies
 
+addNewTransaction : Transaction -> WebData (List Transaction) -> WebData (List Transaction)
+addNewTransaction newTransaction transactions =
+    let
+        appendTransaction : List Transaction -> List Transaction
+        appendTransaction listOfTransactions =
+            List.append listOfTransactions [ newTransaction ]
+    in
+        RemoteData.map appendTransaction transactions
 
-setSymbol : String -> Currency -> Currency
-setSymbol newSymbol currency =
-    { currency | symbol = newSymbol }
-
-setEditSymbol : String -> Currency -> Currency
-setEditSymbol newSymbol currency =
+setCurrencySymbol : String -> Currency -> Currency
+setCurrencySymbol newSymbol currency =
     { currency | symbol = newSymbol }
 
 setAccountTitle : String -> Account -> Account
@@ -293,3 +396,7 @@ setAccountTitle newTitle account =
 setCurrencyTitle : String -> Currency -> Currency
 setCurrencyTitle newTitle currency =
     { currency | title = newTitle }
+
+setTransactionDesc : String -> Transaction -> Transaction
+setTransactionDesc newDesc transaction =
+    { transaction | desc = newDesc }

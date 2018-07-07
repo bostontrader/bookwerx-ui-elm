@@ -2,12 +2,12 @@ const server = require('./server/server.js')
 const serverConstants = require('./server/constants.js')
 
 // test? development? production?
-if (!process.env.BW_MODE) {
+if (!process.env.BWUI_MODE) {
   console.log(serverConstants.NO_OPERATING_MODE_DEFINED)
   process.exit(1)
 }
 
-if (!process.env.BW_PORT) {
+if (!process.env.BWUI_PORT) {
   console.log(serverConstants.NO_PORT_DEFINED)
   process.exit(1)
 }
@@ -21,8 +21,8 @@ run().catch(error => console.error(error))
 
 async function run () {
   await server(
-    process.env.BW_MODE,
-    process.env.BW_PORT,
+    process.env.BWUI_MODE,
+    process.env.BWUI_PORT,
     process.env.BWCORE_URL
   )
 }
