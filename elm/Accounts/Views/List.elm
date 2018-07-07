@@ -27,7 +27,6 @@ viewAccountsOrError model =
             h3 [ class "loader" ] [ text "Loading..." ]
 
         RemoteData.Success accounts ->
-            --viewAccounts accounts
             if List.isEmpty accounts then
               div [ id "accounts-index" ]
               [ h3 [ id "accounts-empty" ][ text "No accounts present" ] ]

@@ -77,7 +77,7 @@ editForm currency =
             [ text "Symbol"
             , br [][]
             , input
-                [ type_ "text"
+                [ id "symbol", type_ "text"
                 , value currency.symbol
                 , onInput UpdateCurrencySymbol
                 ]
@@ -88,7 +88,7 @@ editForm currency =
             [ text "Title"
             , br [][]
             , input
-                [ type_ "text"
+                [ id "title", type_ "text"
                 , value (Debug.log "editForm title:"  currency.title)
                 , onInput UpdateCurrencyTitle
                 ]

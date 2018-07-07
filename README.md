@@ -68,7 +68,7 @@ The following env variables are used by **bookwerx-ui-elm**:
 
 In addition to the above, in order for testing to work we need:
 
-*
+* BWUI_URL - The url for the **bookwerx-ui-elm** server to test.  This means 'http://' and hostname and port.
 
 # Basic Architecture
 

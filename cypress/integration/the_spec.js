@@ -24,6 +24,8 @@ Note: Be sure to coordinate the correct db to work with when starting bookwerx-c
 
  */
 
+const testData = require('bookwerx-testdata')
+
 const serverConstants = require('../../server/constants.js')
 
 const bwURL = Cypress.env('BWUI_URL')
@@ -33,33 +35,23 @@ describe('The whole damn thing works', function () {
     if (!bwURL) {
       cy.log(serverConstants.NO_BWUI_URL_DEFINED)
     }
-  })
-
-  it('it rubs the lotion on its skin', function () {
-    const testData = require('bookwerx-testdata')
 
     cy.server()
 
     // There's a mystery whereby POSTs to these routes get aborted.  This seems to fix the problem.
     cy.route('POST', '**/accounts').as('POST_accounts')
+    cy.route('POST', '**/currencies').as('POST_currencies')
+  })
 
+  it('it rubs the lotion on its skin', function () {
     // 2. genericCRU
     let genericCRU
+
     genericCRU = require('./basicCRUD/accounts/genericCRU')
     genericCRU({bwURL, collName: 'accounts', cy, newDoc1: testData.accountBank, newDoc2: testData.accountCash})
 
-    // seleniumDriver.wait(until.elementLocated(By.css('a#' + collName + '-add')))
-    // const collName = 'accounts'
-    // const addLink = await seleniumDriver.findElement(By.css('a#' + collName + '-add'))
-    // addLink.sendKeys('', Key.RETURN)
-    // cy.get('a#' + collName + '-add').click()
-
-    // seleniumDriver.wait(until.elementLocated(By.css('div#' + collName + '-add')))
-    // seleniumDriver.findElement(By.css('div#' + collName + '-add'))
-    // cy.get('div#' + collName + '-add')
-
-    // genericCRU = require('./integrationTests/basicCRUD/currencies/genericCRU')
-    // await genericCRU({bwURL, collName: 'currencies', seleniumDriver, newDoc1: testData.currencyCNY, newDoc2: testData.currencyRUB})
+    genericCRU = require('./basicCRUD/currencies/genericCRU')
+    genericCRU({bwURL, collName: 'currencies', cy, newDoc1: testData.currencyCNY, newDoc2: testData.currencyRUB})
 
     // 3. CustomCRU testing specialized for particular collections./
     // .then(() => {return accountsCategories({jsonClient,  keys, pn:30})})
@@ -90,14 +82,5 @@ describe('The whole damn thing works', function () {
     // .then(result => {return genericDel({collName:'categories', jsonClient,  keys, pn:61})})
     // .then(result => {return genericDel({collName:'currencies', jsonClient,  keys, pn:62})})
     // .then(result => {return genericDel({collName:'transactions', jsonClient,  keys, pn:63})})
-
-    //   .then(result => {
-    //     process.exit()
-    //   })
-    // seleniumDriver.close()
-    // console.log(colors.green('All tests passed'))
-
-    // await restifyCore.close()
-    // }
   })
 })

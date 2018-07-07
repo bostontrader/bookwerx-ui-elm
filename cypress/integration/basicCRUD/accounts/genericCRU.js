@@ -49,14 +49,12 @@ module.exports = ({bwURL, collName, cy}) => {
   addNew({cy, collName, newDoc: testData.accountBank})
 
   // Starting from the index, do we have exactly one document now? Are the fields correct?
-  //  await verifyIndex({collName, seleniumDriver, expectedCnt: 1, verify: testData.accountCNY})
   verifyIndex({bwURL, collName, cy, expectedCnt: 1, verifyDoc: testData.accountBank})
 
   // Navigate to the add form, add a new document, and navigate back to the index.
   addNew({cy, collName, newDoc: testData.accountCash})
 
   // Starting from the index, do we have exactly two documents now?
-  //  await verifyIndex({collName, seleniumDriver, expectedCnt: 2})
   verifyIndex({bwURL, collName, cy, expectedCnt: 2})
 
   // 2. GET a document, using a good id for an existing document via the UI, a well formed id that refers to a non-existent document via hacking the URL, and a mal-formed id.

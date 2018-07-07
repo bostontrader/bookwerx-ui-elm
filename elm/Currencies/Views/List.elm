@@ -27,7 +27,12 @@ viewCurrenciesOrError model =
             h3 [ class "loader" ] [ text "Loading..." ]
 
         RemoteData.Success currencies ->
-            viewCurrencies currencies
+            if List.isEmpty currencies then
+              div [ id "currencies-index" ]
+              [ h3 [ id "currencies-empty" ][ text "No currencies present" ] ]
+            else
+              div [ id "currencies-index" ]
+              (viewCurrencies currencies)
 
         RemoteData.Failure httpError ->
             h3 [] [ text "Currencies error..." ]
@@ -45,15 +50,14 @@ viewError errorMessage =
             ]
 
 
-viewCurrencies : List Currency -> Html Msg
+viewCurrencies : List Currency -> List (Html Msg)
 viewCurrencies currencies =
-    div [ id "currencies-index"]
-        [ h3 [] [ text "Currencies" ]
-        , table []
-            [ thead [][viewTableHeader]
-            , tbody [] (List.map viewCurrency currencies)
-            ]
+    [ h3 [] [ text "Currencies" ]
+    , table []
+        [ thead [][viewTableHeader]
+        , tbody [] (List.map viewCurrency currencies)
         ]
+    ]
 
 
 viewTableHeader : Html Msg
