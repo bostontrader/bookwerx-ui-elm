@@ -109,7 +109,11 @@ There exists a giant can of worms re: using the 'require' statement vs the 'impo
 
 * bookwerx-testdata
 
-* colors - Our tests want to print pretty colors on the console.
+* bulma - css framework
+
+* css-loader - Webpack needs this for css.
+
+* cypress - Testing.
 
 * elm-test - Use this to launch the elm testing.
 
@@ -117,9 +121,11 @@ There exists a giant can of worms re: using the 'require' statement vs the 'impo
 
 * file-loader - Webpack uses this to load .html
 
-* selenium-webdriver - Need this for the integration test.
+* mongodb - Need this to connect directly to an underlying mongodb in order to brainwipe.
 
 * standard - Code linter
+
+* style-loader - Webpack needs this for css.
 
 * webpack
 

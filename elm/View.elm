@@ -20,8 +20,9 @@ view : Model -> Html Msg
 view model =
     case model.currentRoute of
         Home ->
-            div []
-            [ nav [ class "navbar" ]
+            div [ id "content" ]
+            [ div [ id "header", class "has-background-primary"][ text "header"]
+            , nav [ class "navbar" ]
                 [ div [ class "navbar-brand" ]
                     [ div [ class "navbar-item" ][ text "BW" ]
                     , div [ class "navbar-burger" ][ text "BG"]
@@ -32,7 +33,11 @@ view model =
                     , a [ id "currencies", href "/currencies", class "navbar-item" ] [ text "Currencies" ]
                     ]
                 ]
-            , h3 [] [ text "Home sweet home" ]
+            , div [ id "middle", class "columns" ]
+                [ div [ id "left-pane", class "has-background-warning column is-one-quarter" ][ text "left"]
+                , div [ id "main-content", class "has-background-light column" ][h3 [] [ text "Home sweet home" ]]
+                ]
+            , div [ id "footer", class "has-background-danger"][ text "footer"]
             ]
 
         NotFound ->
