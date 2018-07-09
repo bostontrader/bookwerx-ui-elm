@@ -1,6 +1,7 @@
 module View exposing (view)
 
-import Html exposing (Html, h3, text)
+import Html exposing (Html, a, div, h3, nav, text)
+import Html.Attributes exposing (class, href, id)
 import Types exposing (Model, Msg(..), Route(..))
 
 import Accounts.Views.Add
@@ -19,11 +20,23 @@ view : Model -> Html Msg
 view model =
     case model.currentRoute of
         Home ->
-            h3 [] [ text "Home sweet home" ]
+            div []
+            [ nav [ class "navbar" ]
+                [ div [ class "navbar-brand" ]
+                    [ div [ class "navbar-item" ][ text "BW" ]
+                    , div [ class "navbar-burger" ][ text "BG"]
+                    ]
+                , div [ class "navbar-menu" ]
+                    [ a [ id "transactions", href "/transactions", class "navbar-item" ] [ text "Transactions" ]
+                    , a [ id "accounts", href "/accounts", class "navbar-item" ] [ text "Accounts" ]
+                    , a [ id "currencies", href "/currencies", class "navbar-item" ] [ text "Currencies" ]
+                    ]
+                ]
+            , h3 [] [ text "Home sweet home" ]
+            ]
 
         NotFound ->
             h3 [] [ text "Oops! The page you requested was not found!" ]
-            
 
         -- Accounts
         AccountsIndex ->
