@@ -12,8 +12,9 @@ import Types exposing (Model, Msg(DeleteTransaction, FetchTransactions), Transac
 view : Model -> Html Msg
 view model =
     template ( div []
-        [ a [ id "transactions-add", href "/transactions/add" ]
-            [ text "Create new transaction" ]
+        [ h3 [ class "title is-3" ] [ text "Transactions" ]
+          , a [ id "transactions-add", href "/transactions/add", class "button" ]
+              [ text "Create new transaction" ]
         , viewTransactionsOrError model
         ] )
 
@@ -52,8 +53,7 @@ viewError errorMessage =
 
 viewTransactions : List Transaction -> List (Html Msg)
 viewTransactions transactions =
-    [ h3 [] [ text "Transactions" ]
-    , table []
+    [ table [ class "table is-striped" ]
         [ thead [][viewTableHeader]
         , tbody [] (List.map viewTransaction transactions)
         ]
@@ -63,10 +63,10 @@ viewTransactions transactions =
 viewTableHeader : Html Msg
 viewTableHeader =
     tr []
-        [ th []
-            [ text "ID" ]
-        , th []
-            [ text "Note" ]
+        [ th [][ text "ID" ]
+        , th [][ text "Note" ]
+        , th [][] -- extra headers for edit and delete
+        , th [][]
         ]
 
 
@@ -82,10 +82,10 @@ viewTransaction transaction =
             , td []
                 [ text transaction.note ]
             , td []
-                [ a [ id "transactions-edit", href transactionPath ] [ text "Edit" ] ]
+                [ a [ id "transactions-edit", href transactionPath, class "button" ] [ text "Edit" ] ]
             -- All the buttons have this same id.  SHAME!  But the id is unique to a row.
             , td [ id "deleteTransaction" ]
-                [ button [ onClick (DeleteTransaction transaction.id) ]
+                [ button [ class "delete is-danger", onClick (DeleteTransaction transaction.id) ]
                     [ text "Delete" ]
                 ]
             ]

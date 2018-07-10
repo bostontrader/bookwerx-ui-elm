@@ -12,8 +12,9 @@ import RemoteData
 view : Model -> Html Msg
 view model =
     template (div []
-        [ a [ id "accounts-add", href "/accounts/add" ]
-            [ text "Create new account" ]
+        [ h3 [ class "title is-3" ] [ text "Accounts" ]
+          ,  a [ id "accounts-add", href "/accounts/add", class "button" ]
+              [ text "Create new account" ]
         , viewAccountsOrError model
         ])
 
@@ -53,8 +54,7 @@ viewError errorMessage =
 
 viewAccounts : List Account -> List (Html Msg)
 viewAccounts accounts =
-    [ h3 [] [ text "Accounts" ]
-    , table []
+    [ table [ class "table is-striped" ]
         [ thead [][viewTableHeader]
         , tbody [] (List.map viewAccount accounts)
         ]
@@ -64,10 +64,10 @@ viewAccounts accounts =
 viewTableHeader : Html Msg
 viewTableHeader =
     tr []
-        [ th []
-            [ text "ID" ]
-        , th []
-            [ text "Title" ]
+        [ th [][ text "ID" ]
+        , th [][ text "Title" ]
+        , th [][] -- extra headers for edit and delete
+        , th [][]
         ]
 
 
@@ -83,10 +83,10 @@ viewAccount account =
             , td []
                 [ text account.title ]
             , td []
-                [ a [ id "accounts-edit", href accountPath ] [ text "Edit" ] ]
+                [ a [ id "accounts-edit", href accountPath, class "button" ] [ text "Edit" ] ]
             -- All the buttons have this same id.  SHAME!  But the id is unique to a row.
             , td [ id "deleteAccount" ]
-                [ button [ onClick (DeleteAccount account.id) ]
+                [ button [ class "delete is-danger", onClick (DeleteAccount account.id) ]
                     [ text "Delete" ]
                 ]
             ]

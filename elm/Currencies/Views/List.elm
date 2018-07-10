@@ -12,8 +12,9 @@ import Types exposing (Model, Msg(DeleteCurrency), Currency)
 view : Model -> Html Msg
 view model =
     template ( div []
-        [ a [ id "currencies-add", href "/currencies/add" ]
-            [ text "Create new currency" ]
+        [ h3 [ class "title is-3" ] [ text "Currencies" ]
+          , a [ id "currencies-add", href "/currencies/add", class "button" ]
+              [ text "Create new currency" ]
         , viewCurrenciesOrError model
         ] )
 
@@ -53,8 +54,7 @@ viewError errorMessage =
 
 viewCurrencies : List Currency -> List (Html Msg)
 viewCurrencies currencies =
-    [ h3 [] [ text "Currencies" ]
-    , table []
+    [ table [ class "table is-striped" ]
         [ thead [][viewTableHeader]
         , tbody [] (List.map viewCurrency currencies)
         ]
@@ -64,12 +64,11 @@ viewCurrencies currencies =
 viewTableHeader : Html Msg
 viewTableHeader =
     tr []
-        [ th []
-            [ text "ID" ]
-        , th []
-            [ text "Symbol" ]
-        , th []
-            [ text "Title" ]
+        [ th [][ text "ID" ]
+        , th [][ text "Symbol" ]
+        , th [][ text "Title" ]
+        , th [][] -- extra headers for edit and delete
+        , th [][]
         ]
 
 
@@ -87,11 +86,11 @@ viewCurrency currency =
             , td []
                 [ text currency.title ]
             , td []
-                [ a [ id "currencies-edit", href currencyPath ] [ text "Edit" ] ]
+                [ a [ id "currencies-edit", href currencyPath, class "button" ] [ text "Edit" ] ]
             -- All the buttons have this same id.  SHAME!  But the id is unique to a row.
             , td [ id "deleteCurrency" ]
-                [ button [ onClick (DeleteCurrency currency.id) ]
-                    [ text "Delete" ]
+                [ button [ class "delete is-danger", onClick (DeleteCurrency currency.id) ]
+                    []
                 ]
             ]
 
