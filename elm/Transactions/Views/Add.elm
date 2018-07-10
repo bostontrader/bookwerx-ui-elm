@@ -3,6 +3,8 @@ module Transactions.Views.Add exposing (view)
 import Html exposing (Html, a, br, button, div, h3, input, text)
 import Html.Attributes exposing (href, id, type_)
 import Html.Events exposing (onClick, onInput)
+
+import Template exposing (template)
 import Types exposing
     ( Transaction
     , Model
@@ -12,11 +14,11 @@ import Types exposing
 
 view : Model -> Html Msg
 view model =
-    div [ id "transactions-add" ]
+    template ( div [ id "transactions-add" ]
         [ a [ id "transactions-index",  href "/transactions" ] [ text "Transactions" ]
         , h3 [] [ text "Create New Transaction" ]
         , newTransactionForm model.editTransaction
-        ]
+        ] )
 
 
 newTransactionForm : Transaction -> Html Msg

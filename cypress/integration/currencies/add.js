@@ -10,9 +10,9 @@ before(function () {
   if (!bwURL) {
     cy.log(serverConstants.NO_BWUI_URL_DEFINED)
   }
-  cy.visit(bwURL + '/accounts')
+  cy.visit(bwURL + '/currencies/add')
 })
 
-describe('/accounts', function () {
+describe('/currencies', function () {
   shared.verifyEmbededInTemplate()
 })

@@ -1,20 +1,21 @@
 module Currencies.Views.List exposing (view)
 
-import Types exposing (Model, Msg(DeleteCurrency), Currency)
 import Html exposing (Html, a, br, button, div, h3, table, tbody, td, thead, text, th, tr)
 import Html.Attributes exposing (class, href, id)
 import Html.Events exposing (onClick)
 import Http
 import RemoteData
 
+import Template exposing (template)
+import Types exposing (Model, Msg(DeleteCurrency), Currency)
 
 view : Model -> Html Msg
 view model =
-    div []
+    template ( div []
         [ a [ id "currencies-add", href "/currencies/add" ]
             [ text "Create new currency" ]
         , viewCurrenciesOrError model
-        ]
+        ] )
 
 
 viewCurrenciesOrError : Model -> Html Msg

@@ -1,5 +1,6 @@
 module Accounts.Views.List exposing (view)
 
+import Template exposing (template)
 import Types exposing (Model, Msg(DeleteAccount, FetchAccounts), Account)
 import Html exposing (Html, a, br, button, div, h3, table, tbody, td, thead, text, th, tr)
 import Html.Attributes exposing (class, href, id)
@@ -10,11 +11,11 @@ import RemoteData
 
 view : Model -> Html Msg
 view model =
-    div []
+    template (div []
         [ a [ id "accounts-add", href "/accounts/add" ]
             [ text "Create new account" ]
         , viewAccountsOrError model
-        ]
+        ])
 
 
 viewAccountsOrError : Model -> Html Msg

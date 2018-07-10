@@ -5,6 +5,7 @@ import Html.Attributes exposing (class, href, id, type_, value)
 import Html.Events exposing (onClick, onInput)
 import RemoteData
 
+import Template exposing (template)
 import Types exposing
     ( BWCore_Error
     , Model
@@ -15,11 +16,11 @@ import Types exposing
 
 view : Model -> Html Msg
 view model =
-    div [ id "transactions-edit"]
+    template ( div [ id "transactions-edit"]
         [ a [ id "transactions-index", href "/transactions" ] [ text "Transactions index" ]
         , h3 [] [ text "Edit Transaction" ]
         , viewTransactionOrError model
-        ]
+        ] )
 
 
 viewTransactionOrError : Model -> Html Msg

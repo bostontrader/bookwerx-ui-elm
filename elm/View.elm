@@ -2,6 +2,7 @@ module View exposing (view)
 
 import Html exposing (Html, a, div, h3, nav, text)
 import Html.Attributes exposing (class, href, id)
+import Template exposing (template)
 import Types exposing (Model, Msg(..), Route(..))
 
 import Accounts.Views.Add
@@ -20,25 +21,7 @@ view : Model -> Html Msg
 view model =
     case model.currentRoute of
         Home ->
-            div [ id "content" ]
-            [ div [ id "header", class "has-background-primary"][ text "header"]
-            , nav [ class "navbar" ]
-                [ div [ class "navbar-brand" ]
-                    [ div [ class "navbar-item" ][ text "BW" ]
-                    , div [ class "navbar-burger" ][ text "BG"]
-                    ]
-                , div [ class "navbar-menu" ]
-                    [ a [ id "transactions", href "/transactions", class "navbar-item" ] [ text "Transactions" ]
-                    , a [ id "accounts", href "/accounts", class "navbar-item" ] [ text "Accounts" ]
-                    , a [ id "currencies", href "/currencies", class "navbar-item" ] [ text "Currencies" ]
-                    ]
-                ]
-            , div [ id "middle", class "columns" ]
-                [ div [ id "left-pane", class "has-background-warning column is-one-quarter" ][ text "left"]
-                , div [ id "main-content", class "has-background-light column" ][h3 [] [ text "Home sweet home" ]]
-                ]
-            , div [ id "footer", class "has-background-danger"][ text "footer"]
-            ]
+            template (div[][ text "Home Sweet Home" ])
 
         NotFound ->
             h3 [] [ text "Oops! The page you requested was not found!" ]

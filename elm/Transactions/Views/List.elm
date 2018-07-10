@@ -1,21 +1,21 @@
 module Transactions.Views.List exposing (view)
 
-import Types exposing (Model, Msg(DeleteTransaction, FetchTransactions), Transaction)
 import Html exposing (Html, a, br, button, div, h3, table, tbody, td, thead, text, th, tr)
 import Html.Attributes exposing (class, href, id)
 import Html.Events exposing (onClick)
 import Http
 import RemoteData
 
+import Template exposing (template)
+import Types exposing (Model, Msg(DeleteTransaction, FetchTransactions), Transaction)
 
 view : Model -> Html Msg
 view model =
-    div []
+    template ( div []
         [ a [ id "transactions-add", href "/transactions/add" ]
             [ text "Create new transaction" ]
         , viewTransactionsOrError model
-        ]
-
+        ] )
 
 viewTransactionsOrError : Model -> Html Msg
 viewTransactionsOrError model =
