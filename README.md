@@ -126,6 +126,8 @@ There exists a giant can of worms re: using the 'require' statement vs the 'impo
 
 * style-loader - Webpack needs this for css.
 
+* url-loader - Webpack needs this to load images.
+
 * webpack
 
 * webpack-cli

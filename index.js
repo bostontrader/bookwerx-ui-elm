@@ -1,7 +1,10 @@
 require('bulma/css/bulma.css')
 
-// Require index.html so it gets copied to dist
 require('./index.html')
+
+const logoIcon = require('./bw-redline.png')
+//const logoImg = document.getElementById('logo');
+//logoImg.src = logoIcon
 
 const Elm = require('./elm/App.elm')
 const mountNode = document.getElementById('main')
