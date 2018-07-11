@@ -17,8 +17,8 @@ import Types exposing
 view : Model -> Html Msg
 view model =
     template (div [ id "accounts-edit"]
-        [ a [ id "accounts-index", href "/accounts" ] [ text "Accounts index" ]
-        , h3 [] [ text "Edit Account" ]
+        [ h3 [ class "title is-3" ] [ text "Edit Account" ]
+        , a [ id "accounts-index", href "/accounts" ] [ text "Accounts index" ]
         , viewAccountOrError model
         ])
 

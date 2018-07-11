@@ -1,5 +1,4 @@
 [![Build Status](https://travis-ci.org/bostontrader/bookwerx-ui-elm.svg?branch=master)](https://travis-ci.org/bostontrader/bookwerx-ui-elm)
-[![Coverage Status](https://coveralls.io/repos/github/bostontrader/bookwerx-ui-elm/badge.svg?branch=react)](https://coveralls.io/github/bostontrader/bookwerx-ui?branch=react)
 [![Known Vulnerabilities](https://snyk.io/test/github/bostontrader/bookwerx-ui-elm/badge.svg)](https://snyk.io/test/github/bostontrader/bookwerx-ui-elm)
 
 [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)

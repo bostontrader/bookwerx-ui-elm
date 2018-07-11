@@ -17,8 +17,8 @@ import Types exposing
 view : Model -> Html Msg
 view model =
     template ( div [ id "currencies-edit"]
-        [ a [ id "currencies-index", href "/currencies" ] [ text "Currencies index" ]
-        , h3 [] [ text "Edit Currency" ]
+        [ h3 [ class "title is-3" ] [ text "Edit Currency" ]
+        , a [ id "currencies-index", href "/currencies" ] [ text "Currencies index" ]
         , viewCurrencyOrError model
         ] )
 

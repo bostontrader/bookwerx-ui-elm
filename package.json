@@ -8,6 +8,7 @@
     "restify": "7.2.0"
   },
   "devDependencies": {
+    "bookwerx-core": "git+https://git@github.com/bostontrader/bookwerx-core.git",
     "bookwerx-testdata": "git+https://git@github.com/bostontrader/bookwerx-testdata.git",
     "bulma": "0.7.1",
     "css-loader": "1.0.0",
@@ -46,5 +47,5 @@
       "**/elm-stuff/"
     ]
   },
-  "version": "0.0.10"
+  "version": "0.0.11"
 }

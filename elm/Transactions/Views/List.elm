@@ -1,7 +1,7 @@
 module Transactions.Views.List exposing (view)
 
 import Html exposing (Html, a, br, button, div, h3, table, tbody, td, thead, text, th, tr)
-import Html.Attributes exposing (class, href, id)
+import Html.Attributes exposing (class, href, id, style)
 import Html.Events exposing (onClick)
 import Http
 import RemoteData
@@ -32,7 +32,7 @@ viewTransactionsOrError model =
               div [ id "transactions-index" ]
               [ h3 [ id "transactions-empty" ][ text "No transactions present" ] ]
             else
-              div [ id "transactions-index" ]
+              div [ id "transactions-index", style [("margin-top","1.0em")]  ]
               (viewTransactions transactions)
 
         RemoteData.Failure httpError ->

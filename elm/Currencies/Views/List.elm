@@ -1,7 +1,7 @@
 module Currencies.Views.List exposing (view)
 
 import Html exposing (Html, a, br, button, div, h3, table, tbody, td, thead, text, th, tr)
-import Html.Attributes exposing (class, href, id)
+import Html.Attributes exposing (class, href, id, style)
 import Html.Events exposing (onClick)
 import Http
 import RemoteData
@@ -33,7 +33,7 @@ viewCurrenciesOrError model =
               div [ id "currencies-index" ]
               [ h3 [ id "currencies-empty" ][ text "No currencies present" ] ]
             else
-              div [ id "currencies-index" ]
+              div [ id "currencies-index", style [("margin-top","1.0em")]  ]
               (viewCurrencies currencies)
 
         RemoteData.Failure httpError ->

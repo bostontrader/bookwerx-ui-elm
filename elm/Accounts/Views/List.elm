@@ -2,8 +2,8 @@ module Accounts.Views.List exposing (view)
 
 import Template exposing (template)
 import Types exposing (Model, Msg(DeleteAccount, FetchAccounts), Account)
-import Html exposing (Html, a, br, button, div, h3, table, tbody, td, thead, text, th, tr)
-import Html.Attributes exposing (class, href, id)
+import Html exposing (Html, a, button, div, h3, table, tbody, td, thead, text, th, tr)
+import Html.Attributes exposing (class, href, id, style)
 import Html.Events exposing (onClick)
 import Http
 import RemoteData
@@ -13,8 +13,8 @@ view : Model -> Html Msg
 view model =
     template (div []
         [ h3 [ class "title is-3" ] [ text "Accounts" ]
-          ,  a [ id "accounts-add", href "/accounts/add", class "button" ]
-              [ text "Create new account" ]
+        ,  a [ id "accounts-add", href "/accounts/add", class "button" ]
+            [ text "Create new account" ]
         , viewAccountsOrError model
         ])
 
@@ -33,7 +33,7 @@ viewAccountsOrError model =
               div [ id "accounts-index" ]
               [ h3 [ id "accounts-empty" ][ text "No accounts present" ] ]
             else
-              div [ id "accounts-index" ]
+              div [ id "accounts-index", style [("margin-top","1.0em")] ]
               (viewAccounts accounts)
 
         RemoteData.Failure httpError ->

@@ -1,7 +1,7 @@
 module Currencies.Views.Add exposing (view)
 
 import Html exposing (Html, a, br, button, div, h3, input, text)
-import Html.Attributes exposing (href, id, type_, value)
+import Html.Attributes exposing (class, href, id, type_, value)
 import Html.Events exposing (onClick, onInput)
 
 import Template exposing (template)
@@ -15,8 +15,8 @@ import Types exposing
 view : Model -> Html Msg
 view model =
     template ( div [ id "currencies-add" ]
-        [ a [ id "currencies-index", href "/currencies" ] [ text "Currencies index" ]
-        , h3 [] [ text "Create New Currency" ]
+        [ h3 [ class "title is-3" ] [ text "Create New Currency" ]
+        , a [ id "currencies-index", href "/currencies" ] [ text "Currencies index" ]
         , newCurrencyForm model.editCurrency
         ])
 

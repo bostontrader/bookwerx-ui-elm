@@ -1,7 +1,7 @@
 module Accounts.Views.Add exposing (view)
 
 import Html exposing (Html, a, br, button, div, h3, input, text)
-import Html.Attributes exposing (href, id, type_)
+import Html.Attributes exposing (class, href, id, type_)
 import Html.Events exposing (onClick, onInput)
 
 import Template exposing (template)
@@ -15,8 +15,8 @@ import Types exposing
 view : Model -> Html Msg
 view model =
     template (div [ id "accounts-add" ]
-        [ a [ id "accounts-index",  href "/accounts" ] [ text "Accounts" ]
-        , h3 [] [ text "Create New Account" ]
+        [ h3 [ class "title is-3" ] [ text "Create New Account" ]
+        , a [ id "accounts-index",  href "/accounts" ] [ text "Accounts" ]
         , newAccountForm model.editAccount
         ])
 
