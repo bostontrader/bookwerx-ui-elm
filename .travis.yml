@@ -7,3 +7,5 @@ services:
 
 before_script:
   - sleep 15
+  - npm start &
+  - npm run startCore &
