@@ -40,7 +40,7 @@
   "scripts": {
     "lint": "standard",
     "start": "BWUI_MODE=development BWUI_PORT=3004 BWCORE_URL=http://127.0.0.1:3003 node startServer.js",
-    "startCore": "BW_PORT=3003 BW_MONGO=mongodb://127.0.0.1:27017/bookwerx-core-development node startServer.js",
+    "startCore": "BW_PORT=3003 BW_MONGO=mongodb://127.0.0.1:27017/bookwerx-core-development node node_modules/bookwerx-core/startServer.js",
     "test": "npx cypress run --env BWUI_URL=http://127.0.0.1:3004"
   },
   "standard": {
@@ -49,5 +49,5 @@
       "**/elm-stuff/"
     ]
   },
-  "version": "0.0.16"
+  "version": "0.0.17"
 }
