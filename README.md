@@ -49,8 +49,6 @@ npm start
 
 Watch the console and you'll see a message telling you what port the server is listening to.
 
-Finally, you'll need a set of API Keys in order to use the API.  Please review the **API** section for this.
-
 
 ## Runtime Configuration
 
