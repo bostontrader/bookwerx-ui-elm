@@ -6,6 +6,6 @@ services:
   - mongodb
 
 before_script:
-  - sleep 15
+  - npx webpack
   - npm start &
   - npm run startCore &
