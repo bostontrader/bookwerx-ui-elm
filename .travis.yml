@@ -6,6 +6,6 @@ services:
   - mongodb
 
 before_script:
-  - npx webpack
+  - node_modules/.bin/webpack
   - npm start &
   - npm run startCore &
