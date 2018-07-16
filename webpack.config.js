@@ -18,11 +18,11 @@ module.exports = {
           'css-loader'
         ]
       },
-      // {
-      //  test: /\.html$/,
-      //  exclude: /node_modules/,
-      //  loader: 'file-loader?name=[name].[ext]'
-      //},
+      {
+        test: /\.html$/,
+        exclude: /node_modules/,
+        loader: 'file-loader?name=[name].[ext]'
+      },
       //{
       //  test: /\.elm$/,
       //  exclude: [/elm-stuff/, /node_modules/],
