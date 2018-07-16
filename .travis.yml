@@ -7,6 +7,6 @@ services:
 
 before_script:
   - npm install -g elm
-  - node_modules/.bin/webpack
+  - node_modules/.bin/webpack --debug
   - npm start &
   - npm run startCore &
