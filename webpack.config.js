@@ -17,7 +17,7 @@ module.exports = {
           'style-loader',
           'css-loader'
         ]
-      }
+      },
       // {
       //  test: /\.html$/,
       //  exclude: /node_modules/,
@@ -31,16 +31,16 @@ module.exports = {
       //    cwd: path.join(__dirname, '/elm')
       // }
       //},
-      //{
-      //  test: /\.(png|jp(e*)g|svg)$/,
-      //  use: [{
-      //    loader: 'url-loader',
-      //     options: {
-      //      limit: 10000, // Convert images < 8kb to base64 strings
-      //      name: '/[name].[ext]'
-      //     }
-      //  }]
-      //}
+      {
+        test: /\.(png|jp(e*)g|svg)$/,
+        use: [{
+          loader: 'url-loader',
+           options: {
+            limit: 10000, // Convert images < 8kb to base64 strings
+            name: '/[name].[ext]'
+           }
+        }]
+      }
     ]
   }
 }
