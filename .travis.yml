@@ -6,6 +6,7 @@ services:
   - mongodb
 
 before_script:
+  - npm install -g elm
   - node_modules/.bin/webpack
   - npm start &
   - npm run startCore &
