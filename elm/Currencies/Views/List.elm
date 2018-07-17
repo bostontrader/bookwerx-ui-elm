@@ -13,7 +13,7 @@ view : Model -> Html Msg
 view model =
     template ( div []
         [ h3 [ class "title is-3" ] [ text "Currencies" ]
-          , a [ id "currencies-add", href "/currencies/add", class "button" ]
+          , a [ id "currencies-add", href "/currencies/add", class "button is-link" ]
               [ text "Create new currency" ]
         , viewCurrenciesOrError model
         ] )
@@ -86,10 +86,10 @@ viewCurrency currency =
             , td []
                 [ text currency.title ]
             , td []
-                [ a [ id "currencies-edit", href currencyPath, class "button" ] [ text "Edit" ] ]
+                [ a [ id "currencies-edit", href currencyPath, class "button is-link" ] [ text "Edit" ] ]
             -- All the buttons have this same id.  SHAME!  But the id is unique to a row.
             , td [ id "deleteCurrency" ]
-                [ button [ class "delete is-danger", onClick (DeleteCurrency currency.id) ]
+                [ button [ class "button is-link is-danger", onClick (DeleteCurrency currency.id) ]
                     []
                 ]
             ]

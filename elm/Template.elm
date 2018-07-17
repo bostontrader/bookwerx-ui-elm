@@ -1,7 +1,7 @@
 module Template exposing (template)
 
 import Html exposing (Html, a, div, img, nav, text)
-import Html.Attributes exposing (class, height, href, id, src, width)
+import Html.Attributes exposing (class, height, href, id, src, style, width)
 
 template: Html msg -> Html msg
 template mainContent =
@@ -15,9 +15,9 @@ template mainContent =
                 [ div [ class "navbar-burger" ][ text "BG"]
                 ]
             , div [ class "navbar-menu" ]
-                [ a [ id "transactions", href "/transactions", class "navbar-item button" ] [ text "Transactions" ]
-               , a [ id "accounts", href "/accounts", class "navbar-item button" ] [ text "Accounts" ]
-               , a [ id "currencies", href "/currencies", class "navbar-item button" ] [ text "Currencies" ]
+                [ a [ id "transactions", href "/transactions", class "navbar-item button is-link", style [("margin-left","0.2em")] ] [ text "Transactions" ]
+               , a [ id "accounts", href "/accounts", class "navbar-item button is-link", style [("margin-left","0.2em")] ] [ text "Accounts" ]
+               , a [ id "currencies", href "/currencies", class "navbar-item button is-link", style [("margin-left","0.2em")] ] [ text "Currencies" ]
                ]
            ]
         , div [ id "middle", class "columns" ]
