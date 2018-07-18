@@ -29,16 +29,16 @@ module.exports = {
         loader: 'elm-webpack-loader?verbose=true&warn=true',
         options: {
           cwd: path.join(__dirname, '/elm')
-       }
+        }
       },
       {
         test: /\.(png|jp(e*)g|svg)$/,
         use: [{
           loader: 'url-loader',
-           options: {
+          options: {
             limit: 10000, // Convert images < 8kb to base64 strings
             name: '/[name].[ext]'
-           }
+          }
         }]
       }
     ]

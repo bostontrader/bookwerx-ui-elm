@@ -8,6 +8,8 @@ import Types exposing
     , Route
         ( AccountsEdit
         , AccountsIndex
+        , CategoriesEdit
+        , CategoriesIndex
         , CurrenciesEdit
         , CurrenciesIndex
         , TransactionsEdit
@@ -15,6 +17,8 @@ import Types exposing
         )
     , Account
     , AccountEditHttpResponse(..)
+    , Category
+    , CategoryEditHttpResponse(..)
     , Currency
     , CurrencyEditHttpResponse(..)
     , Transaction
@@ -27,6 +31,14 @@ import Accounts.Rest exposing
     , fetchAccountCommand
     , fetchAccountsCommand
     , updateAccountCommand
+    )
+
+import Categories.Rest exposing
+    ( createCategoryCommand
+    , deleteCategoryCommand
+    , fetchCategoryCommand
+    , fetchCategoriesCommand
+    , updateCategoryCommand
     )
 
 import Currencies.Rest exposing
@@ -49,6 +61,7 @@ import Navigation exposing (Location)
 import Routing exposing (extractRoute)
 import Misc exposing
     ( findAccountById
+    , findCategoryById
     , findCurrencyById
     , findTransactionById
     )
@@ -59,6 +72,13 @@ tempAccountId =
 emptyAccount : Account
 emptyAccount =
     Account tempAccountId ""
+
+tempCategoryId =
+    "-1"
+
+emptyCategory : Category
+emptyCategory =
+    Category tempCategoryId ""
 
 tempCurrencyId =
     "-1"
@@ -82,6 +102,10 @@ initialModel route =
     , wdAccount = RemoteData.Loading
     , editAccount = emptyAccount
 
+    , categories = RemoteData.Loading
+    , wdCategory = RemoteData.Loading
+    , editCategory = emptyCategory
+
     , currencies = RemoteData.Loading
     , wdCurrency = RemoteData.Loading
     , editCurrency = emptyCurrency
@@ -104,6 +128,12 @@ init location =
 
             AccountsEdit id ->
                 ( initialModel currentRoute, fetchAccountCommand id )
+
+            CategoriesIndex ->
+                ( initialModel currentRoute, fetchCategoriesCommand )
+
+            CategoriesEdit id ->
+                ( initialModel currentRoute, fetchCategoryCommand id )
 
             CurrenciesIndex ->
                 ( initialModel currentRoute, fetchCurrenciesCommand )
@@ -201,6 +231,77 @@ update msg model =
             ( model, fetchAccountsCommand )
 
 
+        -- Categories
+        -- index
+        FetchCategories ->
+            ( { model | categories = RemoteData.Loading }, fetchCategoriesCommand )
+
+        CategoriesReceived response ->
+            ( { model | categories = response }, Cmd.none )
+
+        -- add
+        CreateNewCategory ->
+            ( model, createCategoryCommand model.editCategory )
+
+        NewCategoryTitle newTitle ->
+            let
+                updatedNewCategory =
+                    setCategoryTitle newTitle model.editCategory
+            in
+                ( { model | editCategory = updatedNewCategory }, Cmd.none )
+
+        CategoryCreated (Ok wdCategory) ->
+            ( { model
+                | categories = addNewCategory wdCategory model.categories
+                , editCategory = emptyCategory
+              }
+            , Cmd.none
+            )
+
+        CategoryCreated (Err _) ->
+            ( model, Cmd.none )
+
+        -- edit
+        CategoryReceived response ->
+            case Debug.log "State update wdCategory:" response of
+                RemoteData.NotAsked ->
+                    ( {model | wdCategory = response}, Cmd.none )
+                RemoteData.Loading ->
+                    ( {model | wdCategory = response}, Cmd.none )
+                RemoteData.Failure e ->
+                    ( {model | wdCategory = response}, Cmd.none )
+                RemoteData.Success cehr ->
+                    case Debug.log "State update cehr:" cehr of
+                        ErrorCategoryEditResponse e ->
+                            ({model | wdCategory = response}, Cmd.none)
+                        ValidCategoryEditResponse category ->
+                            ( {model | wdCategory = response, editCategory = category}, Cmd.none )
+
+        UpdateCategoryTitle newTitle ->
+            let
+                nc = model.editCategory
+            in
+                ({model | editCategory = {nc | title = newTitle}}, Cmd.none)
+
+        SubmitUpdatedCategory ->
+            (model, updateCategoryCommand model.editCategory)
+
+        CategoryUpdated _ ->
+            ( model, Cmd.none )
+
+        -- delete
+        DeleteCategory categoryId ->
+            case findCategoryById categoryId model.categories of
+                Just category ->
+                    ( model, deleteCategoryCommand category )
+
+                Nothing ->
+                    ( model, Cmd.none )
+
+        CategoryDeleted _ ->
+            ( model, fetchCategoriesCommand )
+
+
         -- Currencies
         -- index
         FetchCurrencies ->
@@ -285,6 +386,7 @@ update msg model =
         CurrencyDeleted _ ->
             ( model, fetchCurrenciesCommand )
 
+
         -- Transactions
         -- index
         FetchTransactions ->
@@ -366,6 +468,14 @@ addNewAccount newAccount accounts =
     in
         RemoteData.map appendAccount accounts
 
+addNewCategory : Category -> WebData (List Category) -> WebData (List Category)
+addNewCategory newCategory categories =
+    let
+        appendCategory : List Category -> List Category
+        appendCategory listOfCategories =
+            List.append listOfCategories [ newCategory ]
+    in
+        RemoteData.map appendCategory categories
 
 addNewCurrency : Currency -> WebData (List Currency) -> WebData (List Currency)
 addNewCurrency newCurrency currencies =
@@ -385,13 +495,17 @@ addNewTransaction newTransaction transactions =
     in
         RemoteData.map appendTransaction transactions
 
-setCurrencySymbol : String -> Currency -> Currency
-setCurrencySymbol newSymbol currency =
-    { currency | symbol = newSymbol }
-
 setAccountTitle : String -> Account -> Account
 setAccountTitle newTitle account =
     { account | title = newTitle }
+
+setCategoryTitle : String -> Category -> Category
+setCategoryTitle newTitle category =
+    { category | title = newTitle }
+
+setCurrencySymbol : String -> Currency -> Currency
+setCurrencySymbol newSymbol currency =
+    { currency | symbol = newSymbol }
 
 setCurrencyTitle : String -> Currency -> Currency
 setCurrencyTitle newTitle currency =

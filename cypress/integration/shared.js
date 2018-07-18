@@ -7,10 +7,11 @@ exports.verifyEmbededInTemplate = function () {
   })
 
   it('has a nav bar with all the expected links', function () {
-    cy.get('#content nav')
-    cy.get('#content nav a').contains('Transactions')
+    cy.get('#content nav a').contains('Home')
     cy.get('#content nav a').contains('Accounts')
+    cy.get('#content nav a').contains('Categories')
     cy.get('#content nav a').contains('Currencies')
+    cy.get('#content nav a').contains('Transactions')
   })
 
   it('has a middle', function () {

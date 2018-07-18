@@ -9,6 +9,10 @@ import Accounts.Views.Add
 import Accounts.Views.Edit
 import Accounts.Views.List
 
+import Categories.Views.Add
+import Categories.Views.Edit
+import Categories.Views.List
+
 import Currencies.Views.Add
 import Currencies.Views.Edit
 import Currencies.Views.List
@@ -37,6 +41,17 @@ view model =
         AccountsAdd ->
             Accounts.Views.Add.view model
 
+
+        -- Categories
+        CategoriesIndex ->
+            Categories.Views.List.view model
+
+        -- This message provides a parameter, but we don't use it in the view.
+        CategoriesEdit id ->
+            Categories.Views.Edit.view model
+
+        CategoriesAdd ->
+            Categories.Views.Add.view model
 
         -- Currencies
         CurrenciesIndex ->

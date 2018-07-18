@@ -9,6 +9,11 @@ module Types exposing
       , AccountId
       , AccountEditHttpResponse(..)
       
+    -- Categories
+      , Category
+      , CategoryId
+      , CategoryEditHttpResponse(..)
+
     -- Currencies
       , Currency
       , CurrencyEditHttpResponse(..)
@@ -27,6 +32,10 @@ import RemoteData exposing (WebData)
 type AccountEditHttpResponse
     = ValidAccountEditResponse Account
     | ErrorAccountEditResponse (List BWCore_Error)
+
+type CategoryEditHttpResponse
+    = ValidCategoryEditResponse Category
+    | ErrorCategoryEditResponse (List BWCore_Error)
 
 type CurrencyEditHttpResponse
     = ValidCurrencyEditResponse Currency
@@ -49,6 +58,13 @@ type alias Model =
       -- Use this to assemble a new record or edit an existing one
       , editAccount : Account
 
+    -- categories 
+      , categories : WebData (List Category)
+      , wdCategory : WebData CategoryEditHttpResponse
+
+      -- Use this to assemble a new record or edit an existing one
+      , editCategory : Category
+
     -- currencies
       , currencies : WebData (List Currency)
       , wdCurrency : WebData CurrencyEditHttpResponse
@@ -68,6 +84,14 @@ type alias AccountId =
     String
 
 type alias Account =
+    { id : String
+    , title : String
+    }
+
+type alias CategoryId =
+    String
+
+type alias Category =
     { id : String
     , title : String
     }
@@ -111,6 +135,26 @@ type Msg
     -- delete
     | DeleteAccount AccountId
     | AccountDeleted (Result Http.Error String)
+
+    -- Categories
+    -- index
+    | FetchCategories
+    | CategoriesReceived (WebData (List Category))
+
+    -- add
+    | CreateNewCategory
+    | NewCategoryTitle String
+    | CategoryCreated (Result Http.Error Category)
+
+    -- edit
+    | CategoryReceived (WebData CategoryEditHttpResponse)
+    | UpdateCategoryTitle String
+    | SubmitUpdatedCategory
+    | CategoryUpdated (Result Http.Error Category)
+
+    -- delete
+    | DeleteCategory CategoryId
+    | CategoryDeleted (Result Http.Error String)
 
     -- Currencies
     -- index
@@ -162,6 +206,11 @@ type Route
     | AccountsIndex
     | AccountsAdd
     | AccountsEdit String
+
+    -- Categories
+    | CategoriesIndex
+    | CategoriesAdd
+    | CategoriesEdit String
 
     -- Currencies
     | CurrenciesIndex

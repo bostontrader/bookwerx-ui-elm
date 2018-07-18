@@ -40,6 +40,7 @@ describe('The whole damn thing works', function () {
 
     // There's a mystery whereby POSTs to these routes get aborted.  This seems to fix the problem.
     cy.route('POST', '**/accounts').as('POST_accounts')
+    cy.route('POST', '**/categories').as('POST_categories')
     cy.route('POST', '**/currencies').as('POST_currencies')
     cy.route('POST', '**/transactions').as('POST_transactions')
   })
@@ -51,11 +52,15 @@ describe('The whole damn thing works', function () {
     genericCRU = require('./basicCRUD/accounts/genericCRU')
     genericCRU({bwURL, collName: 'accounts', cy, newDoc1: testData.accountBank, newDoc2: testData.accountCash})
 
+    genericCRU = require('./basicCRUD/categories/genericCRU')
+    genericCRU({bwURL, collName: 'categories', cy, newDoc1: testData.categoryAsset, newDoc2: testData.categoryExpense})
+
     genericCRU = require('./basicCRUD/currencies/genericCRU')
     genericCRU({bwURL, collName: 'currencies', cy, newDoc1: testData.currencyCNY, newDoc2: testData.currencyRUB})
 
     genericCRU = require('./basicCRUD/transactions/genericCRU')
     genericCRU({bwURL, collName: 'transactions', cy, newDoc1: testData.transaction1, newDoc2: testData.transaction2})
+
     // 3. CustomCRU testing specialized for particular collections./
     // .then(() => {return accountsCategories({jsonClient,  keys, pn:30})})
 

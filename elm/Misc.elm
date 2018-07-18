@@ -1,5 +1,6 @@
 module Misc exposing
     ( findAccountById
+    , findCategoryById
     , findCurrencyById
     , findTransactionById
     )
@@ -7,6 +8,8 @@ module Misc exposing
 import Types exposing
     ( Account
     , AccountId
+    , Category
+    , CategoryId
     , Currency
     , CurrencyId
     , Transaction
@@ -22,6 +25,18 @@ findAccountById accountId accounts =
         Just accounts ->
             accounts
                 |> List.filter (\account -> account.id == accountId)
+                |> List.head
+
+        Nothing ->
+            Nothing
+
+
+findCategoryById : CategoryId -> WebData (List Category) -> Maybe Category
+findCategoryById categoryId categories =
+    case RemoteData.toMaybe categories of
+        Just categories ->
+            categories
+                |> List.filter (\category -> category.id == categoryId)
                 |> List.head
 
         Nothing ->
