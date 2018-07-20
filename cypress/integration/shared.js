@@ -2,7 +2,6 @@
 
 exports.verifyEmbededInTemplate = function () {
   it('has a header', function () {
-    cy.log('into header')
     cy.get('#content #header')
   })
 

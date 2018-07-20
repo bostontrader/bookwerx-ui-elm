@@ -11,6 +11,7 @@ const verifyIndex = ({collName, cy, expectedCnt, verifyDoc}) => {
 
     // Possibly verify that the first row contains the expected values.
     if (verifyDoc) {
+      cy.get('tbody').first().contains(verifyDoc.datetime)
       cy.get('tbody').first().contains(verifyDoc.note)
     }
   }
@@ -25,6 +26,7 @@ const addNew = ({cy, collName, newDoc}) => {
   cy.get('div#' + collName + '-add')
 
   // 2. Enter the field values
+  cy.get('input#datetime').type(newDoc.datetime, {delay: 50})
   cy.get('input#note').type(newDoc.note, {delay: 50})
 
   // 3. Save the new document
@@ -65,7 +67,8 @@ module.exports = ({bwURL, collName, cy}) => {
   cy.get('tbody').find('tr').first().find('a').click()
   cy.get('.loader')
   cy.get('div#transactions-edit')
-  cy.get('input').should('have.value', testData.transaction1.note)
+  cy.get('input#datetime').should('have.value', testData.transaction1.datetime)
+  cy.get('input#note').should('have.value', testData.transaction1.note)
 
   // 2.2 Now try to retrieve a well-formed, but non-existent id
   cy.visit(bwURL + '/' + collName + '/666666666666666666666666')
@@ -88,8 +91,9 @@ module.exports = ({bwURL, collName, cy}) => {
   cy.get('tbody').find('tr').first().find('a').click()
   cy.get('.loader')
 
-  // 3.3 Update a field
-  cy.get('input#note').clear().type('newnote', {delay: 50})
+  // 3.3 Update the fields
+  cy.get('input#datetime').clear().type(testData.transaction2.datetime, {delay: 50})
+  cy.get('input#note').clear().type(testData.transaction2.note, {delay: 50})
 
   // 3.4 Save the changed document
   cy.get('button#save').click()
@@ -100,5 +104,6 @@ module.exports = ({bwURL, collName, cy}) => {
 
   // 3.5. Now return to collection-index and verify that the field has been changed.
   cy.get('a#' + collName + '-index').click()
-  cy.get('tbody').first().contains('newnote')
+  cy.get('tbody').first().contains(testData.transaction2.datetime)
+  cy.get('tbody').first().contains(testData.transaction2.note)
 }

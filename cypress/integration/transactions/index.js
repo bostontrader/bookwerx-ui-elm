@@ -15,4 +15,5 @@ before(function () {
 
 describe('/transactions', function () {
   shared.verifyEmbededInTemplate()
+  cy.get('#content nav a').contains('Home')
 })

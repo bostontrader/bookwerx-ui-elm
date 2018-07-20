@@ -64,6 +64,7 @@ viewTableHeader : Html Msg
 viewTableHeader =
     tr []
         [ th [][ text "ID" ]
+        , th [][ text "Datetime" ]
         , th [][ text "Note" ]
         , th [][] -- extra headers for edit and delete
         , th [][]
@@ -77,10 +78,9 @@ viewTransaction transaction =
             "/transactions/" ++ transaction.id
     in
         tr []
-            [ td []
-                [ text transaction.id ]
-            , td []
-                [ text transaction.note ]
+            [ td [] [ text transaction.id ]
+            , td [] [ text transaction.datetime ]
+            , td [] [ text transaction.note ]
             , td []
                 [ a [ id "transactions-edit", href transactionPath, class "button is-link" ] [ text "Edit" ] ]
             -- All the buttons have this same id.  SHAME!  But the id is unique to a row.

@@ -110,6 +110,7 @@ type alias TransactionId =
 
 type alias Transaction =
     { id : String
+    , datetime : String
     , note : String
     }
 
@@ -185,11 +186,13 @@ type Msg
 
     -- add
     | CreateNewTransaction
+    | NewTransactionDatetime String
     | NewTransactionNote String
     | TransactionCreated (Result Http.Error Transaction)
 
     -- edit
     | TransactionReceived (WebData TransactionEditHttpResponse)
+    | UpdateTransactionDatetime String
     | UpdateTransactionNote String
     | SubmitUpdatedTransaction
     | TransactionUpdated (Result Http.Error Transaction)

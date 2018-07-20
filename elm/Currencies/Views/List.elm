@@ -90,7 +90,7 @@ viewCurrency currency =
             -- All the buttons have this same id.  SHAME!  But the id is unique to a row.
             , td [ id "deleteCurrency" ]
                 [ button [ class "button is-link is-danger", onClick (DeleteCurrency currency.id) ]
-                    []
+                    [ text "Delete" ]
                 ]
             ]
 

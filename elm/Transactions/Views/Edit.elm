@@ -1,6 +1,6 @@
 module Transactions.Views.Edit exposing (view)
 
-import Html exposing (Html, a, br, button, div, h3, input, table, tbody, td, text, th, thead, tr)
+import Html exposing (Html, a, button, div, h3, input, label, table, tbody, td, text, th, thead, tr)
 import Html.Attributes exposing (class, href, id, type_, value)
 import Html.Events exposing (onClick, onInput)
 import RemoteData
@@ -9,7 +9,7 @@ import Template exposing (template)
 import Types exposing
     ( BWCore_Error
     , Model
-    , Msg(SubmitUpdatedTransaction, UpdateTransactionNote)
+    , Msg(SubmitUpdatedTransaction, UpdateTransactionDatetime, UpdateTransactionNote)
     , Transaction
     , TransactionEditHttpResponse(..)
     )
@@ -74,22 +74,34 @@ viewTableHeader =
 editForm : Transaction -> Html Msg
 editForm transaction =
     Html.form []
-        [ div []
-            [ text "Note"
-            , br [][]
-            , input
-                [ id "note", type_ "text"
-                , value transaction.note
-                , onInput (UpdateTransactionNote)
+        [ div [class "field"]
+            [ label [class "label"][ text "Date/time"]
+            , div [class "control"]
+                [ input
+                    [ id "datetime"
+                    , class "input"
+                    , type_ "text"
+                    , value transaction.datetime
+                    , onInput UpdateTransactionDatetime
+                    ][]
                 ]
-                []
             ]
-        , br [][]
-        , div []
-            [ button
-                [ id "save"
-                , onClick (SubmitUpdatedTransaction)
+
+        , div [class "field"]
+            [ label [class "label"][ text "Note"]
+            , div [class "control"]
+                [ input
+                    [ id "note"
+                    , class "input"
+                    , type_ "text"
+                    , value transaction.note
+                    , onInput UpdateTransactionNote
+                    ][]
                 ]
+            ]
+
+        , div []
+            [ button [ id "save", class "button is-link", onClick SubmitUpdatedTransaction ]
                 [ text "Submit" ]
             ]
         ]

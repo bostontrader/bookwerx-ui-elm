@@ -92,7 +92,7 @@ tempTransactionId =
 
 emptyTransaction : Transaction
 emptyTransaction =
-    Transaction tempTransactionId ""
+    Transaction tempTransactionId "" ""
 
 initialModel : Route -> Model
 initialModel route =
@@ -399,6 +399,14 @@ update msg model =
         CreateNewTransaction ->
             (model, createTransactionCommand model.editTransaction)
 
+        NewTransactionDatetime newDatetime ->
+            let
+                updatedNewTransaction =
+                    setTransactionDatetime newDatetime model.editTransaction
+
+            in
+                ( { model | editTransaction = updatedNewTransaction}, Cmd.none )
+
         NewTransactionNote newNote ->
             let
                 updatedNewTransaction =
@@ -433,12 +441,17 @@ update msg model =
                         ValidTransactionEditResponse transaction ->
                             ( {model | wdTransaction = response, editTransaction = transaction}, Cmd.none )
 
+        UpdateTransactionDatetime newDatetime ->
+            let
+                nc = model.editTransaction
+            in
+                ({model | editTransaction = {nc | datetime = newDatetime}}, Cmd.none)
+
         UpdateTransactionNote newNote ->
             let
                 nc = model.editTransaction
             in
                 ({model | editTransaction = {nc | note = newNote}}, Cmd.none)
-
 
         SubmitUpdatedTransaction ->
             (model, updateTransactionCommand model.editTransaction)
@@ -511,6 +524,11 @@ setCurrencyTitle : String -> Currency -> Currency
 setCurrencyTitle newTitle currency =
     { currency | title = newTitle }
 
+setTransactionDatetime : String -> Transaction -> Transaction
+setTransactionDatetime newDatetime transaction =
+    { transaction | datetime = newDatetime }
+
 setTransactionNote : String -> Transaction -> Transaction
 setTransactionNote newNote transaction =
     { transaction | note = newNote }
+    

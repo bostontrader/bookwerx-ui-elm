@@ -78,6 +78,7 @@ transactionDecoder : Decoder Transaction
 transactionDecoder =
     decode Transaction
         |> required "_id" string
+        |> required "datetime" string
         |> required "note" string
 
 fetchTransactionsCommand : Cmd Msg
@@ -115,6 +116,7 @@ transactionEncoder : Transaction -> Encode.Value
 transactionEncoder transaction =
     Encode.object
         [ ("id", Encode.string transaction.id)
+        , ("datetime", Encode.string transaction.datetime)
         , ("note", Encode.string transaction.note)
         ]
 
@@ -144,10 +146,11 @@ createTransactionRequest : Transaction -> Http.Request Transaction
 createTransactionRequest transaction =
     Http.post
         "http://localhost:3003/transactions"
-        (Http.jsonBody (newTransactionEncoder transaction)) transactionDecoder
+        (Http.jsonBody (Debug.log "Rest createTransactionRequest" (newTransactionEncoder transaction))) transactionDecoder
 
 newTransactionEncoder : Transaction -> Encode.Value
 newTransactionEncoder transaction =
     Encode.object
-        [ ( "note", Encode.string transaction.note )
+        [ ( "datetime", Encode.string transaction.datetime )
+        , ( "note", Encode.string transaction.note )
         ]
