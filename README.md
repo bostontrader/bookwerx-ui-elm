@@ -39,7 +39,6 @@ Note: Be sure you have a **bookwerx-core** server, that is suitable for testing,
 BW_MODE=test BW_PORT=3004 BWCORE_URL=http://127.0.0.1:3003 BWUI_DOMAIN=localhost node integrationTest.js
 ```
 
-Be sure that BWCORE_URL points to a functioning **bookwerx-core** server.
 
 Next, tweak package.json scripts.start, as necessary.  And then:
 
@@ -57,11 +56,12 @@ Runtime configuration is provided via environment variables. There are no other 
 
 The following env variables are used by **bookwerx-ui-elm**:
 
-* BWUI_MODE - Which operating mode shall we use? Any string is suitable but test, development, and production are customary.
-
 * BWUI_PORT - Which port shall **bookwerx-ui-elm** listen to?
 
-* BWCORE_URL - The url for the **bookwerx-core** server.  This means 'http://' and hostname and port.
+* BWCORE_HOST - The host for the **bookwerx-core** server, such as 'localhost'
+
+* BWCORE_PORT - The port for the **bookwerx-core** server, such as '3003'
+
 
 In addition to the above, in order for testing to work we need:
 

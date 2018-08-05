@@ -16,7 +16,7 @@ view : Model -> Html Msg
 view model =
     template ( div [ id "currencies-add" ]
         [ h3 [ class "title is-3" ] [ text "Create New Currency" ]
-        , a [ id "currencies-index", href "/currencies" ] [ text "Currencies index" ]
+        , a [ id "currencies-index", href "/ui/currencies" ] [ text "Currencies index" ]
         , newCurrencyForm model.editCurrency
         ])
 

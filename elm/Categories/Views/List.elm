@@ -13,7 +13,7 @@ view : Model -> Html Msg
 view model =
     template (div []
         [ h3 [ class "title is-3" ] [ text "Categories" ]
-        ,  a [ id "categories-add", href "/categories/add", class "button is-link" ]
+        ,  a [ id "categories-add", href "/ui/categories/add", class "button is-link" ]
             [ text "Create new category" ]
         , viewCategoriesOrError model
         ])
@@ -75,7 +75,7 @@ viewCategory : Category -> Html Msg
 viewCategory category =
     let
         categoryPath =
-            "/categories/" ++ category.id
+            "/ui/categories/" ++ category.id
     in
         tr []
             [ td []

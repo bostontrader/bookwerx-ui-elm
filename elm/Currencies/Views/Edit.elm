@@ -11,14 +11,14 @@ import Types exposing
     , Model
     , Msg(SubmitUpdatedCurrency, UpdateCurrencySymbol, UpdateCurrencyTitle)
     , Currency
-    , CurrencyEditHttpResponse(..)
+    , CurrencyPostHttpResponse(..)
     )
 
 view : Model -> Html Msg
 view model =
     template ( div [ id "currencies-edit"]
         [ h3 [ class "title is-3" ] [ text "Edit Currency" ]
-        , a [ id "currencies-index", href "/currencies" ] [ text "Currencies index" ]
+        , a [ id "currencies-index", href "/ui/currencies" ] [ text "Currencies index" ]
         , viewCurrencyOrError model
         ] )
 
@@ -34,10 +34,10 @@ viewCurrencyOrError model =
 
         RemoteData.Success cehr ->
             case cehr of
-                ValidCurrencyEditResponse wdCurrency ->
+                ValidCurrencyPostResponse wdCurrency ->
                     editForm model.editCurrency
 
-                ErrorCurrencyEditResponse errors ->
+                ErrorCurrencyPostResponse errors ->
                     viewErrors errors
 
         RemoteData.Failure httpError ->

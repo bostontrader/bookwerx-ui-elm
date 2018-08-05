@@ -1,7 +1,7 @@
 module Accounts.Views.List exposing (view)
 
 import Template exposing (template)
-import Types exposing (Model, Msg(DeleteAccount, FetchAccounts), Account)
+import Types exposing (Model, Msg(DeleteAccount), Account)
 import Html exposing (Html, a, button, div, h3, table, tbody, td, thead, text, th, tr)
 import Html.Attributes exposing (class, href, id, style)
 import Html.Events exposing (onClick)
@@ -13,7 +13,7 @@ view : Model -> Html Msg
 view model =
     template (div []
         [ h3 [ class "title is-3" ] [ text "Accounts" ]
-        ,  a [ id "accounts-add", href "/accounts/add", class "button is-link" ]
+        ,  a [ id "accounts-add", href "/ui/accounts/add", class "button is-link" ]
             [ text "Create new account" ]
         , viewAccountsOrError model
         ])
@@ -75,7 +75,7 @@ viewAccount : Account -> Html Msg
 viewAccount account =
     let
         accountPath =
-            "/accounts/" ++ account.id
+            "/ui/accounts/" ++ account.id
     in
         tr []
             [ td []

@@ -35,14 +35,6 @@ describe('The whole damn thing works', function () {
     if (!bwURL) {
       cy.log(serverConstants.NO_BWUI_URL_DEFINED)
     }
-
-    cy.server()
-
-    // There's a mystery whereby POSTs to these routes get aborted.  This seems to fix the problem.
-    cy.route('POST', '**/accounts').as('POST_accounts')
-    cy.route('POST', '**/categories').as('POST_categories')
-    cy.route('POST', '**/currencies').as('POST_currencies')
-    cy.route('POST', '**/transactions').as('POST_transactions')
   })
 
   it('it rubs the lotion on its skin', function () {

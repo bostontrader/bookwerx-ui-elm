@@ -31,46 +31,68 @@ view model =
             h3 [] [ text "Oops! The page you requested was not found!" ]
 
         -- Accounts
-        AccountsIndex ->
-            Accounts.Views.List.view model
+        AccountsAdd ->
+            Accounts.Views.Add.view model
 
         -- This message provides a parameter, but we don't use it in the view.
         AccountsEdit id ->
             Accounts.Views.Edit.view model
 
-        AccountsAdd ->
-            Accounts.Views.Add.view model
+        AccountsIndex ->
+            Accounts.Views.List.view model
+
+        -- This route will be intercepted by the server and elm will never see it.
+        --AccountsGetMany ->
+        --    pageNotFound
 
 
         -- Categories
-        CategoriesIndex ->
-            Categories.Views.List.view model
+        CategoriesAdd ->
+             Categories.Views.Add.view model
 
         -- This message provides a parameter, but we don't use it in the view.
         CategoriesEdit id ->
             Categories.Views.Edit.view model
 
-        CategoriesAdd ->
-            Categories.Views.Add.view model
+        -- This route will be intercepted by the server and elm will never see it.
+        --CategoriesGetMany ->
+        --    pageNotFound
+
+        CategoriesIndex ->
+            Categories.Views.List.view model
+
 
         -- Currencies
-        CurrenciesIndex ->
-            Currencies.Views.List.view model
+        CurrenciesAdd ->
+            Currencies.Views.Add.view model
 
         -- This message provides a parameter, but we don't use it in the view.
         CurrenciesEdit id ->
             Currencies.Views.Edit.view model
 
-        CurrenciesAdd ->
-            Currencies.Views.Add.view model
+        -- This route will be intercepted by the server and elm will never see it.
+        --CurrenciesGetMany ->
+        --    pageNotFound
+
+        CurrenciesIndex ->
+            Currencies.Views.List.view model
+
 
         -- Transactions
-        TransactionsIndex ->
-            Transactions.Views.List.view model
+        TransactionsAdd ->
+            Transactions.Views.Add.view model
 
         -- This message provides a parameter, but we don't use it in the view.
         TransactionsEdit id ->
             Transactions.Views.Edit.view model
 
-        TransactionsAdd ->
-            Transactions.Views.Add.view model
+        -- This route will be intercepted by the server and elm will never see it.
+        --TransactionsGetMany ->
+        --    pageNotFound
+
+        TransactionsIndex ->
+            Transactions.Views.List.view model
+
+
+--pageNotFound: Html Msg
+--pageNotFound = div[][ text "Page not found" ]

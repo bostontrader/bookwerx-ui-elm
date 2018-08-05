@@ -11,14 +11,14 @@ import Types exposing
     , Model
     , Msg(SubmitUpdatedTransaction, UpdateTransactionDatetime, UpdateTransactionNote)
     , Transaction
-    , TransactionEditHttpResponse(..)
+    , TransactionPostHttpResponse(..)
     )
 
 view : Model -> Html Msg
 view model =
     template ( div [ id "transactions-edit"]
         [ h3 [ class "title is-3" ] [ text "Edit Transaction" ]
-        , a [ id "transactions-index", href "/transactions" ] [ text "Transactions index" ]
+        , a [ id "transactions-index", href "/ui/transactions" ] [ text "Transactions index" ]
         , viewTransactionOrError model
         ] )
 
@@ -34,10 +34,10 @@ viewTransactionOrError model =
 
         RemoteData.Success aehr ->
             case aehr of
-                ValidTransactionEditResponse wdTransaction ->
+                ValidTransactionPostResponse wdTransaction ->
                     editForm model.editTransaction
 
-                ErrorTransactionEditResponse errors ->
+                ErrorTransactionPostResponse errors ->
                     viewErrors errors
 
         RemoteData.Failure httpError ->

@@ -16,7 +16,7 @@ view : Model -> Html Msg
 view model =
     template ( div [ id "transactions-add" ]
         [ h3 [ class "title is-3" ] [ text "Create New Transaction" ]
-        , a [ id "transactions-index",  href "/transactions" ] [ text "Transactions" ]
+        , a [ id "transactions-index",  href "/ui/transactions" ] [ text "Transactions" ]
         , newTransactionForm model.editTransaction
         ] )
 

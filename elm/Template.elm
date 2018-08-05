@@ -3,6 +3,16 @@ module Template exposing (template)
 import Html exposing (Html, a, div, img, nav, text)
 import Html.Attributes exposing (class, height, href, id, src, style, width)
 
+import Routing exposing (extractUrl)
+import Types exposing
+    ( Route
+        ( AccountsIndex
+        , CategoriesIndex
+        , CurrenciesIndex
+        , TransactionsIndex
+        )
+    )
+
 template: Html msg -> Html msg
 template mainContent =
     div [ id "content" ]
@@ -16,10 +26,10 @@ template mainContent =
                 ]
             , div [ class "navbar-menu" ]
                 [ a [ id "home", href "/", class "navbar-item button is-link", style [("margin-left","0.2em")] ] [ text "Home" ]
-                , a [ id "accounts", href "/accounts", class "navbar-item button is-link", style [("margin-left","0.2em")] ] [ text "Accounts" ]
-                , a [ id "categories", href "/categories", class "navbar-item button is-link", style [("margin-left","0.2em")] ] [ text "Categories" ]
-                , a [ id "currencies", href "/currencies", class "navbar-item button is-link", style [("margin-left","0.2em")] ] [ text "Currencies" ]
-                , a [ id "transactions", href "/transactions", class "navbar-item button is-link", style [("margin-left","0.2em")] ] [ text "Transactions" ]
+                , a [ id "accounts", href (extractUrl AccountsIndex), class "navbar-item button is-link", style [("margin-left","0.2em")] ] [ text "Accounts" ]
+                , a [ id "categories", href (extractUrl CategoriesIndex), class "navbar-item button is-link", style [("margin-left","0.2em")] ] [ text "Categories" ]
+                , a [ id "currencies", href (extractUrl CurrenciesIndex), class "navbar-item button is-link", style [("margin-left","0.2em")] ] [ text "Currencies" ]
+                , a [ id "transactions", href (extractUrl TransactionsIndex), class "navbar-item button is-link", style [("margin-left","0.2em")] ] [ text "Transactions" ]
                                ]
            ]
         , div [ id "middle", class "columns" ]

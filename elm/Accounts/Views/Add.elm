@@ -16,7 +16,7 @@ view : Model -> Html Msg
 view model =
     template (div [ id "accounts-add" ]
         [ h3 [ class "title is-3" ] [ text "Create New Account" ]
-        , a [ id "accounts-index",  href "/accounts" ] [ text "Accounts" ]
+        , a [ id "accounts-index",  href "/ui/accounts" ] [ text "Accounts" ]
         , newAccountForm model.editAccount
         ])
 

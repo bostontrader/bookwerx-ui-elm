@@ -3,7 +3,8 @@ module State exposing (init, update)
 import RemoteData exposing (WebData)
 
 import Types exposing
-    ( Model
+    ( Flags
+    , Model
     , Msg(..)
     , Route
         ( AccountsEdit
@@ -16,46 +17,67 @@ import Types exposing
         , TransactionsIndex
         )
     , Account
-    , AccountEditHttpResponse(..)
+    , AccountPostHttpResponse(..)
     , Category
-    , CategoryEditHttpResponse(..)
+    , CategoryPostHttpResponse(..)
     , Currency
-    , CurrencyEditHttpResponse(..)
+    , CurrencyPostHttpResponse(..)
     , Transaction
-    , TransactionEditHttpResponse(..)
+    , TransactionPostHttpResponse(..)
     )
 
-import Accounts.Rest exposing
-    ( createAccountCommand
-    , deleteAccountCommand
-    , fetchAccountCommand
-    , fetchAccountsCommand
-    , updateAccountCommand
-    )
+--import Accounts.Rest exposing
+--    ( createAccountCommand
+--    , deleteAccountCommand
+--    , getOneAccountCommand
+--    , getManyAccountsCommand
+--    , updateAccountCommand
+--    )
+import Accounts.REST.Delete exposing ( deleteAccountCommand )
+import Accounts.REST.GetMany exposing ( getManyAccountsCommand )
+import Accounts.REST.GetOne exposing ( getOneAccountCommand )
+import Accounts.REST.Patch exposing ( patchAccountCommand )
+import Accounts.REST.Post exposing ( postAccountCommand )
 
-import Categories.Rest exposing
-    ( createCategoryCommand
-    , deleteCategoryCommand
-    , fetchCategoryCommand
-    , fetchCategoriesCommand
-    , updateCategoryCommand
-    )
+--import Categories.Rest exposing
+--    ( createCategoryCommand
+--    , deleteCategoryCommand
+--    , getOneCategoryCommand
+--    , getManyCategoriesCommand
+--    , updateCategoryCommand
+--    )
+import Categories.REST.Delete exposing ( deleteCategoryCommand )
+import Categories.REST.GetMany exposing ( getManyCategoriesCommand )
+import Categories.REST.GetOne exposing ( getOneCategoryCommand )
+import Categories.REST.Patch exposing ( patchCategoryCommand )
+import Categories.REST.Post exposing ( postCategoryCommand )
 
-import Currencies.Rest exposing
-    ( createCurrencyCommand
-    , deleteCurrencyCommand
-    , fetchCurrencyCommand
-    , fetchCurrenciesCommand
-    , updateCurrencyCommand
-    )
+--import Currencies.Rest exposing
+--    ( createCurrencyCommand
+--    , deleteCurrencyCommand
+--    , getOneCurrencyCommand
+--    , getManyCurrenciesCommand
+--    , updateCurrencyCommand
+--    )
+import Currencies.REST.Delete exposing ( deleteCurrencyCommand )
+import Currencies.REST.GetMany exposing ( getManyCurrenciesCommand )
+import Currencies.REST.GetOne exposing ( getOneCurrencyCommand )
+import Currencies.REST.Patch exposing ( patchCurrencyCommand )
+import Currencies.REST.Post exposing ( postCurrencyCommand )
 
-import Transactions.Rest exposing
-    ( createTransactionCommand
-    , deleteTransactionCommand
-    , fetchTransactionCommand
-    , fetchTransactionsCommand
-    , updateTransactionCommand
-    )
+--import Transactions.REST.Rest exposing
+--    ( createTransactionCommand
+--    , deleteTransactionCommand
+--    , fetchTransactionCommand
+    -- , getManyTransactionsCommand
+--    , patchTransactionCommand
+--    )
+
+import Transactions.REST.Delete exposing ( deleteTransactionCommand )
+import Transactions.REST.GetMany exposing ( getManyTransactionsCommand )
+import Transactions.REST.GetOne exposing ( getOneTransactionCommand )
+import Transactions.REST.Patch exposing ( patchTransactionCommand )
+import Transactions.REST.Post exposing ( postTransactionCommand )
 
 import Navigation exposing (Location)
 import Routing exposing (extractRoute)
@@ -94,9 +116,10 @@ emptyTransaction : Transaction
 emptyTransaction =
     Transaction tempTransactionId "" ""
 
-initialModel : Route -> Model
-initialModel route =
+initialModel : Flags -> Route -> Model
+initialModel flags route =
     { currentRoute = route
+    , runtimeConfig = flags
 
     , accounts = RemoteData.Loading
     , wdAccount = RemoteData.Loading
@@ -115,8 +138,8 @@ initialModel route =
     , editTransaction = emptyTransaction
     }
 
-init : Location -> ( Model, Cmd Msg )
-init location =
+init : Flags -> Location -> ( Model, Cmd Msg )
+init flags location =
     let
         currentRoute =
             Routing.extractRoute location
@@ -124,31 +147,31 @@ init location =
     in
         case currentRoute of
             AccountsIndex ->
-                ( initialModel currentRoute, fetchAccountsCommand )
+                ( initialModel flags currentRoute, getManyAccountsCommand )
 
             AccountsEdit id ->
-                ( initialModel currentRoute, fetchAccountCommand id )
+                ( initialModel flags currentRoute, getOneAccountCommand id )
 
             CategoriesIndex ->
-                ( initialModel currentRoute, fetchCategoriesCommand )
+                ( initialModel flags currentRoute, getManyCategoriesCommand )
 
             CategoriesEdit id ->
-                ( initialModel currentRoute, fetchCategoryCommand id )
+                ( initialModel flags currentRoute, getOneCategoryCommand id )
 
             CurrenciesIndex ->
-                ( initialModel currentRoute, fetchCurrenciesCommand )
+                ( initialModel flags currentRoute, getManyCurrenciesCommand )
 
             CurrenciesEdit id ->
-                ( initialModel currentRoute, fetchCurrencyCommand id )
+                ( initialModel flags currentRoute, getOneCurrencyCommand id )
 
             TransactionsIndex ->
-                ( initialModel currentRoute, fetchTransactionsCommand )
+                ( initialModel flags currentRoute, getManyTransactionsCommand )
 
             TransactionsEdit id ->
-                ( initialModel currentRoute, fetchTransactionCommand id )
+                ( initialModel flags currentRoute, getOneTransactionCommand id )
 
             _ ->
-                ( initialModel currentRoute, Cmd.none)
+                ( initialModel flags currentRoute, Cmd.none)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -162,15 +185,15 @@ update msg model =
 
         -- Accounts
         -- index
-        FetchAccounts ->
-            ( { model | accounts = RemoteData.Loading }, fetchAccountsCommand )
+        --FetchAccounts ->
+        --    ( { model | accounts = RemoteData.Loading }, getManyAccountsCommand )
 
         AccountsReceived response ->
             ( { model | accounts = response }, Cmd.none )
 
         -- add
         CreateNewAccount ->
-            ( model, createAccountCommand model.editAccount )
+            ( model, postAccountCommand model.editAccount )
 
         NewAccountTitle newTitle ->
             let
@@ -179,16 +202,19 @@ update msg model =
             in
                 ( { model | editAccount = updatedNewAccount }, Cmd.none )
 
-        AccountCreated (Ok wdAccount) ->
-            ( { model
-                | accounts = addNewAccount wdAccount model.accounts
-                , editAccount = emptyAccount
-              }
-            , Cmd.none
-            )
+        --AccountCreated (Ok wdAccount) ->
+        --    ( { model
+        --        | accounts = addNewAccount wdAccount model.accounts
+        --        , editAccount = emptyAccount
+        --      }
+        --    , Cmd.none
+        --    )
 
-        AccountCreated (Err _) ->
-            ( model, Cmd.none )
+        --AccountCreated (Err _) ->
+        --    ( model, Cmd.none )
+
+        AccountCreated _ ->
+            ( model, getManyAccountsCommand )
 
         -- edit
         AccountReceived response ->
@@ -201,9 +227,9 @@ update msg model =
                     ( {model | wdAccount = response}, Cmd.none )
                 RemoteData.Success cehr ->
                     case Debug.log "State update cehr:" cehr of
-                        ErrorAccountEditResponse e ->
+                        ErrorAccountPostResponse e ->
                             ({model | wdAccount = response}, Cmd.none)
-                        ValidAccountEditResponse account ->
+                        ValidAccountPostResponse account ->
                             ( {model | wdAccount = response, editAccount = account}, Cmd.none )
 
         UpdateAccountTitle newTitle ->
@@ -213,9 +239,9 @@ update msg model =
                 ({model | editAccount = {nc | title = newTitle}}, Cmd.none)
 
         SubmitUpdatedAccount ->
-            (model, updateAccountCommand model.editAccount)
+            (model, patchAccountCommand model.editAccount)
 
-        AccountUpdated _ ->
+        AccountPatched _ ->
             ( model, Cmd.none )
 
         -- delete
@@ -228,20 +254,20 @@ update msg model =
                     ( model, Cmd.none )
 
         AccountDeleted _ ->
-            ( model, fetchAccountsCommand )
+            ( model, getManyAccountsCommand )
 
 
         -- Categories
         -- index
         FetchCategories ->
-            ( { model | categories = RemoteData.Loading }, fetchCategoriesCommand )
+            ( { model | categories = RemoteData.Loading }, getManyCategoriesCommand )
 
         CategoriesReceived response ->
             ( { model | categories = response }, Cmd.none )
 
         -- add
         CreateNewCategory ->
-            ( model, createCategoryCommand model.editCategory )
+            ( model, postCategoryCommand model.editCategory )
 
         NewCategoryTitle newTitle ->
             let
@@ -250,16 +276,18 @@ update msg model =
             in
                 ( { model | editCategory = updatedNewCategory }, Cmd.none )
 
-        CategoryCreated (Ok wdCategory) ->
-            ( { model
-                | categories = addNewCategory wdCategory model.categories
-                , editCategory = emptyCategory
-              }
-            , Cmd.none
-            )
+        --CategoryCreated (Ok wdCategory) ->
+        --    ( { model
+        --        | categories = addNewCategory wdCategory model.categories
+        --        , editCategory = emptyCategory
+        --      }
+        --    , Cmd.none
+        --    )
 
-        CategoryCreated (Err _) ->
-            ( model, Cmd.none )
+        --CategoryCreated (Err _) ->
+        --    ( model, Cmd.none )
+        CategoryCreated _ ->
+            ( model, getManyCategoriesCommand )
 
         -- edit
         CategoryReceived response ->
@@ -272,9 +300,9 @@ update msg model =
                     ( {model | wdCategory = response}, Cmd.none )
                 RemoteData.Success cehr ->
                     case Debug.log "State update cehr:" cehr of
-                        ErrorCategoryEditResponse e ->
+                        ErrorCategoryPostResponse e ->
                             ({model | wdCategory = response}, Cmd.none)
-                        ValidCategoryEditResponse category ->
+                        ValidCategoryPostResponse category ->
                             ( {model | wdCategory = response, editCategory = category}, Cmd.none )
 
         UpdateCategoryTitle newTitle ->
@@ -284,9 +312,9 @@ update msg model =
                 ({model | editCategory = {nc | title = newTitle}}, Cmd.none)
 
         SubmitUpdatedCategory ->
-            (model, updateCategoryCommand model.editCategory)
+            (model, patchCategoryCommand model.editCategory)
 
-        CategoryUpdated _ ->
+        CategoryPatched _ ->
             ( model, Cmd.none )
 
         -- delete
@@ -299,20 +327,20 @@ update msg model =
                     ( model, Cmd.none )
 
         CategoryDeleted _ ->
-            ( model, fetchCategoriesCommand )
+            ( model, getManyCategoriesCommand )
 
 
         -- Currencies
         -- index
         FetchCurrencies ->
-            ( { model | currencies = RemoteData.Loading }, fetchCurrenciesCommand )
+            ( { model | currencies = RemoteData.Loading }, getManyCurrenciesCommand )
 
         CurrenciesReceived response ->
             ( { model | currencies = response }, Cmd.none )
 
         -- add
         CreateNewCurrency ->
-            (model, createCurrencyCommand model.editCurrency)
+            (model, postCurrencyCommand model.editCurrency)
 
         NewCurrencyTitle newTitle ->
             let
@@ -350,9 +378,9 @@ update msg model =
                     ( {model | wdCurrency = response}, Cmd.none )
                 RemoteData.Success cehr ->
                     case Debug.log "State update cehr:" cehr of
-                        ErrorCurrencyEditResponse e ->
+                        ErrorCurrencyPostResponse e ->
                             ({model | wdCurrency = response}, Cmd.none)
-                        ValidCurrencyEditResponse currency ->
+                        ValidCurrencyPostResponse currency ->
                             ( {model | wdCurrency = response, editCurrency = currency}, Cmd.none )
 
         UpdateCurrencySymbol newSymbol ->
@@ -369,7 +397,7 @@ update msg model =
 
 
         SubmitUpdatedCurrency ->
-            (model, updateCurrencyCommand model.editCurrency)
+            (model, patchCurrencyCommand model.editCurrency)
 
         CurrencyUpdated _ ->
             ( model, Cmd.none )
@@ -384,20 +412,20 @@ update msg model =
                     ( model, Cmd.none )
 
         CurrencyDeleted _ ->
-            ( model, fetchCurrenciesCommand )
+            ( model, getManyCurrenciesCommand )
 
 
         -- Transactions
         -- index
-        FetchTransactions ->
-            ( { model | transactions = RemoteData.Loading }, fetchTransactionsCommand )
+        --FetchTransactions ->
+        --    ( { model | transactions = RemoteData.Loading }, getManyTransactionsCommand )
 
         TransactionsReceived response ->
             ( { model | transactions = response }, Cmd.none )
 
         -- add
         CreateNewTransaction ->
-            (model, createTransactionCommand model.editTransaction)
+            (model, postTransactionCommand model.editTransaction)
 
         NewTransactionDatetime newDatetime ->
             let
@@ -415,15 +443,30 @@ update msg model =
             in
                 ( { model | editTransaction = updatedNewTransaction}, Cmd.none )
 
-        TransactionCreated (Ok wdTransaction) ->
-            ( { model
-                | transactions = addNewTransaction wdTransaction model.transactions
-              }
-            , Cmd.none
-            )
+        --TransactionCreated (Ok wdTransaction) ->
+            --( --{ model
+              --  | transactions = addNewTransaction wdTransaction model.transactions
+              --}
+            --model
+             --, Cmd.none
+            --, Debug.log "State forward to edit:" (getOneTransactionCommand "catfood")
+            --)
 
-        TransactionCreated (Err _) ->
-            ( model, Cmd.none )
+        --TransactionCreated (Err _) ->
+        --    ( model, Cmd.none )
+
+        --TransactionCreated response ->
+        --    case Debug.log "State update TransactionCreated:" response of
+        --        RemoteData.NotAsked ->
+        --            ( model, Cmd.none )
+        --        RemoteData.Loading ->
+        --            ( model, Cmd.none )
+        --        RemoteData.Failure e ->
+        --            ( model, Cmd.none )
+        --        RemoteData.Success cehr ->
+        --            ( model, Cmd.none )
+        TransactionCreated _ ->
+            ( model, getManyTransactionsCommand )
 
         -- edit
         TransactionReceived response ->
@@ -436,9 +479,9 @@ update msg model =
                     ( {model | wdTransaction = response}, Cmd.none )
                 RemoteData.Success cehr ->
                     case Debug.log "State update cehr:" cehr of
-                        ErrorTransactionEditResponse e ->
+                        ErrorTransactionPostResponse e ->
                             ({model | wdTransaction = response}, Cmd.none)
-                        ValidTransactionEditResponse transaction ->
+                        ValidTransactionPostResponse transaction ->
                             ( {model | wdTransaction = response, editTransaction = transaction}, Cmd.none )
 
         UpdateTransactionDatetime newDatetime ->
@@ -454,9 +497,9 @@ update msg model =
                 ({model | editTransaction = {nc | note = newNote}}, Cmd.none)
 
         SubmitUpdatedTransaction ->
-            (model, updateTransactionCommand model.editTransaction)
+            (model, patchTransactionCommand model.editTransaction)
 
-        TransactionUpdated _ ->
+        TransactionPatched _ ->
             ( model, Cmd.none )
 
         -- delete
@@ -469,7 +512,7 @@ update msg model =
                     ( model, Cmd.none )
 
         TransactionDeleted _ ->
-            ( model, fetchTransactionsCommand )
+            ( model, getManyTransactionsCommand )
 
 
 addNewAccount : Account -> WebData (List Account) -> WebData (List Account)

@@ -23,16 +23,21 @@ const addNew = ({cy, collName, newDoc}) => {
   cy.get('div#' + collName + '-add')
 
   // 2. Enter the field values
-  cy.get('input#title').type(newDoc.title, {delay: 50})
+  cy.get('input#title').type(newDoc.title, {delay: 25})
 
   // 3. Save the new document
   cy.get('button#save').click()
 
   // Probably want to wait for success feedback.
   // The POST request is mysteriously getting aborted.  This seems to fix the problem.
-  cy.wait(['@POST_categories'])
+  // cy.wait(['@POST_categories'])
 
-  // 4. Now return to collection-index
+  // 4. Verify that we redirect to the edit page
+  // cy.get('div#' + collName + '-edit')
+
+  // 5. Verify the contents of the inputs
+
+  // 6. Now return to collection-index
   cy.get('a#' + collName + '-index').click()
 }
 
@@ -41,7 +46,7 @@ module.exports = ({bwURL, collName, cy}) => {
   // 1. Now read the documents collection and post new documents and demonstrate that we correctly have 0, 1, or 2 documents in the collection.
 
   // Go to the index.  Do we have exactly zero documents now?
-  cy.visit(bwURL + '/' + collName)
+  cy.visit(bwURL + '/ui/' + collName)
   cy.get('.loader')
   verifyIndex({bwURL, collName, cy, expectedCnt: 0})
 
@@ -66,13 +71,13 @@ module.exports = ({bwURL, collName, cy}) => {
   cy.get('input').should('have.value', testData.categoryExpense.title)
 
   // 2.2 Now try to retrieve a well-formed, but non-existent id
-  cy.visit(bwURL + '/' + collName + '/666666666666666666666666')
+  cy.visit(bwURL + '/ui/' + collName + '/666666666666666666666666')
   cy.get('.loader')
   cy.get('div#errors')
   cy.get('tbody > tr').first().contains('category 666666666666666666666666 does not exist')
 
   // 2.3 Now try to retrieve a badly formed id
-  cy.visit(bwURL + '/' + collName + '/catfood')
+  cy.visit(bwURL + '/ui/' + collName + '/catfood')
   cy.get('.loader')
   cy.get('div#errors')
   cy.get('tbody > tr').first().contains('Argument passed in must be a single String of 12 bytes or a string of 24 hex characters')
@@ -87,7 +92,7 @@ module.exports = ({bwURL, collName, cy}) => {
   cy.get('.loader')
 
   // 3.3 Update a field
-  cy.get('input#title').clear().type('newtitle', {delay: 50})
+  cy.get('input#title').clear().type(testData.categoryAsset.title, {delay: 25})
 
   // 3.4 Save the changed document
   cy.get('button#save').click()
@@ -98,5 +103,5 @@ module.exports = ({bwURL, collName, cy}) => {
 
   // 3.5. Now return to collection-index and verify that the field has been changed.
   cy.get('a#' + collName + '-index').click()
-  cy.get('tbody').first().contains('newtitle')
+  cy.get('tbody').first().contains(testData.categoryAsset.title)
 }

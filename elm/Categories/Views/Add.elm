@@ -16,7 +16,7 @@ view : Model -> Html Msg
 view model =
     template (div [ id "categories-add" ]
         [ h3 [ class "title is-3" ] [ text "Create New Category" ]
-        , a [ id "categories-index",  href "/categories" ] [ text "Categories" ]
+        , a [ id "categories-index",  href "/ui/categories" ] [ text "Categories" ]
         , newCategoryForm model.editCategory
         ])
 

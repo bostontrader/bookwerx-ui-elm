@@ -11,14 +11,14 @@ import Types exposing
     , Model
     , Msg(SubmitUpdatedCategory, UpdateCategoryTitle)
     , Category
-    , CategoryEditHttpResponse(..)
+    , CategoryPostHttpResponse(..)
     )
 
 view : Model -> Html Msg
 view model =
     template (div [ id "categories-edit"]
         [ h3 [ class "title is-3" ] [ text "Edit Category" ]
-        , a [ id "categories-index", href "/categories" ] [ text "Categories index" ]
+        , a [ id "categories-index", href "/ui/categories" ] [ text "Categories index" ]
         , viewCategoryOrError model
         ])
 
@@ -34,10 +34,10 @@ viewCategoryOrError model =
 
         RemoteData.Success aehr ->
             case aehr of
-                ValidCategoryEditResponse wdCategory ->
+                ValidCategoryPostResponse wdCategory ->
                     editForm model.editCategory
 
-                ErrorCategoryEditResponse errors ->
+                ErrorCategoryPostResponse errors ->
                     viewErrors errors
 
         RemoteData.Failure httpError ->

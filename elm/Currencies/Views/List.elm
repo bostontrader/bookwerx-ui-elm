@@ -13,7 +13,7 @@ view : Model -> Html Msg
 view model =
     template ( div []
         [ h3 [ class "title is-3" ] [ text "Currencies" ]
-          , a [ id "currencies-add", href "/currencies/add", class "button is-link" ]
+          , a [ id "currencies-add", href "/ui/currencies/add", class "button is-link" ]
               [ text "Create new currency" ]
         , viewCurrenciesOrError model
         ] )
@@ -76,7 +76,7 @@ viewCurrency : Currency -> Html Msg
 viewCurrency currency =
     let
         currencyPath =
-            "/currencies/" ++ currency.id
+            "/ui/currencies/" ++ currency.id
     in
         tr []
             [ td []

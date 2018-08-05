@@ -11,14 +11,14 @@ import Types exposing
     , Model
     , Msg(SubmitUpdatedAccount, UpdateAccountTitle)
     , Account
-    , AccountEditHttpResponse(..)
+    , AccountPostHttpResponse(..)
     )
 
 view : Model -> Html Msg
 view model =
     template (div [ id "accounts-edit"]
         [ h3 [ class "title is-3" ] [ text "Edit Account" ]
-        , a [ id "accounts-index", href "/accounts" ] [ text "Accounts index" ]
+        , a [ id "accounts-index", href "/ui/accounts" ] [ text "Accounts index" ]
         , viewAccountOrError model
         ])
 
@@ -34,10 +34,10 @@ viewAccountOrError model =
 
         RemoteData.Success aehr ->
             case aehr of
-                ValidAccountEditResponse wdAccount ->
+                ValidAccountPostResponse wdAccount ->
                     editForm model.editAccount
 
-                ErrorAccountEditResponse errors ->
+                ErrorAccountPostResponse errors ->
                     viewErrors errors
 
         RemoteData.Failure httpError ->

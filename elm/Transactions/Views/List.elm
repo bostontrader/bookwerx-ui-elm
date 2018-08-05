@@ -7,13 +7,17 @@ import Http
 import RemoteData
 
 import Template exposing (template)
-import Types exposing (Model, Msg(DeleteTransaction, FetchTransactions), Transaction)
+import Types exposing (Model, Msg(
+    DeleteTransaction
+    --FetchTransactions
+    )
+    , Transaction)
 
 view : Model -> Html Msg
 view model =
     template ( div []
         [ h3 [ class "title is-3" ] [ text "Transactions" ]
-          , a [ id "transactions-add", href "/transactions/add", class "button is-link" ]
+          , a [ id "transactions-add", href "/ui/transactions/add", class "button is-link" ]
               [ text "Create new transaction" ]
         , viewTransactionsOrError model
         ] )
@@ -75,7 +79,7 @@ viewTransaction : Transaction -> Html Msg
 viewTransaction transaction =
     let
         transactionPath =
-            "/transactions/" ++ transaction.id
+            "/ui/transactions/" ++ transaction.id
     in
         tr []
             [ td [] [ text transaction.id ]
