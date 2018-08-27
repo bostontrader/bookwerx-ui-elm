@@ -10,7 +10,7 @@ before(function () {
   if (!bwURL) {
     cy.log(serverConstants.NO_BWUI_URL_DEFINED)
   }
-  cy.visit(bwURL + '/currencies/add')
+  cy.visit(bwURL + '/#ui/currencies/add')
 })
 
 describe('/currencies', function () {

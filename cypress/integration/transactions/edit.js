@@ -10,7 +10,7 @@ before(function () {
   if (!bwURL) {
     cy.log(serverConstants.NO_BWUI_URL_DEFINED)
   }
-  cy.visit(bwURL + '/transactions/edit')
+  cy.visit(bwURL + '/#ui/transactions/edit')
 })
 
 describe('/transactions', function () {

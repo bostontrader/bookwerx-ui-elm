@@ -1,20 +1,15 @@
-module App exposing (main)
+module App exposing ( main )
 
-import Html exposing (program)
+import Html exposing ( program )
 import Navigation
-import State exposing (init, update)
-import Types exposing (Flags, Model, Msg(LocationChanged))
-import View exposing (view)
+import Time exposing ( every, second )
 
+import Model exposing ( Model )
+import Msg exposing (..)
+import State exposing ( init, update )
+import TypesB exposing ( Flags )
+import View exposing ( view )
 
---main : Program Never Model Msg
---main =
---    Navigation.program LocationChanged
---        { init = init
---        , view = view
---        , update = update
---        , subscriptions = \_ -> Sub.none
---        }
 
 main : Program Flags Model Msg
 main =
@@ -22,5 +17,13 @@ main =
         { init = init
         , view = view
         , update = update
-        , subscriptions = \_ -> Sub.none
+        , subscriptions = subscriptions
         }
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Sub.batch
+        [ every second UpdateCurrentTime
+        , every second TimeoutFlashElements
+        ]

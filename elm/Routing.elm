@@ -3,12 +3,16 @@ module Routing exposing ( extractRoute, extractUrl, extractUrlProxied )
 import Navigation exposing ( Location )
 import UrlParser exposing (..)
 
-import Types exposing ( Route(..), RouteProxied(..) )
-
+import Types exposing ( RouteProxied (..) )
+import Route exposing ( Route (..) )
 
 extractRoute : Location -> Route
 extractRoute location =
-    case (parsePath matchRoute location ) of
+    let _ = Debug.log "routing extract route "  (parseHash matchRoute location)
+    in
+    --case (parsePath matchRoute location ) of
+    case (parseHash matchRoute location ) of
+
         Just route ->
             route
 
@@ -22,12 +26,15 @@ matchRoute =
         , map AccountsAdd (s "ui" </> s "accounts" </> s "add")
         , map AccountsEdit (s "ui" </> s "accounts" </> string)
         , map AccountsIndex (s "ui" </> s "accounts")
+
         , map CategoriesAdd (s "ui" </> s "categories" </> s "add")
         , map CategoriesEdit (s "ui" </> s "categories" </> string)
         , map CategoriesIndex (s "ui" </> s "categories")
+
         , map CurrenciesAdd (s "ui" </> s "currencies" </> s "add")
         , map CurrenciesEdit (s "ui" </> s "currencies" </> string)
         , map CurrenciesIndex (s "ui" </> s "currencies")
+
         , map TransactionsAdd (s "ui" </> s "transactions" </> s "add")
         , map TransactionsEdit (s "ui" </> s "transactions" </> string)
         , map TransactionsIndex (s "ui" </> s "transactions")
@@ -36,10 +43,10 @@ matchRoute =
 extractUrl: Route  -> String
 extractUrl route =
     case route of
-        AccountsIndex -> "/ui/accounts"
-        CategoriesIndex -> "/ui/categories"
-        CurrenciesIndex -> "/ui/currencies"
-        TransactionsIndex -> "/ui/transactions"
+        AccountsIndex -> "#ui/accounts"
+        CategoriesIndex -> "#ui/categories"
+        CurrenciesIndex -> "#ui/currencies"
+        TransactionsIndex -> "#ui/transactions"
         _ -> "/notfound"
 
 extractUrlProxied: RouteProxied  -> String

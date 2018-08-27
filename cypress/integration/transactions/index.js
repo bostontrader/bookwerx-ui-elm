@@ -10,10 +10,9 @@ before(function () {
   if (!bwURL) {
     cy.log(serverConstants.NO_BWUI_URL_DEFINED)
   }
-  cy.visit(bwURL + '/transactions')
+  cy.visit(bwURL + '/#ui/transactions')
 })
 
 describe('/transactions', function () {
   shared.verifyEmbededInTemplate()
-  cy.get('#content nav a').contains('Home')
 })

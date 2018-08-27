@@ -13,15 +13,15 @@
     "bookwerx-testdata": "git+https://git@github.com/bostontrader/bookwerx-testdata.git",
     "bulma": "0.7.1",
     "css-loader": "1.0.0",
-    "cypress": "3.0.3",
+    "cypress": "3.1.0",
     "elm-test": "0.18.12",
     "elm-webpack-loader": "4.5.0",
     "file-loader": "1.1.11",
     "mongodb": "2.2.31",
     "standard": "11.0.1",
-    "style-loader": "0.21.0",
-    "url-loader": "1.0.1",
-    "webpack": "4.16.4",
+    "style-loader": "0.23.0",
+    "url-loader": "1.1.1",
+    "webpack": "4.17.1",
     "webpack-cli": "3.1.0"
   },
   "description": "A browser based UI for bookwerx-core.",
@@ -42,7 +42,7 @@
     "lint": "standard",
     "start": "BWUI_MODE=development BWUI_PORT=3004 BWCORE_URL=http://127.0.0.1:3003 node startServer.js",
     "startCore": "BW_PORT=3003 BW_MONGO=mongodb://127.0.0.1:27017/bookwerx-core-development node node_modules/bookwerx-core/startServer.js",
-    "test": "npx cypress run --env BWUI_URL=http://127.0.0.1:3004"
+    "test": "npx cypress run --env BWUI_URL=http://127.0.0.1:3004 --browser chromium"
   },
   "standard": {
     "ignore": [
@@ -50,5 +50,5 @@
       "**/elm-stuff/"
     ]
   },
-  "version": "0.0.30"
+  "version": "0.0.31"
 }

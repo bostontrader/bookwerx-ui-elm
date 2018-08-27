@@ -3,26 +3,32 @@ module View exposing (view)
 import Html exposing (Html, a, div, h3, nav, text)
 import Html.Attributes exposing (class, href, id)
 import Template exposing (template)
-import Types exposing (Model, Msg(..), Route(..))
 
-import Accounts.Views.Add
-import Accounts.Views.Edit
-import Accounts.Views.List
+import Model exposing ( Model )
+--import Types exposing (Msg(..), Route(..))
+import Msg exposing ( Msg(..) )
+import Route exposing (..)
 
-import Categories.Views.Add
-import Categories.Views.Edit
-import Categories.Views.List
+import Account.Views.Add
+import Account.Views.Edit
+import Account.Views.List
 
-import Currencies.Views.Add
-import Currencies.Views.Edit
-import Currencies.Views.List
+import Category.Views.Add
+import Category.Views.Edit
+import Category.Views.List
 
-import Transactions.Views.Add
-import Transactions.Views.Edit
-import Transactions.Views.List
+import Currency.Views.Add
+import Currency.Views.Edit
+import Currency.Views.List
+
+import Transaction.Views.Add
+import Transaction.Views.Edit
+import Transaction.Views.List
 
 view : Model -> Html Msg
 view model =
+    let _ = Debug.log "View view " model.currentRoute
+    in
     case model.currentRoute of
         Home ->
             template (div[][ text "Home Sweet Home" ])
@@ -32,14 +38,14 @@ view model =
 
         -- Accounts
         AccountsAdd ->
-            Accounts.Views.Add.view model
+            Account.Views.Add.view model
 
         -- This message provides a parameter, but we don't use it in the view.
         AccountsEdit id ->
-            Accounts.Views.Edit.view model
+            Account.Views.Edit.view model
 
         AccountsIndex ->
-            Accounts.Views.List.view model
+            Account.Views.List.view model
 
         -- This route will be intercepted by the server and elm will never see it.
         --AccountsGetMany ->
@@ -48,50 +54,59 @@ view model =
 
         -- Categories
         CategoriesAdd ->
-             Categories.Views.Add.view model
+             Category.Views.Add.view model
 
         -- This message provides a parameter, but we don't use it in the view.
         CategoriesEdit id ->
-            Categories.Views.Edit.view model
+            --case model.pending of
+                --True ->
+                    --h3 [] [ text "Patch Pending" ]
+                --False ->
+                    Category.Views.Edit.view model
 
         -- This route will be intercepted by the server and elm will never see it.
         --CategoriesGetMany ->
         --    pageNotFound
 
         CategoriesIndex ->
-            Categories.Views.List.view model
+            Category.Views.List.view model
 
 
         -- Currencies
         CurrenciesAdd ->
-            Currencies.Views.Add.view model
+            Currency.Views.Add.view model
 
         -- This message provides a parameter, but we don't use it in the view.
         CurrenciesEdit id ->
-            Currencies.Views.Edit.view model
+            Currency.Views.Edit.view model
 
         -- This route will be intercepted by the server and elm will never see it.
         --CurrenciesGetMany ->
         --    pageNotFound
 
         CurrenciesIndex ->
-            Currencies.Views.List.view model
+            Currency.Views.List.view model
 
 
         -- Transactions
         TransactionsAdd ->
-            Transactions.Views.Add.view model
+            Transaction.Views.Add.view model
 
         -- This message provides a parameter, but we don't use it in the view.
         TransactionsEdit id ->
-            Transactions.Views.Edit.view model
+            Transaction.Views.Edit.view model
+            --case Debug.log "View TransactionsEdit " model.pending of
+            --    True ->
+            --        h3 [] [ text "Patch Pending" ]
+            --    False ->
+            --        Transaction.Views.Edit.view model
 
         -- This route will be intercepted by the server and elm will never see it.
         --TransactionsGetMany ->
         --    pageNotFound
 
         TransactionsIndex ->
-            Transactions.Views.List.view model
+            Transaction.Views.List.view model
 
 
 --pageNotFound: Html Msg

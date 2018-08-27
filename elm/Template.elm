@@ -4,7 +4,7 @@ import Html exposing (Html, a, div, img, nav, text)
 import Html.Attributes exposing (class, height, href, id, src, style, width)
 
 import Routing exposing (extractUrl)
-import Types exposing
+import Route exposing
     ( Route
         ( AccountsIndex
         , CategoriesIndex

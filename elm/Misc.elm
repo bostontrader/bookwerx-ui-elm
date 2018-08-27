@@ -3,20 +3,24 @@ module Misc exposing
     , findCategoryById
     , findCurrencyById
     , findTransactionById
+    , insertFlashElement
     )
 
-import Types exposing
-    ( Account
-    , AccountId
-    , Category
-    , CategoryId
-    , Currency
-    , CurrencyId
-    , Transaction
-    , TransactionId
-    )
+import RemoteData exposing ( WebData )
+import TypesB exposing ( FlashMsg )
 
-import RemoteData exposing (WebData)
+
+import Account.Plumbing exposing ( AccountId )
+import Account.Account exposing ( Account )
+
+import Category.Plumbing exposing ( CategoryId )
+import Category.Category exposing ( Category )
+
+import Currency.Plumbing exposing ( CurrencyId )
+import Currency.Currency exposing ( Currency )
+
+import Transaction.Plumbing exposing ( TransactionId )
+import Transaction.Transaction exposing ( Transaction )
 
 
 findAccountById : AccountId -> WebData (List Account) -> Maybe Account
@@ -54,6 +58,7 @@ findCurrencyById currencyId currencies =
         Nothing ->
             Nothing
 
+
 findTransactionById : TransactionId -> WebData (List Transaction) -> Maybe Transaction
 findTransactionById transactionId transactions =
     case RemoteData.toMaybe transactions of
@@ -64,3 +69,31 @@ findTransactionById transactionId transactions =
 
         Nothing ->
             Nothing
+
+
+--CreateFlashElement text color duration ->
+insertFlashElement : List FlashMsg -> FlashMsg -> List FlashMsg
+insertFlashElement flashMessages newFlashMsg =
+
+    --let
+        --expirationTime =
+            --model.currentTime
+                --+ (duration * Time.second)
+
+    --    newFlashElement =
+    --        { message = text
+    --        , id = model.nextFlashId
+    --        , expirationTime = expirationTime
+    --        }
+
+
+        --newList =
+            newFlashMsg :: flashMessages
+    --in
+        --newList
+        --{ model
+            --| flashElements = newList
+            -- | nextId = model.nextId + 1
+        --}
+           -- ! []
+       --    ( model, Cmd.none )

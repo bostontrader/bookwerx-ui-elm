@@ -41,16 +41,16 @@ describe('The whole damn thing works', function () {
     // 2. genericCRU
     let genericCRU
 
-    genericCRU = require('./basicCRUD/accounts/genericCRU')
+    genericCRU = require('./accounts/genericCRU')
     genericCRU({bwURL, collName: 'accounts', cy, newDoc1: testData.accountBank, newDoc2: testData.accountCash})
 
-    genericCRU = require('./basicCRUD/categories/genericCRU')
+    genericCRU = require('./categories/genericCRU')
     genericCRU({bwURL, collName: 'categories', cy, newDoc1: testData.categoryAsset, newDoc2: testData.categoryExpense})
 
-    genericCRU = require('./basicCRUD/currencies/genericCRU')
+    genericCRU = require('./currencies/genericCRU')
     genericCRU({bwURL, collName: 'currencies', cy, newDoc1: testData.currencyCNY, newDoc2: testData.currencyRUB})
 
-    genericCRU = require('./basicCRUD/transactions/genericCRU')
+    genericCRU = require('./transactions/genericCRU')
     genericCRU({bwURL, collName: 'transactions', cy, newDoc1: testData.transaction1, newDoc2: testData.transaction2})
 
     // 3. CustomCRU testing specialized for particular collections./

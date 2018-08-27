@@ -10,7 +10,7 @@ before(function () {
   if (!bwURL) {
     cy.log(serverConstants.NO_BWUI_URL_DEFINED)
   }
-  cy.visit(bwURL + '/categories/add')
+  cy.visit(bwURL + '/#ui/categories/add')
 })
 
 describe('/categories', function () {
