@@ -6,11 +6,6 @@ language: node_js
 node_js:
   - "8.5"
 
-services:
-  - mongodb
-
 before_script:
-  - npm install -g elm
+  - npm install
   - npx webpack
-  - npm start &
-  - npm run startCore &
