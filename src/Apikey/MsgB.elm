@@ -1,6 +1,6 @@
 module Apikey.MsgB exposing (MsgB(..))
 
-import Apikey.Plumbing exposing( ApikeyPostHttpResponseString)
+import Apikey.Plumbing exposing (ApikeyPostHttpResponseString)
 import RemoteData exposing (WebData)
 
 

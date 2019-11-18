@@ -1,8 +1,8 @@
 module Currency.Model exposing (Model)
 
 import Currency.Currency exposing (Currency)
-import RemoteData exposing (WebData)
 import IntField exposing (IntField(..))
+import RemoteData exposing (WebData)
 
 
 type alias Model =

@@ -22,4 +22,3 @@ type alias AccountJoined =
     , rarity : IntField
     , title : String
     }
-

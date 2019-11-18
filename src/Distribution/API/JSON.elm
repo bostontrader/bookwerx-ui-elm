@@ -4,13 +4,12 @@ module Distribution.API.JSON exposing
     , distributionReportsDecoder
     )
 
-
-import Distribution.Distribution exposing (
-    DistributionRaw
-    , DistributionJoined
-    , DistributionReport
-    )
-
+import Distribution.Distribution
+    exposing
+        ( DistributionJoined
+        , DistributionRaw
+        , DistributionReport
+        )
 import Json.Decode exposing (Decoder, int, string)
 import Json.Decode.Pipeline exposing (required)
 

@@ -7,9 +7,9 @@ module Account.API.JSON exposing
 import Account.Account exposing (Account, AccountJoined)
 import Category.API.JSON exposing (categoryShortDecoder)
 import Currency.API.JSON exposing (currencyShortDecoder)
+import IntField exposing (IntField(..))
 import Json.Decode exposing (Decoder, int, map, string)
 import Json.Decode.Pipeline exposing (required)
-import IntField exposing (IntField(..))
 
 
 accountsDecoder : Decoder (List Account)

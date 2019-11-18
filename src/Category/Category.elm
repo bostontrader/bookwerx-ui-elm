@@ -1,5 +1,6 @@
 module Category.Category exposing (Category, CategoryShort)
 
+
 type alias Category =
     { id : Int
     , apikey : String
@@ -8,6 +9,9 @@ type alias Category =
     }
 
 
+
 -- Need this for the convenience of the UI
+
+
 type alias CategoryShort =
     { category_symbol : String }

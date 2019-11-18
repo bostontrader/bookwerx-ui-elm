@@ -1,9 +1,9 @@
 module Transaction.API.Delete exposing (deleteTransactionCommand)
 
-import Transaction.MsgB exposing (MsgB(..))
 import Http
 import Msg exposing (Msg(..))
 import RemoteData
+import Transaction.MsgB exposing (MsgB(..))
 
 
 deleteTransactionCommand : String -> Cmd Msg

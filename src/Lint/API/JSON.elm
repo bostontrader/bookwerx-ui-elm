@@ -1,8 +1,8 @@
 module Lint.API.JSON exposing (lintsDecoder)
 
-import Lint.Lint exposing (Lint)
 import Json.Decode exposing (Decoder, int, string)
 import Json.Decode.Pipeline exposing (required)
+import Lint.Lint exposing (Lint)
 
 
 lintsDecoder : Decoder (List Lint)

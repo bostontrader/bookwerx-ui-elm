@@ -2,38 +2,37 @@ module Lint.Update exposing (lintUpdate)
 
 import Flash exposing (FlashMsg)
 import Json.Decode exposing (decodeString)
-import Msg exposing (Msg(..))
 import Lint.API.GetLints exposing (getLintsCmd)
 import Lint.API.JSON exposing (lintsDecoder)
 import Lint.Model
 import Lint.MsgB exposing (MsgB(..))
+import Msg exposing (Msg(..))
 import RemoteData
 import Translate exposing (Language)
 import Util exposing (getRemoteDataStatusMessage)
 
 
 lintUpdate : MsgB -> Language -> Lint.Model.Model -> { lint : Lint.Model.Model, cmd : Cmd Msg, log : List String, flashMessages : List FlashMsg }
-lintUpdate lintMsgB language model  =
-
+lintUpdate lintMsgB language model =
     case lintMsgB of
-
-       GetLintCategories url ->
+        GetLintCategories url ->
             { lint = { model | wdLints = RemoteData.Loading, linter = "categories" }
             , cmd = getLintsCmd url
             , log = [ "GET " ++ url ]
             , flashMessages = []
             }
 
-       GetLintCurrencies url ->
+        GetLintCurrencies url ->
             { lint = { model | wdLints = RemoteData.Loading, linter = "currencies" }
             , cmd = getLintsCmd url
             , log = [ "GET " ++ url ]
             , flashMessages = []
             }
 
-       LintsReceived wdLints ->
+        LintsReceived wdLints ->
             { lint =
-                { model | wdLints = wdLints
+                { model
+                    | wdLints = wdLints
                     , lints =
                         case decodeString lintsDecoder (getRemoteDataStatusMessage wdLints language) of
                             Ok value ->
@@ -48,28 +47,31 @@ lintUpdate lintMsgB language model  =
             , flashMessages = []
             }
 
-        --UpdatePrecision newValue ->
-            --{ lint =
-                --case newValue |> String.toInt |> Result.toMaybe of
-                    --Nothing ->
-                        --{ model | precision = IntField Nothing newValue }
 
-                    --Just v ->
-                        --{ model | precision = IntField (Just v) newValue }
-            --, cmd = Cmd.none
-            --, log = []
-            --, flash = []
-            --}
 
-        --UpdateSOF newValue ->
-            --{ lint =
-                --if newValue == "stock" then
-                    --{ model | sof = Just(Stock) }
-                --else if newValue == "flow" then
-                    --{ model | sof = Just(Flow) }
-                --else
-                    --model
-            --, cmd = Cmd.none
-            --, log = []
-            --, flash = []
-            --}
+--UpdatePrecision newValue ->
+--{ lint =
+--case newValue |> String.toInt |> Result.toMaybe of
+--Nothing ->
+--{ model | precision = IntField Nothing newValue }
+--Just v ->
+--{ model | precision = IntField (Just v) newValue }
+--, cmd = Cmd.none
+--, log = []
+--, flash = []
+--}
+
+
+
+--UpdateSOF newValue ->
+--{ lint =
+--if newValue == "stock" then
+--{ model | sof = Just(Stock) }
+--else if newValue == "flow" then
+--{ model | sof = Just(Flow) }
+--else
+--model
+--, cmd = Cmd.none
+--, log = []
+--, flash = []
+--}

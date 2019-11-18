@@ -16,6 +16,7 @@ type alias Model =
     , uiLevel : Int
     }
 
+
 type StockOrFlow
     = Stock
     | Flow

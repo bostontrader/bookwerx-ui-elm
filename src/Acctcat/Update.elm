@@ -5,15 +5,15 @@ import Acctcat.API.GetMany exposing (getManyAcctcatsCommand)
 import Acctcat.API.JSON exposing (acctcatsDecoder)
 import Acctcat.API.Post exposing (postAcctcatCommand)
 import Acctcat.Acctcat exposing (Acctcat)
-import Acctcat.MsgB exposing (MsgB(..))
 import Acctcat.Model
+import Acctcat.MsgB exposing (MsgB(..))
 import Browser.Navigation as Nav
 import Constants exposing (flashMessageDuration)
 import Flash exposing (FlashMsg, FlashSeverity(..), expires)
 import Json.Decode exposing (decodeString)
 import Msg exposing (Msg(..))
 import RemoteData
-import Route exposing (..)
+import Route
 import Routing exposing (extractUrl)
 import Time
 import Translate exposing (Language(..))
@@ -21,8 +21,7 @@ import Util exposing (getRemoteDataStatusMessage)
 
 
 acctcatsUpdate : MsgB -> Nav.Key -> Language -> Time.Posix -> Acctcat.Model.Model -> { acctcats : Acctcat.Model.Model, cmd : Cmd Msg, log : List String, flashMessages : List FlashMsg }
-acctcatsUpdate   acctcatMsgB key language currentTime model =
-
+acctcatsUpdate acctcatMsgB key language currentTime model =
     case acctcatMsgB of
         -- delete
         DeleteAcctcat url ->
@@ -34,7 +33,7 @@ acctcatsUpdate   acctcatMsgB key language currentTime model =
 
         AcctcatDeleted response ->
             { acctcats = model
-            , cmd = Nav.pushUrl key (extractUrl CategoriesIndex)
+            , cmd = Nav.pushUrl key (extractUrl Route.CategoriesIndex)
             , log = [ getRemoteDataStatusMessage response English ]
             , flashMessages = [ FlashMsg (getRemoteDataStatusMessage response language) FlashSuccess (expires currentTime flashMessageDuration) ]
             }
@@ -129,7 +128,7 @@ acctcatsUpdate   acctcatMsgB key language currentTime model =
 
         AcctcatPosted response ->
             { acctcats = model
-            , cmd = Nav.pushUrl key (extractUrl CategoriesIndex)
+            , cmd = Nav.pushUrl key (extractUrl Route.CategoriesIndex)
             , log = [ getRemoteDataStatusMessage response English ]
             , flashMessages = [ FlashMsg (getRemoteDataStatusMessage response language) FlashSuccess (expires currentTime flashMessageDuration) ]
             }

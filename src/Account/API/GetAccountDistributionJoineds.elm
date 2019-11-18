@@ -1,4 +1,6 @@
 -- Get the DistributionJoineds related to a particular account
+
+
 module Account.API.GetAccountDistributionJoineds exposing (getAccountDistributionJoinedsCommand)
 
 import Account.MsgB exposing (MsgB(..))

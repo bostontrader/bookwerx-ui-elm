@@ -4,7 +4,7 @@ import Account.Account exposing (Account)
 import Acctcat.Acctcat exposing (Acctcat)
 import Browser.Navigation as Nav
 import Category.Category exposing (Category)
-import Constants exposing (..)
+import Constants as C
 import Currency.Currency exposing (Currency)
 import Distribution.Distribution exposing (DistributionEB)
 import IntField exposing (IntField(..))
@@ -29,6 +29,7 @@ emptyAcctcat =
     Acctcat -1 "" -1 -1
 
 
+emptyCategory : Category
 emptyCategory =
     Category -1 "" "" ""
 
@@ -47,28 +48,27 @@ emptyTransaction : Transaction
 emptyTransaction =
     Transaction -1 "" "" ""
 
+
 initialModel : Route -> Nav.Key -> Url.Url -> Model.Model
 initialModel route key url =
     { currentRoute = route
     , currentTime = Time.millisToPosix 0
-    , drcr_format = initialDRCRFormat
+    , drcr_format = C.initialDRCRFormat
     , flashMessages = []
     , http_log = modelAfterAPIKey.http_log
     , key = key
     , tutorialLevel = 0
     , tutorialActive = True
-    , language = initialLanguage
+    , language = C.initialLanguage
     , url = url
-
     , accounts = modelAfterAPIKey.accounts
     , acctcats = modelAfterAPIKey.acctcats
-
     , apikeys =
         { apikey = ""
         , wdApikey = RemoteData.NotAsked
         }
     , bservers =
-        { baseURL = initialBserver -- This is the base URL for the other API calls.
+        { baseURL = C.initialBserver -- This is the base URL for the other API calls.
         , wdBserver = RemoteData.NotAsked
         }
     , categories = modelAfterAPIKey.categories
@@ -79,7 +79,11 @@ initialModel route key url =
     , transactions = modelAfterAPIKey.transactions
     }
 
+
+
 -- Initialize some fields of the model to reflect a new API Key
+
+
 modelAfterAPIKey : ModelAfterAPIKey
 modelAfterAPIKey =
     { accounts =
@@ -121,11 +125,10 @@ modelAfterAPIKey =
         , decimalPlaces = 2
         }
     , lint =
-         { lints = []
-         , wdLints = RemoteData.NotAsked
-         , linter = ""
-         }
-
+        { lints = []
+        , wdLints = RemoteData.NotAsked
+        , linter = ""
+        }
     , report =
         { distributionReports = []
         , wdDistributionReports = RemoteData.NotAsked
@@ -136,24 +139,21 @@ modelAfterAPIKey =
         , stopTime = ""
         , uiLevel = 0
         }
-    
     , transactions =
         { transactions = []
         , wdTransactions = RemoteData.NotAsked
         , wdTransaction = RemoteData.NotAsked
         , editBuffer = emptyTransaction
         }
-
     }
 
+
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
-init flags url key =
+init _ url key =
     let
         currentRoute =
             Routing.extractRoute url
-
     in
     case currentRoute of
-
         _ ->
             ( initialModel currentRoute key url, Cmd.none )

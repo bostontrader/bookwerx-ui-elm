@@ -1,6 +1,6 @@
 module Apikey.View exposing (view)
 
-import Apikey.MsgB exposing( MsgB(..))
+import Apikey.MsgB exposing (MsgB(..))
 import Flash exposing (viewFlash)
 import Html exposing (Html, button, div, h3, input, p, text)
 import Html.Attributes exposing (class, style, type_, value)
@@ -77,7 +77,7 @@ rightContent model =
                 ]
                 []
             ]
-        , div [style "margin-top" "1.0em"]
+        , div [ style "margin-top" "1.0em" ]
             [ button [ class "button is-link", onClick (ApikeyMsgA (Apikey.MsgB.PostApikey (model.bservers.baseURL ++ "/apikeys"))) ]
                 [ text
                     (tx model.language

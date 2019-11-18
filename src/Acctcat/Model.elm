@@ -1,8 +1,8 @@
 module Acctcat.Model exposing (Model)
 
 import Acctcat.Acctcat exposing (Acctcat)
-import RemoteData exposing (WebData)
 import IntField exposing (IntField(..))
+import RemoteData exposing (WebData)
 
 
 type alias Model =

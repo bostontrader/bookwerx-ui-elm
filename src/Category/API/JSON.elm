@@ -22,6 +22,7 @@ categoryDecoder =
         |> required "symbol" string
         |> required "title" string
 
+
 categoryShortDecoder : Decoder CategoryShort
 categoryShortDecoder =
     Json.Decode.succeed CategoryShort

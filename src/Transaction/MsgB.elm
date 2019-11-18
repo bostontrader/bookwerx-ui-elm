@@ -6,7 +6,6 @@ import Transaction.Plumbing
         ( TransactionPostHttpResponseString
         , TransactionPutHttpResponseString
         )
-import Transaction.Transaction exposing (Transaction)
 
 
 type

@@ -1,6 +1,6 @@
 module Bserver.Plumbing exposing
     ( BserverPingResponse
-    ,  BserverURL
+    , BserverURL
     )
 
 

@@ -1,24 +1,23 @@
 module Report.Update exposing (reportUpdate)
 
+--import TypesB exposing (, IntField(..))
+
 import Distribution.API.JSON exposing (distributionReportsDecoder)
-import Json.Decode exposing (decodeString)
 import Flash exposing (FlashMsg)
 import IntField exposing (IntField(..))
+import Json.Decode exposing (decodeString)
 import Msg exposing (Msg(..))
+import RemoteData
 import Report.API.GetDistributions exposing (getDistributionsCmd)
 import Report.Model exposing (StockOrFlow(..))
-import RemoteData
 import Report.MsgB exposing (MsgB(..))
 import Translate exposing (Language)
---import TypesB exposing (, IntField(..))
 import Util exposing (getRemoteDataStatusMessage)
 
 
 reportUpdate : MsgB -> Language -> Report.Model.Model -> { report : Report.Model.Model, cmd : Cmd Msg, log : List String, flashMessages : List FlashMsg }
 reportUpdate reportMsgB language model =
-
     case reportMsgB of
-
         GetDistributions url ->
             { report = { model | wdDistributionReports = RemoteData.Loading }
             , cmd = getDistributionsCmd url
@@ -28,7 +27,8 @@ reportUpdate reportMsgB language model =
 
         DistributionsReceived wdDistributionReports ->
             { report =
-                { model | wdDistributionReports = wdDistributionReports
+                { model
+                    | wdDistributionReports = wdDistributionReports
                     , distributionReports =
                         case decodeString distributionReportsDecoder (getRemoteDataStatusMessage wdDistributionReports language) of
                             Ok value ->
@@ -56,9 +56,8 @@ reportUpdate reportMsgB language model =
             , flashMessages = []
             }
 
-
         UpdateDecimalPlaces newValue ->
-            { report = { model | decimalPlaces = newValue}
+            { report = { model | decimalPlaces = newValue }
             , cmd = Cmd.none
             , log = []
             , flashMessages = []
@@ -68,8 +67,10 @@ reportUpdate reportMsgB language model =
             { report =
                 if newValue == "stock" then
                     { model | sof = Just Stock, uiLevel = 2 }
+
                 else if newValue == "flow" then
                     { model | sof = Just Flow, uiLevel = 2 }
+
                 else
                     model
             , cmd = Cmd.none

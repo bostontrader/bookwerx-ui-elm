@@ -1,9 +1,10 @@
 module Account.MsgB exposing (MsgB(..))
 
-import Account.Plumbing exposing
-    ( AccountPostHttpResponseString
-    , AccountPutHttpResponseString
-    )
+import Account.Plumbing
+    exposing
+        ( AccountPostHttpResponseString
+        , AccountPutHttpResponseString
+        )
 import RemoteData exposing (WebData)
 
 
@@ -15,11 +16,9 @@ type
       -- getMany
     | GetManyAccounts String
     | AccountsReceived (WebData String)
-
-    -- getManyDistributionJoineds
+      -- getManyDistributionJoineds
     | GetAccountDistributionJoineds String
     | AccountDistributionJoinedsReceived (WebData String)
-
       -- getOne
     | GetOneAccount String
     | AccountReceived (WebData String)

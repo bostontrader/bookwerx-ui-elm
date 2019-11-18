@@ -1,9 +1,9 @@
 module Transaction.API.GetMany exposing (getManyTransactionsCommand)
 
-import Transaction.MsgB exposing (MsgB(..))
 import Http
 import Msg exposing (Msg(..))
 import RemoteData
+import Transaction.MsgB exposing (MsgB(..))
 
 
 getManyTransactionsCommand : String -> Cmd Msg

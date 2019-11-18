@@ -8,8 +8,8 @@ import Account.API.JSON exposing (accountDecoder, accountJoinedsDecoder)
 import Account.API.Post exposing (postAccountCommand)
 import Account.API.Put exposing (putAccountCommand)
 import Account.Account exposing (Account)
-import Account.MsgB exposing (MsgB(..))
 import Account.Model
+import Account.MsgB exposing (MsgB(..))
 import Browser.Navigation as Nav
 import Constants exposing (flashMessageDuration)
 import Distribution.API.JSON exposing (distributionJoinedsDecoder)
@@ -25,8 +25,8 @@ import Translate exposing (Language(..))
 import Util exposing (getRemoteDataStatusMessage)
 
 
-accountsUpdate : MsgB -> Nav.Key -> Language -> Time.Posix -> Account.Model.Model ->  { accounts : Account.Model.Model, cmd : Cmd Msg, log : List String, flashMessages : List FlashMsg }
-accountsUpdate accountMsgB key language currentTime model  =
+accountsUpdate : MsgB -> Nav.Key -> Language -> Time.Posix -> Account.Model.Model -> { accounts : Account.Model.Model, cmd : Cmd Msg, log : List String, flashMessages : List FlashMsg }
+accountsUpdate accountMsgB key language currentTime model =
     case accountMsgB of
         -- delete
         DeleteAccount url ->
@@ -52,7 +52,7 @@ accountsUpdate accountMsgB key language currentTime model  =
             }
 
         UpdateDecimalPlaces newValue ->
-            { accounts = { model | decimalPlaces = newValue}
+            { accounts = { model | decimalPlaces = newValue }
             , cmd = Cmd.none
             , log = []
             , flashMessages = []
@@ -131,7 +131,6 @@ accountsUpdate accountMsgB key language currentTime model  =
                             Err _ ->
                                 -- Here we ignore whatever error message comes from the decoder because we should never get any such error and it's otherwise too much trouble to deal with it.
                                 []
-
                 }
             , cmd = Cmd.none
             , log = []

@@ -6,7 +6,7 @@ import Flash exposing (FlashMsg, FlashSeverity(..), expires)
 import Json.Decode exposing (decodeString)
 import Msg exposing (Msg(..))
 import RemoteData
-import Route exposing (..)
+import Route exposing (Route(..))
 import Routing exposing (extractUrl)
 import Time
 import Transaction.API.Delete exposing (deleteTransactionCommand)
@@ -16,14 +16,14 @@ import Transaction.API.JSON exposing (transactionDecoder, transactionsDecoder)
 import Transaction.API.Post exposing (postTransactionCommand)
 import Transaction.API.Put exposing (putTransactionCommand)
 import Transaction.Model
-import Transaction.Transaction exposing (Transaction)
 import Transaction.MsgB exposing (MsgB(..))
+import Transaction.Transaction exposing (Transaction)
 import Translate exposing (Language(..))
 import Util exposing (getRemoteDataStatusMessage)
 
-transactionsUpdate : MsgB -> Nav.Key -> Language -> Time.Posix -> Transaction.Model.Model -> { transactions : Transaction.Model.Model, cmd : Cmd Msg, log : List String, flashMessages : List FlashMsg }
-transactionsUpdate transactionMsgB key language currentTime model  =
 
+transactionsUpdate : MsgB -> Nav.Key -> Language -> Time.Posix -> Transaction.Model.Model -> { transactions : Transaction.Model.Model, cmd : Cmd Msg, log : List String, flashMessages : List FlashMsg }
+transactionsUpdate transactionMsgB key language currentTime model =
     case transactionMsgB of
         -- delete
         DeleteTransaction url ->

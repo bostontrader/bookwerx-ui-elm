@@ -5,6 +5,7 @@ module Acctcat.Views.AddEdit exposing (view)
 import Acctcat.Acctcat exposing (Acctcat)
 import Acctcat.MsgB exposing (MsgB(..))
 import Category.Model
+import Flash exposing (viewFlash)
 import Html exposing (Html, a, button, div, h3, label, option, select, text)
 import Html.Attributes exposing (class, href, selected, value)
 import Html.Events exposing (onClick, onInput)
@@ -13,7 +14,6 @@ import Msg exposing (Msg(..))
 import Template exposing (template)
 import Translate exposing (Language, tx_save)
 import Types exposing (AEMode(..))
-import Flash exposing (viewFlash)
 import ViewHelpers exposing (viewHttpPanel)
 
 
@@ -44,10 +44,11 @@ buildAccountSelect model selected_id =
         )
 
 
-buildCategorySelect : Category.Model.Model -> Int -> List (Html msg)
-buildCategorySelect model selected_id =
-    List.append [ option [ value "-1" ] [ text "None Selected" ] ]
-        (List.map (\a -> option [ value (String.fromInt a.id), selected (a.id == selected_id) ] [ text a.title ]) (List.sortBy .title model.categories))
+
+--buildCategorySelect : Category.Model.Model -> Int -> List (Html msg)
+--buildCategorySelect model selected_id =
+--List.append [ option [ value "-1" ] [ text "None Selected" ] ]
+--(List.map (\a -> option [ value (String.fromInt a.id), selected (a.id == selected_id) ] [ text a.title ]) (List.sortBy .title model.categories))
 
 
 leftContent : String -> Language -> Html Msg
@@ -61,11 +62,10 @@ rightContent r model =
     div []
         [ h3 [ class "title is-3" ] [ text r.title ]
         , viewFlash model.flashMessages
-        , a [href "/acctcats" ] [ text "Acctcats index" ]
+        , a [ href "/acctcats" ] [ text "Acctcats index" ]
         , addeditForm
             model.acctcats.editBuffer
             (buildAccountSelect model model.acctcats.editBuffer.account_id)
-
         , div []
             [ button
                 [ class "button is-link"
@@ -110,6 +110,5 @@ view model aemode =
                     ++ "/acctcats "
                     ++ postParams
             }
-
     in
-        template model (leftContent r.logMsg model.language) (rightContent r model)
+    template model (leftContent r.logMsg model.language) (rightContent r model)

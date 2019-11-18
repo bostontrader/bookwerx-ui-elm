@@ -1,9 +1,10 @@
-module Flash exposing ( FlashMsg, FlashSeverity(..), expires, viewFlash )
+module Flash exposing (FlashMsg, FlashSeverity(..), expires, viewFlash)
 
 import Html exposing (Html, div, text)
 import Html.Attributes exposing (class)
 import Msg exposing (Msg)
 import Time exposing (Posix)
+
 
 type alias FlashMsg =
     { message : String
@@ -11,22 +12,27 @@ type alias FlashMsg =
     , expirationTime : Posix
     }
 
+
 type FlashSeverity
     = FlashSuccess
     | FlashWarning
     | FlashError
 
+
+
 -- Given the currentTime and a duration, return an expiration Posix time
+
+
 expires : Posix -> Int -> Posix
 expires currentTime duration =
-    Time.millisToPosix ( Time.posixToMillis currentTime + duration)
+    Time.millisToPosix (Time.posixToMillis currentTime + duration)
 
 
 flashNotificationClass : FlashMsg -> String
 flashNotificationClass flashMsg =
     case flashMsg.severity of
         FlashSuccess ->
-           "notification is-success"
+            "notification is-success"
 
         FlashWarning ->
             "notification is-warning"

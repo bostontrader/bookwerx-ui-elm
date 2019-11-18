@@ -8,24 +8,23 @@ import Category.API.JSON exposing (categoriesDecoder, categoryDecoder)
 import Category.API.Post exposing (postCategoryCommand)
 import Category.API.Put exposing (putCategoryCommand)
 import Category.Category exposing (Category)
-import Category.MsgB exposing (MsgB(..))
 import Category.Model exposing (Model)
+import Category.MsgB exposing (MsgB(..))
 import Constants exposing (flashMessageDuration)
+import Flash exposing (FlashMsg, FlashSeverity(..), expires)
+import IntField exposing (IntField(..))
 import Json.Decode exposing (decodeString)
 import Msg exposing (Msg(..))
 import RemoteData
-import Route exposing (..)
+import Route
 import Routing exposing (extractUrl)
 import Time
 import Translate exposing (Language(..))
-import Flash exposing (FlashMsg, FlashSeverity(..), expires)
-import IntField exposing (IntField(..))
 import Util exposing (getRemoteDataStatusMessage)
 
 
-categoriesUpdate : MsgB -> Nav.Key -> Language -> Time.Posix -> Category.Model.Model  -> { categories : Model, cmd : Cmd Msg, log : List String, flashMessages : List FlashMsg }
+categoriesUpdate : MsgB -> Nav.Key -> Language -> Time.Posix -> Category.Model.Model -> { categories : Model, cmd : Cmd Msg, log : List String, flashMessages : List FlashMsg }
 categoriesUpdate categoryMsgB key language currentTime model =
-
     case categoryMsgB of
         -- delete
         DeleteCategory url ->
@@ -37,13 +36,13 @@ categoriesUpdate categoryMsgB key language currentTime model =
 
         CategoryDeleted response ->
             { categories = model
-            , cmd = Nav.pushUrl key (extractUrl CategoriesIndex)
+            , cmd = Nav.pushUrl key (extractUrl Route.CategoriesIndex)
             , log = [ getRemoteDataStatusMessage response language ]
             , flashMessages = [ FlashMsg (getRemoteDataStatusMessage response language) FlashSuccess (expires currentTime flashMessageDuration) ]
             }
 
-
-        UpdateCategoryAccount newSymbol ->
+        -- This does nothing. Can we get rid of it?
+        UpdateCategoryAccount _ ->
             { categories = model
             , cmd = Cmd.none
             , log = []
@@ -123,7 +122,7 @@ categoriesUpdate categoryMsgB key language currentTime model =
 
         CategoryPosted response ->
             { categories = model
-            , cmd = Nav.pushUrl key (extractUrl CategoriesIndex)
+            , cmd = Nav.pushUrl key (extractUrl Route.CategoriesIndex)
             , log = [ getRemoteDataStatusMessage response language ]
             , flashMessages = [ FlashMsg (getRemoteDataStatusMessage response language) FlashSuccess (expires currentTime flashMessageDuration) ]
             }
@@ -138,7 +137,7 @@ categoriesUpdate categoryMsgB key language currentTime model =
 
         CategoryPutted response ->
             { categories = model
-            , cmd = Nav.pushUrl key (extractUrl CategoriesIndex)
+            , cmd = Nav.pushUrl key (extractUrl Route.CategoriesIndex)
             , log = [ getRemoteDataStatusMessage response language ]
             , flashMessages = [ FlashMsg (getRemoteDataStatusMessage response language) FlashSuccess (expires currentTime flashMessageDuration) ]
             }

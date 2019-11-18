@@ -31,9 +31,9 @@ import Tutorial exposing (updateTutorialLevel)
 import Types exposing (DRCRFormat(..))
 import Url
 
+
 update : Msg -> Model.Model -> ( Model.Model, Cmd Msg )
 update msgA model =
-
     case msgA of
         LinkClicked urlRequest ->
             case urlRequest of
@@ -44,199 +44,222 @@ update msgA model =
                     ( model, Nav.load href )
 
         UpdateCurrentTime time ->
-            ({ model | currentTime = time }, Cmd.none)
+            ( { model | currentTime = time }, Cmd.none )
 
         ClearHttpLog ->
-            ({ model | http_log = [] }, Cmd.none)
+            ( { model | http_log = [] }, Cmd.none )
 
         TimeoutFlashElements posix ->
-            ({ model | flashMessages
-               = List.filter (\elem -> Time.posixToMillis elem.expirationTime > Time.posixToMillis posix ) model.flashMessages
-             }, Cmd.none)
-
+            ( { model
+                | flashMessages =
+                    List.filter (\elem -> Time.posixToMillis elem.expirationTime > Time.posixToMillis posix) model.flashMessages
+              }
+            , Cmd.none
+            )
 
         UrlChanged url ->
-
             let
                 newModel =
                     { model | currentRoute = Routing.extractRoute url }
             in
-
-                case newModel.currentRoute of
-
-                    AccountDistributionIndex account_id ->
-                        let
-                            n =
-                                accountsUpdate
-
-                                    (GetAccountDistributionJoineds
-                                        (newModel.bservers.baseURL
-                                            ++ "/distributions/for_account?apikey="
-                                            ++ newModel.apikeys.apikey
-                                            ++ "&account_id="
-                                            ++ account_id
-                                        )
-                                    ) newModel.key newModel.language newModel.currentTime newModel.accounts
-                        in
-                           ( { newModel | accounts = n.accounts, http_log = List.append n.log newModel.http_log }, n.cmd )
-
-                    AccountsEdit id ->
-                        let
-                            n =
-                                accountsUpdate
-                                    (GetOneAccount
-                                        (newModel.bservers.baseURL
-                                            ++ "/account/"
-                                            ++ id
-                                            ++ "?apikey="
-                                            ++ newModel.apikeys.apikey
-                                        )
+            case newModel.currentRoute of
+                AccountDistributionIndex account_id ->
+                    let
+                        n =
+                            accountsUpdate
+                                (GetAccountDistributionJoineds
+                                    (newModel.bservers.baseURL
+                                        ++ "/distributions/for_account?apikey="
+                                        ++ newModel.apikeys.apikey
+                                        ++ "&account_id="
+                                        ++ account_id
                                     )
-                                    newModel.key newModel.language newModel.currentTime newModel.accounts
-                        in
-                            ( { newModel | accounts = n.accounts, http_log = List.append n.log newModel.http_log }, n.cmd )
+                                )
+                                newModel.key
+                                newModel.language
+                                newModel.currentTime
+                                newModel.accounts
+                    in
+                    ( { newModel | accounts = n.accounts, http_log = List.append n.log newModel.http_log }, n.cmd )
 
-                    AccountsIndex ->
-                        let
-                            n =
-                                accountsUpdate (GetManyAccounts (newModel.bservers.baseURL ++ "/accounts?apikey=" ++ newModel.apikeys.apikey)) newModel.key newModel.language newModel.currentTime newModel.accounts
-                        in
-                            ( { newModel | accounts = n.accounts, http_log = List.append n.log newModel.http_log }, n.cmd )
-
-
-                    AcctcatsAdd ->
-                        let
-                            oldAcctcats =
-                                model.acctcats
-
-                            newAcctcats =
-                                { oldAcctcats | editBuffer = emptyAcctcat }
-                        in
-                            ( { newModel | acctcats = newAcctcats }, Cmd.none )
-
-                    CategoriesAccounts category_id ->
-                        let
-                            n =
-                                acctcatsUpdate
-                                    (GetManyAcctcats category_id
-                                        (newModel.bservers.baseURL
-                                            ++ "/acctcats/for_category?apikey="
-                                            ++ newModel.apikeys.apikey
-                                            ++ "&category_id="
-                                            ++ String.fromInt category_id
-                                        )
-                                    ) newModel.key newModel.language newModel.currentTime newModel.acctcats
-
-                        in
-                        ( { newModel
-                            | acctcats = n.acctcats
-                            , http_log = List.append n.log newModel.http_log
-                          }
-                        , n.cmd
-                        )
-
-                    CategoriesEdit id ->
-                        let
-                            n =
-                                categoriesUpdate
-                                    (GetOneCategory
-                                        (newModel.bservers.baseURL
-                                            ++ "/category/"
-                                            ++ id
-                                            ++ "?apikey="
-                                            ++ newModel.apikeys.apikey
-                                        )
-                                    ) newModel.key newModel.language newModel.currentTime newModel.categories
-                        in
-                            ( { newModel | categories = n.categories, http_log = List.append n.log newModel.http_log }, n.cmd )
-
-                    CategoriesIndex ->
-                        let
-                            n =
-                                categoriesUpdate (GetManyCategories (newModel.bservers.baseURL ++ "/categories?apikey=" ++ newModel.apikeys.apikey)) newModel.key newModel.language newModel.currentTime newModel.categories
-                        in
-                        ( { newModel | categories = n.categories, http_log = List.append n.log newModel.http_log }, n.cmd )
-
-
-                    CurrenciesEdit id ->
-                        let
-                            n =
-                                currenciesUpdate
-                                    (GetOneCurrency
-                                        (newModel.bservers.baseURL
-                                            ++ "/currency/"
-                                            ++ id
-                                            ++ "?apikey="
-                                            ++ newModel.apikeys.apikey
-                                        )
+                AccountsEdit id ->
+                    let
+                        n =
+                            accountsUpdate
+                                (GetOneAccount
+                                    (newModel.bservers.baseURL
+                                        ++ "/account/"
+                                        ++ id
+                                        ++ "?apikey="
+                                        ++ newModel.apikeys.apikey
                                     )
-                                    newModel.key newModel.language newModel.currentTime newModel.currencies
+                                )
+                                newModel.key
+                                newModel.language
+                                newModel.currentTime
+                                newModel.accounts
+                    in
+                    ( { newModel | accounts = n.accounts, http_log = List.append n.log newModel.http_log }, n.cmd )
 
-                        in
-                            ( { newModel | currencies = n.currencies, http_log = List.append n.log newModel.http_log }, n.cmd )
+                AccountsIndex ->
+                    let
+                        n =
+                            accountsUpdate (GetManyAccounts (newModel.bservers.baseURL ++ "/accounts?apikey=" ++ newModel.apikeys.apikey)) newModel.key newModel.language newModel.currentTime newModel.accounts
+                    in
+                    ( { newModel | accounts = n.accounts, http_log = List.append n.log newModel.http_log }, n.cmd )
 
-                    CurrenciesIndex ->
-                        let
-                            n = currenciesUpdate (GetManyCurrencies (newModel.bservers.baseURL ++ "/currencies?apikey=" ++ newModel.apikeys.apikey)) newModel.key newModel.language newModel.currentTime newModel.currencies
-                        in
-                            ( { newModel | currencies = n.currencies, http_log = List.append n.log newModel.http_log }, n.cmd )
+                AcctcatsAdd ->
+                    let
+                        oldAcctcats =
+                            model.acctcats
 
+                        newAcctcats =
+                            { oldAcctcats | editBuffer = emptyAcctcat }
+                    in
+                    ( { newModel | acctcats = newAcctcats }, Cmd.none )
 
-                    DistributionsEdit id ->
-                        let
-                            n =
-                                distributionsUpdate
-                                    (GetOneDistribution
-                                        (newModel.bservers.baseURL
-                                            ++ "/distribution/"
-                                            ++ id
-                                            ++ "?apikey="
-                                            ++ newModel.apikeys.apikey
-                                        )
-                                    ) newModel.key newModel.language newModel.currentTime newModel.distributions
+                CategoriesAccounts category_id ->
+                    let
+                        n =
+                            acctcatsUpdate
+                                (GetManyAcctcats category_id
+                                    (newModel.bservers.baseURL
+                                        ++ "/acctcats/for_category?apikey="
+                                        ++ newModel.apikeys.apikey
+                                        ++ "&category_id="
+                                        ++ String.fromInt category_id
+                                    )
+                                )
+                                newModel.key
+                                newModel.language
+                                newModel.currentTime
+                                newModel.acctcats
+                    in
+                    ( { newModel
+                        | acctcats = n.acctcats
+                        , http_log = List.append n.log newModel.http_log
+                      }
+                    , n.cmd
+                    )
 
-                        in
-                            ( { newModel | distributions = n.distributions, http_log = List.append n.log newModel.http_log }, n.cmd )
+                CategoriesEdit id ->
+                    let
+                        n =
+                            categoriesUpdate
+                                (GetOneCategory
+                                    (newModel.bservers.baseURL
+                                        ++ "/category/"
+                                        ++ id
+                                        ++ "?apikey="
+                                        ++ newModel.apikeys.apikey
+                                    )
+                                )
+                                newModel.key
+                                newModel.language
+                                newModel.currentTime
+                                newModel.categories
+                    in
+                    ( { newModel | categories = n.categories, http_log = List.append n.log newModel.http_log }, n.cmd )
 
-                    DistributionsIndex ->
-                        let
-                            n =
-                                distributionsUpdate
-                                    (GetManyDistributionJoineds
-                                        (newModel.bservers.baseURL
-                                            ++ "/distributions/for_tx?apikey="
-                                            ++ newModel.apikeys.apikey
-                                            ++ "&transaction_id="
-                                            ++ String.fromInt newModel.transactions.editBuffer.id
-                                        )
-                                    ) newModel.key newModel.language newModel.currentTime newModel.distributions
-                        in
-                            ( { newModel | distributions = n.distributions, http_log = List.append n.log newModel.http_log }, n.cmd )
+                CategoriesIndex ->
+                    let
+                        n =
+                            categoriesUpdate (GetManyCategories (newModel.bservers.baseURL ++ "/categories?apikey=" ++ newModel.apikeys.apikey)) newModel.key newModel.language newModel.currentTime newModel.categories
+                    in
+                    ( { newModel | categories = n.categories, http_log = List.append n.log newModel.http_log }, n.cmd )
 
+                CurrenciesEdit id ->
+                    let
+                        n =
+                            currenciesUpdate
+                                (GetOneCurrency
+                                    (newModel.bservers.baseURL
+                                        ++ "/currency/"
+                                        ++ id
+                                        ++ "?apikey="
+                                        ++ newModel.apikeys.apikey
+                                    )
+                                )
+                                newModel.key
+                                newModel.language
+                                newModel.currentTime
+                                newModel.currencies
+                    in
+                    ( { newModel | currencies = n.currencies, http_log = List.append n.log newModel.http_log }, n.cmd )
 
-                    TransactionsEdit id ->
-                        let
-                            n =
-                                transactionsUpdate
-                                    (GetOneTransaction
-                                        (newModel.bservers.baseURL
-                                            ++ "/transaction/"
-                                            ++ id
-                                            ++ "?apikey="
-                                            ++ newModel.apikeys.apikey
-                                        )
-                                    ) newModel.key newModel.language newModel.currentTime newModel.transactions
-                        in
-                            ( { newModel | transactions = n.transactions, http_log = List.append n.log newModel.http_log }, n.cmd )
+                CurrenciesIndex ->
+                    let
+                        n =
+                            currenciesUpdate (GetManyCurrencies (newModel.bservers.baseURL ++ "/currencies?apikey=" ++ newModel.apikeys.apikey)) newModel.key newModel.language newModel.currentTime newModel.currencies
+                    in
+                    ( { newModel | currencies = n.currencies, http_log = List.append n.log newModel.http_log }, n.cmd )
 
-                    TransactionsIndex ->
-                        let
-                            n =
-                                transactionsUpdate (GetManyTransactions (newModel.bservers.baseURL ++ "/transactions?apikey=" ++ newModel.apikeys.apikey)) newModel.key newModel.language newModel.currentTime newModel.transactions
-                        in
-                            ( { newModel | transactions = n.transactions, http_log = List.append n.log newModel.http_log }, n.cmd )
-                    _ ->
-                        ( newModel, Cmd.none )
+                DistributionsEdit id ->
+                    let
+                        n =
+                            distributionsUpdate
+                                (GetOneDistribution
+                                    (newModel.bservers.baseURL
+                                        ++ "/distribution/"
+                                        ++ id
+                                        ++ "?apikey="
+                                        ++ newModel.apikeys.apikey
+                                    )
+                                )
+                                newModel.key
+                                newModel.language
+                                newModel.currentTime
+                                newModel.distributions
+                    in
+                    ( { newModel | distributions = n.distributions, http_log = List.append n.log newModel.http_log }, n.cmd )
+
+                DistributionsIndex ->
+                    let
+                        n =
+                            distributionsUpdate
+                                (GetManyDistributionJoineds
+                                    (newModel.bservers.baseURL
+                                        ++ "/distributions/for_tx?apikey="
+                                        ++ newModel.apikeys.apikey
+                                        ++ "&transaction_id="
+                                        ++ String.fromInt newModel.transactions.editBuffer.id
+                                    )
+                                )
+                                newModel.key
+                                newModel.language
+                                newModel.currentTime
+                                newModel.distributions
+                    in
+                    ( { newModel | distributions = n.distributions, http_log = List.append n.log newModel.http_log }, n.cmd )
+
+                TransactionsEdit id ->
+                    let
+                        n =
+                            transactionsUpdate
+                                (GetOneTransaction
+                                    (newModel.bservers.baseURL
+                                        ++ "/transaction/"
+                                        ++ id
+                                        ++ "?apikey="
+                                        ++ newModel.apikeys.apikey
+                                    )
+                                )
+                                newModel.key
+                                newModel.language
+                                newModel.currentTime
+                                newModel.transactions
+                    in
+                    ( { newModel | transactions = n.transactions, http_log = List.append n.log newModel.http_log }, n.cmd )
+
+                TransactionsIndex ->
+                    let
+                        n =
+                            transactionsUpdate (GetManyTransactions (newModel.bservers.baseURL ++ "/transactions?apikey=" ++ newModel.apikeys.apikey)) newModel.key newModel.language newModel.currentTime newModel.transactions
+                    in
+                    ( { newModel | transactions = n.transactions, http_log = List.append n.log newModel.http_log }, n.cmd )
+
+                _ ->
+                    ( newModel, Cmd.none )
 
         SetDRCRFormat newFormat ->
             if newFormat == "drcr_conventional" then
@@ -246,7 +269,7 @@ update msgA model =
                 ( { model | drcr_format = PlusAndMinus }, Cmd.none )
 
             else
-               ( model, Cmd.none )
+                ( model, Cmd.none )
 
         SetLanguage newLanguage ->
             if newLanguage == "english" then
@@ -261,7 +284,6 @@ update msgA model =
             else
                 ( model, Cmd.none )
 
-
         AccountMsgA msgB ->
             let
                 n =
@@ -275,7 +297,6 @@ update msgA model =
                 }
             , n.cmd
             )
-
 
         AcctcatMsgA msgB ->
             let
@@ -294,30 +315,40 @@ update msgA model =
         -- ANY Apikey message will result in _some_ of the model getting reset.
         ApikeyMsgA msgB ->
             let
-                newApikeys = apikeyUpdate msgB model.language model.apikeys
-                newModel = { model
-                    | accounts = modelAfterAPIKey.accounts
-                    , currencies = modelAfterAPIKey.currencies
-                    , http_log = modelAfterAPIKey.http_log
+                newApikeys =
+                    apikeyUpdate msgB model.language model.apikeys
+
+                newModel =
+                    { model
+                        | accounts = modelAfterAPIKey.accounts
+                        , currencies = modelAfterAPIKey.currencies
+                        , http_log = modelAfterAPIKey.http_log
                     }
             in
-            ( updateTutorialLevel { newModel
-                | apikeys = newApikeys.apikeys, http_log = List.append newApikeys.log model.http_log }, newApikeys.cmd )
+            ( updateTutorialLevel
+                { newModel
+                    | apikeys = newApikeys.apikeys
+                    , http_log = List.append newApikeys.log model.http_log
+                }
+            , newApikeys.cmd
+            )
 
         -- ANY Bserver message, except PingReceived, will result in the model getting reset
         BserverMsgA msgB ->
             let
-                newBservers = bserverUpdate msgB model.language model.bservers
+                newBservers =
+                    bserverUpdate msgB model.language model.bservers
 
                 newModel =
                     case msgB of
                         PingReceived response ->
                             model
+
                         _ ->
                             initialModel model.currentRoute model.key model.url
 
-                newModel1 = { newModel | bservers = newBservers.bservers, http_log = List.append newBservers.log newModel.http_log }
-
+                newModel1 =
+                    { newModel | bservers = newBservers.bservers, http_log = List.append newBservers.log newModel.http_log }
             in
             ( updateTutorialLevel newModel1, newBservers.cmd )
 
@@ -325,7 +356,6 @@ update msgA model =
             let
                 n =
                     categoriesUpdate msgB model.key model.language model.currentTime model.categories
-
             in
             ( updateTutorialLevel
                 { model
@@ -364,30 +394,33 @@ update msgA model =
             , n.cmd
             )
 
-        -- Not the same as the other branches! 
+        -- Not the same as the other branches!
         LintMsgA msgB ->
             let
                 n =
-                    lintUpdate msgB model.language  model.lint
+                    lintUpdate msgB model.language model.lint
             in
-                ( { model
-                    | lint = n.lint
-                    , http_log = List.append n.log model.http_log
-                    , flashMessages = List.append model.flashMessages n.flashMessages
-                } , n.cmd )
+            ( { model
+                | lint = n.lint
+                , http_log = List.append n.log model.http_log
+                , flashMessages = List.append model.flashMessages n.flashMessages
+              }
+            , n.cmd
+            )
 
         -- Not the same as the other branches!
         ReportMsgA msgB ->
             let
                 n =
-                    reportUpdate msgB model.language  model.report
+                    reportUpdate msgB model.language model.report
             in
-                ( { model
-                    | report = n.report
-                    , http_log = List.append n.log model.http_log
-                    , flashMessages = List.append model.flashMessages n.flashMessages
-                } , n.cmd )
-
+            ( { model
+                | report = n.report
+                , http_log = List.append n.log model.http_log
+                , flashMessages = List.append model.flashMessages n.flashMessages
+              }
+            , n.cmd
+            )
 
         TransactionMsgA msgB ->
             let

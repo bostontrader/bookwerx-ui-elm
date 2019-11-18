@@ -1,9 +1,12 @@
 -- Support for a controlled input for an integer
 
-module IntField exposing ( IntField(..), intFieldToInt, intFieldToString, intValidationClass )
+
+module IntField exposing (IntField(..), intFieldToInt, intFieldToString, intValidationClass)
+
 
 type IntField
     = IntField (Maybe Int) String
+
 
 intFieldToInt : IntField -> Int
 intFieldToInt intField =
@@ -32,8 +35,11 @@ intValidationClass intField =
         IntField Nothing int ->
             if int == "" then
                 ""
-            else if int == "-" then  -- the beginning negative sign is not an integer but it's also not an error.
+
+            else if int == "-" then
+                -- the beginning negative sign is not an integer but it's also not an error.
                 ""
+
             else
                 "has-background-danger"
 

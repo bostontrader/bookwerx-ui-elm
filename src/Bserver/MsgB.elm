@@ -1,4 +1,4 @@
-module Bserver.MsgB exposing ( MsgB (..) )
+module Bserver.MsgB exposing (MsgB(..))
 
 import Bserver.Plumbing
     exposing
@@ -13,6 +13,5 @@ type
     -- ping connection
     = PingBserver BserverURL
     | PingReceived (WebData BserverPingResponse)
-
       -- edit
     | UpdateBserverURL String

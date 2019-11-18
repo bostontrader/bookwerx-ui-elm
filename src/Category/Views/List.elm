@@ -1,8 +1,8 @@
 module Category.Views.List exposing (view)
 
 import Category.Category exposing (Category)
-import Category.MsgB exposing (MsgB(..))
 import Category.Model
+import Category.MsgB exposing (MsgB(..))
 import Flash exposing (viewFlash)
 import Html exposing (Html, a, button, div, h3, p, table, tbody, td, text, th, thead, tr)
 import Html.Attributes exposing (class, href, style)
@@ -59,7 +59,7 @@ rightContent model =
         [ h3 [ class "title is-3" ]
             [ text (tx model.language { e = "Categories", c = "类别", p = "lèibié" }) ]
         , viewFlash model.flashMessages
-        , a [href "/categories/add", class "button is-link" ]
+        , a [ href "/categories/add", class "button is-link" ]
             [ text (tx model.language { e = "Create new category", c = "创建新类别", p = "chuàngjiàn xīn lèibié" }) ]
         , viewCategoriesPanel model model.categories
         ]
@@ -74,15 +74,17 @@ viewCategoriesPanel : Model.Model -> Category.Model.Model -> Html Msg
 viewCategoriesPanel model category_model =
     div [ class "box", style "margin-top" "1.0em" ]
         [ case model.categories.wdCategories of
-            RemoteData.Success s ->
+            RemoteData.Success _ ->
                 if List.isEmpty category_model.categories then
                     h3 [] [ text "No categories present" ]
+
                 else
                     viewCategoriesTable model category_model.categories
+
             _ ->
                 h3 [] [ text (getRemoteDataStatusMessage model.categories.wdCategories model.language) ]
-
         ]
+
 
 viewCategoriesTable : Model.Model -> List Category -> Html Msg
 viewCategoriesTable model categories =
@@ -108,10 +110,9 @@ viewCategory model category =
         , td [] [ text category.symbol ]
         , td [] [ text category.title ]
         , td []
-            [ a [href categoryPath, class "button is-link" ] [ model.language |> tx_edit |> text ] ]
+            [ a [ href categoryPath, class "button is-link" ] [ model.language |> tx_edit |> text ] ]
         , td []
-            [ a [href (categoryPath ++ "/accounts"), class "button is-link" ] [ model.language |> tx_accounts |> text ] ]
-
+            [ a [ href (categoryPath ++ "/accounts"), class "button is-link" ] [ model.language |> tx_accounts |> text ] ]
         , td []
             [ button
                 [ class "button is-link is-danger"

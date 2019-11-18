@@ -1,8 +1,8 @@
 module Category.Model exposing (Model)
 
 import Category.Category exposing (Category)
-import RemoteData exposing (WebData)
 import IntField exposing (IntField(..))
+import RemoteData exposing (WebData)
 
 
 type alias Model =

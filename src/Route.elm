@@ -1,5 +1,6 @@
 module Route exposing (Route(..))
 
+
 type Route
     = Home
     | AccountDistributionIndex String

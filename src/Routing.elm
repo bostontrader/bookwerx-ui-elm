@@ -2,7 +2,7 @@ module Routing exposing (extractRoute, extractUrl)
 
 import Route exposing (Route(..))
 import Url
-import Url.Parser exposing (Parser, (</>), int, map, oneOf, parse, s, string, top)
+import Url.Parser exposing ((</>), Parser, int, map, oneOf, parse, s, string, top)
 
 
 extractRoute : Url.Url -> Route
@@ -35,7 +35,7 @@ matchRoute =
         , map CurrenciesIndex (s "currencies")
         , map DistributionsAdd (s "distributions" </> s "add")
         , map DistributionsEdit (s "distributions" </> string)
-        , map DistributionsIndex (s "distributions" )
+        , map DistributionsIndex (s "distributions")
         , map HttpLog (s "http_log")
         , map Lint (s "lint")
         , map Report (s "report")
@@ -44,6 +44,7 @@ matchRoute =
         , map TransactionsEdit (s "transactions" </> string)
         , map TransactionsIndex (s "transactions")
         ]
+
 
 extractUrl : Route -> String
 extractUrl route =

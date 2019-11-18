@@ -1,8 +1,8 @@
 module Bserver.Update exposing (bserverUpdate)
 
-import Bserver.Ping exposing (pingBserverCommand)
-import Bserver.MsgB exposing( MsgB (..) )
 import Bserver.Model
+import Bserver.MsgB exposing (MsgB(..))
+import Bserver.Ping exposing (pingBserverCommand)
 import Msg exposing (Msg)
 import RemoteData
 import Translate exposing (Language(..))
@@ -10,7 +10,7 @@ import Util exposing (getRemoteDataStatusMessage)
 
 
 bserverUpdate : MsgB -> Language -> Bserver.Model.Model -> { bservers : Bserver.Model.Model, cmd : Cmd Msg, log : List String }
-bserverUpdate bserverMsgB language model  =
+bserverUpdate bserverMsgB language model =
     case bserverMsgB of
         -- ping
         PingBserver bserverURL ->

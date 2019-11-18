@@ -1,14 +1,18 @@
 module Distribution.Distribution exposing
     ( DistributionEB
-    , DistributionRaw
     , DistributionJoined
+    , DistributionRaw
     , DistributionReport
     )
 
-import Types exposing (DRCR)
 import IntField exposing (IntField)
+import Types exposing (DRCR)
+
+
 
 -- As decoded from JSON from the server
+
+
 type alias DistributionRaw =
     { id : Int
     , apikey : String
@@ -18,7 +22,11 @@ type alias DistributionRaw =
     , transaction_id : Int
     }
 
+
+
 -- Augmented to serve as our editBuffer
+
+
 type alias DistributionEB =
     { id : Int
     , apikey : String
@@ -29,7 +37,11 @@ type alias DistributionEB =
     , drcr : DRCR
     }
 
+
+
 -- A distribution joined with other useful and related info.  When listing distributions for an account, these extra fields are a convenience for the UI.
+
+
 type alias DistributionJoined =
     { account_title : String
     , aid : Int
@@ -41,6 +53,7 @@ type alias DistributionJoined =
     , tx_notes : String
     , tx_time : String
     }
+
 
 type alias DistributionReport =
     { account_id : Int

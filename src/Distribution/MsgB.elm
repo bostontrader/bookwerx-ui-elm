@@ -13,15 +13,13 @@ type
     -- delete
     = DeleteDistribution String -- url
     | DistributionDeleted (WebData String)
-
-    -- getMany
+      -- getMany
     | GetManyDistributionJoineds String
     | DistributionJoinedsReceived (WebData String)
-
       -- getOne
     | GetOneDistribution String
     | DistributionReceived (WebData String)
-    -- put
+      -- put
     | PutDistribution String String String -- url content-type body
     | DistributionPutted (WebData DistributionPutHttpResponseString)
       -- post
@@ -33,4 +31,3 @@ type
     | UpdateAmountExp String
     | UpdateDecimalPlaces Int
     | UpdateDRCR String
-

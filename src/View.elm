@@ -1,12 +1,12 @@
 module View exposing (view)
 
-import Browser
 import Account.Views.AddEdit
 import Account.Views.DistributionJoinedIndex
 import Account.Views.List
 import Acctcat.Views.AddEdit
 import Acctcat.Views.List
 import Apikey.View
+import Browser
 import Bserver.View
 import Category.Views.AddEdit
 import Category.Views.List
@@ -25,17 +25,15 @@ import Report.View
 import Route exposing (Route(..))
 import Settings.View
 import Template exposing (template)
-import Translate exposing (..)
 import Transaction.Views.AddEdit
 import Transaction.Views.List
+import Translate exposing (..)
 import Types exposing (AEMode(..))
 
 
 view : Model.Model -> Browser.Document Msg
 view model =
-
     case model.currentRoute of
-
         AccountDistributionIndex id ->
             { body = [ Account.Views.DistributionJoinedIndex.view model ]
             , title = "Bookwerx UI: Distributions for account #" ++ id
@@ -62,7 +60,7 @@ view model =
             }
 
         ApikeysIndex ->
-            { body = [Apikey.View.view model]
+            { body = [ Apikey.View.view model ]
             , title = "Bookwerx UI"
             }
 
@@ -74,7 +72,9 @@ view model =
 
         CategoriesAccounts id ->
             { body =
-                [ Acctcat.Views.List.view model ] -- this is correct!
+                [ Acctcat.Views.List.view model ]
+
+            -- this is correct!
             , title = "Bookwerx UI: Accounts tagged with category #" ++ String.fromInt id
             }
 
@@ -87,7 +87,7 @@ view model =
         CategoriesEdit id ->
             { body =
                 [ Category.Views.AddEdit.view model Edit ]
-            , title = "Bookwerx UI: Edit category #" ++id
+            , title = "Bookwerx UI: Edit category #" ++ id
             }
 
         CategoriesIndex ->
@@ -105,7 +105,7 @@ view model =
         CurrenciesEdit id ->
             { body =
                 [ Currency.Views.AddEdit.view model Edit ]
-            , title = "Bookwerx UI: Edit currency #" ++id
+            , title = "Bookwerx UI: Edit currency #" ++ id
             }
 
         CurrenciesIndex ->
@@ -124,7 +124,7 @@ view model =
         DistributionsEdit id ->
             { body =
                 [ Distribution.Views.AddEdit.view model Edit ]
-            , title = "Bookwerx UI: Edit distribution #" ++id
+            , title = "Bookwerx UI: Edit distribution #" ++ id
             }
 
         DistributionsIndex ->
@@ -134,20 +134,22 @@ view model =
             }
 
         Home ->
-           { body =
-                [template model
+            { body =
+                [ template model
                     (div [] [])
                     (div []
                         [ h3 [ class "title is-size-2" ] [ text (txWelcome model) ]
                         , p [ class "is-size-5" ] (txPurpose model)
+
                         --, p [ class "is-size-5" ] [ text (txFollowTutorial model) ]
                         ]
-                    )]
+                    )
+                ]
             , title = "Bookwerx UI"
             }
 
         HttpLog ->
-            { body = [HttpLog.View.view model]
+            { body = [ HttpLog.View.view model ]
             , title = "Bookwerx UI"
             }
 
@@ -179,7 +181,7 @@ view model =
 
         TransactionsEdit id ->
             { body = [ Transaction.Views.AddEdit.view model Edit ]
-            , title = "Bookwerx UI: : Edit transaction #" ++id
+            , title = "Bookwerx UI: : Edit transaction #" ++ id
             }
 
         TransactionsIndex ->
@@ -187,12 +189,13 @@ view model =
             , title = "Bookwerx UI"
             }
 
+
+
 --        _ ->
 --            { body =
 --                [ h3 [] [ text "Oops! The page you requested was not found!" ] ]
 --            , title = "Bookwerx UI"
 --            }
-
 --
 --
 --
@@ -209,6 +212,8 @@ view model =
 ----"Qǐng ànzhào jiàochéng kāishǐ."
 --
 --
+
+
 txPurpose : Model.Model -> List (Html Msg)
 txPurpose model =
     case model.language of

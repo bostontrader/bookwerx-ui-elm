@@ -1,13 +1,15 @@
 {- We want to be able to manage a "tutorial level."  That is, progressively reveal new features and remove training wheels as usage of the program demonstrates expertise.  However, it's not obvious how we can specify this level.
 
-The first obvious approach is to simply record an integer level.  An obvious problem with this approach is the confusion about which features are on or off at a particular level.  Another problem comes from inserting a new level, perhaps requiring lots of renumbering elsewhere.  Nevertheless, these woes are mere nuisances and this system is workable enough.
+   The first obvious approach is to simply record an integer level.  An obvious problem with this approach is the confusion about which features are on or off at a particular level.  Another problem comes from inserting a new level, perhaps requiring lots of renumbering elsewhere.  Nevertheless, these woes are mere nuisances and this system is workable enough.
 
-It's tempting to consider using a union type.  But... what short and pithy symbols can we use to describe each level?  And how do we determine that level KNARFLE > GARKOG ?  Assuming these issues could be solved, this method would eliminate the insertion-of-a-new-level problem.  But that's not enough payoff to bother with so I'd rather not slay that dragon now.
+   It's tempting to consider using a union type.  But... what short and pithy symbols can we use to describe each level?  And how do we determine that level KNARFLE > GARKOG ?  Assuming these issues could be solved, this method would eliminate the insertion-of-a-new-level problem.  But that's not enough payoff to bother with so I'd rather not slay that dragon now.
 
-Therefore method the first, integer level numbers, is what we'll use.
+   Therefore method the first, integer level numbers, is what we'll use.
 
 -}
-module Tutorial exposing ( updateTutorialLevel)
+
+
+module Tutorial exposing (updateTutorialLevel)
 
 import Model
 import RemoteData
@@ -117,17 +119,3 @@ updateTutorialLevel model =
 
     else
         { model | tutorialLevel = 0 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

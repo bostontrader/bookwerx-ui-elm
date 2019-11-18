@@ -1,9 +1,11 @@
 module Util exposing
-    ( getAccountTitle
-    --, getCurrencyTitle
-    , getRemoteDataStatusMessage
-    --, roundingAlertStyle
-    --, updateTutorialLevel
+    (  getAccountTitle
+       --, getCurrencyTitle
+
+    ,  getRemoteDataStatusMessage
+       --, roundingAlertStyle
+       --, updateTutorialLevel
+
     )
 
 import Account.Model
@@ -21,14 +23,16 @@ getAccountTitle model cid =
         Nothing ->
             "not set"
 
+
+
 --getCurrencyTitle : Currency.Model.Model -> Int -> String
 --getCurrencyTitle model cid =
-    --case List.head (List.filter (\c -> c.id == cid) model.currencies) of
-        --Just c ->
-            --c.title
+--case List.head (List.filter (\c -> c.id == cid) model.currencies) of
+--Just c ->
+--c.title
+--Nothing ->
+--"not set"
 
-        --Nothing ->
-            --"not set"
 
 getRemoteDataStatusMessage : WebData String -> Language -> String
 getRemoteDataStatusMessage response language =
@@ -44,7 +48,7 @@ getRemoteDataStatusMessage response language =
 
         RemoteData.Failure httpError ->
             case httpError of
-                Http.BadUrl s ->
+                Http.BadUrl _ ->
                     "badurl"
 
                 Http.Timeout ->
@@ -53,7 +57,7 @@ getRemoteDataStatusMessage response language =
                 Http.NetworkError ->
                     tx language { e = "Network error", c = "网络错误", p = "wǎngluò cuòwù" }
 
-                Http.BadStatus s ->
+                Http.BadStatus _ ->
                     "bad status"
 
                 Http.BadBody s ->
@@ -63,10 +67,9 @@ getRemoteDataStatusMessage response language =
 
 --roundingAlertStyle : Int -> Int -> List ( String, String )
 --roundingAlertStyle p exp =
-    --if p < exp then
-        --[ ( "background-color", "red" ) ]
-        --[]
-
-    --else
-        --[ ( "background-color", "green" ) ]
-        --[]
+--if p < exp then
+--[ ( "background-color", "red" ) ]
+--[]
+--else
+--[ ( "background-color", "green" ) ]
+--[]

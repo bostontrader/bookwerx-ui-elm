@@ -3,8 +3,8 @@ module Constants exposing
     , flashMessageDuration
     , flashMessagePollInterval
     , initialBserver
-    , initialDecimalPlaces
     , initialDRCRFormat
+    , initialDecimalPlaces
     , initialLanguage
     , initialRarityFilter
     )
@@ -12,27 +12,54 @@ module Constants exposing
 import Translate exposing (Language(..))
 import Types exposing (DRCRFormat(..))
 
+
 bwuiVersion : String
-bwuiVersion = "1.0.1" -- sync with package.json
+bwuiVersion =
+    "1.0.1"
+
+
+
+-- sync with package.json
 
 
 flashMessageDuration : Int
-flashMessageDuration = 15000 -- milliseconds
+flashMessageDuration =
+    15000
+
+
+
+-- milliseconds
+
 
 flashMessagePollInterval : Float
-flashMessagePollInterval = 5000 -- milliseconds
+flashMessagePollInterval =
+    5000
+
+
+
+-- milliseconds
+
 
 initialBserver : String
-initialBserver = "http://23.253.160.60:3003"
+initialBserver =
+    "http://23.253.160.60:3003"
+
 
 initialDecimalPlaces : Int
-initialDecimalPlaces = 2
+initialDecimalPlaces =
+    2
+
 
 initialDRCRFormat : DRCRFormat
-initialDRCRFormat = DRCR
+initialDRCRFormat =
+    DRCR
+
 
 initialLanguage : Language
-initialLanguage = English
+initialLanguage =
+    English
+
 
 initialRarityFilter : Int
-initialRarityFilter = 10
+initialRarityFilter =
+    10

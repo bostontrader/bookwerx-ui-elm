@@ -3,22 +3,22 @@ module Account.Views.AddEdit exposing (view)
 -- Add and Edit are very similar. Unify them thus...
 
 import Account.Account exposing (Account)
-import Account.MsgB exposing( MsgB(..))
+import Account.MsgB exposing (MsgB(..))
 import Currency.Model
 import Flash exposing (viewFlash)
 import Html exposing (Html, a, button, div, h3, input, label, option, select, text)
 import Html.Attributes exposing (class, href, placeholder, selected, type_, value)
 import Html.Events exposing (onClick, onInput)
-import Model
-import Msg exposing (Msg(..))
-import Template exposing (template)
-import Translate exposing (Language, tx, tx_save)
-import Types exposing (AEMode(..))
 import IntField
     exposing
         ( intFieldToString
         , intValidationClass
         )
+import Model
+import Msg exposing (Msg(..))
+import Template exposing (template)
+import Translate exposing (Language, tx, tx_save)
+import Types exposing (AEMode(..))
 import ViewHelpers exposing (viewHttpPanel)
 
 
@@ -83,10 +83,10 @@ rightContent r_title r_onclick model =
     div []
         [ h3 [ class "title is-3" ] [ text r_title ]
         , viewFlash model.flashMessages
-        , a [href "/accounts" ]
-            [ text (tx model.language { e = "Accounts Index", c = "返回账户目录", p = "fanhui zhànghù mulu" })]
-
-        , addeditForm model.language model.accounts.editBuffer
+        , a [ href "/accounts" ]
+            [ text (tx model.language { e = "Accounts Index", c = "返回账户目录", p = "fanhui zhànghù mulu" }) ]
+        , addeditForm model.language
+            model.accounts.editBuffer
             (buildCurrencySelect model.currencies model.accounts.editBuffer.currency_id)
         , div []
             [ button

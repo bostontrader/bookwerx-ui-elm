@@ -1,9 +1,9 @@
 module Transaction.API.GetOne exposing (getOneTransactionCommand)
 
-import Transaction.MsgB exposing (..)
 import Http
 import Msg exposing (Msg(..))
 import RemoteData
+import Transaction.MsgB exposing (..)
 
 
 getOneTransactionCommand : String -> Cmd Msg

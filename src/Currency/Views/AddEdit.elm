@@ -3,7 +3,8 @@ module Currency.Views.AddEdit exposing (view)
 -- Add and Edit are very similar. Unify them thus...
 
 import Currency.Currency exposing (Currency)
-import Currency.MsgB exposing( MsgB(..))
+import Currency.MsgB exposing (MsgB(..))
+import Flash exposing (viewFlash)
 import Html exposing (Html, a, button, div, h3, input, label, text)
 import Html.Attributes exposing (class, href, placeholder, type_, value)
 import Html.Events exposing (onClick, onInput)
@@ -14,7 +15,7 @@ import Template exposing (template)
 import Translate exposing (Language, tx, tx_save)
 import Types exposing (AEMode(..))
 import ViewHelpers exposing (viewHttpPanel)
-import Flash exposing (viewFlash)
+
 
 addeditForm : Language -> Currency -> Html Msg
 addeditForm language editBuffer =
@@ -68,12 +69,11 @@ leftContent logMsg language =
 
 rightContent : String -> String -> Msg -> Model.Model -> Html Msg
 rightContent r_id r_title r_onclick model =
-    div [ ]
+    div []
         [ h3 [ class "title is-3" ] [ text r_title ]
         , viewFlash model.flashMessages
         , a [ href "/currencies" ]
-            [ text (tx model.language { e = "Currencies Index", c = "返回货币目录", p = "fanhui huòbì mulu" })]
-
+            [ text (tx model.language { e = "Currencies Index", c = "返回货币目录", p = "fanhui huòbì mulu" }) ]
         , addeditForm model.language model.currencies.editBuffer
         , div []
             [ button
@@ -108,7 +108,6 @@ view model aemode =
                 Add ->
                     { id = "currencies-add"
                     , title = tx model.language { e = "Create new currency", c = "创建新货币", p = "chuàngjiàn xīn huòbì" }
-
                     , onClick =
                         CurrencyMsgA
                             (PostCurrency

@@ -5,21 +5,22 @@ import Constants exposing (flashMessageDuration)
 import Distribution.API.Delete exposing (deleteDistributionCommand)
 import Distribution.API.GetManyDistributionJoineds exposing (getManyDistributionJoinedsCommand)
 import Distribution.API.GetOne exposing (getOneDistributionCommand)
-import Distribution.API.JSON exposing (
-    distributionDecoder,
-    distributionJoinedsDecoder
-    )
+import Distribution.API.JSON
+    exposing
+        ( distributionDecoder
+        , distributionJoinedsDecoder
+        )
 import Distribution.API.Post exposing (postDistributionCommand)
 import Distribution.API.Put exposing (putDistributionCommand)
 import Distribution.Distribution exposing (DistributionEB, DistributionRaw)
-import Distribution.MsgB exposing (MsgB(..))
 import Distribution.Model
+import Distribution.MsgB exposing (MsgB(..))
 import Flash exposing (FlashMsg, FlashSeverity(..), expires)
 import IntField exposing (IntField(..), intFieldToInt)
 import Json.Decode exposing (decodeString)
 import Msg exposing (Msg(..))
 import RemoteData
-import Route exposing (..)
+import Route exposing (Route(..))
 import Routing exposing (extractUrl)
 import Time
 import Translate exposing (Language(..))
@@ -28,8 +29,7 @@ import Util exposing (getRemoteDataStatusMessage)
 
 
 distributionsUpdate : MsgB -> Nav.Key -> Language -> Time.Posix -> Distribution.Model.Model -> { distributions : Distribution.Model.Model, cmd : Cmd Msg, log : List String, flashMessages : List FlashMsg }
-distributionsUpdate distributionMsgB key language currentTime model  =
-
+distributionsUpdate distributionMsgB key language currentTime model =
     case distributionMsgB of
         -- delete
         DeleteDistribution url ->
@@ -146,15 +146,14 @@ distributionsUpdate distributionMsgB key language currentTime model  =
             }
 
         UpdateDecimalPlaces newValue ->
-            { distributions = { model | decimalPlaces = newValue}
+            { distributions = { model | decimalPlaces = newValue }
             , cmd = Cmd.none
             , log = []
             , flashMessages = []
             }
 
-
         UpdateDRCR newValue ->
-            { distributions = {model | editBuffer = updateDRCR newValue model.editBuffer}
+            { distributions = { model | editBuffer = updateDRCR newValue model.editBuffer }
             , cmd = Cmd.none
             , log = []
             , flashMessages = []
@@ -167,10 +166,15 @@ raw2EB raw =
         raw.id
         raw.apikey
         raw.account_id
-        (IntField (Just raw.amount) (String.fromInt raw.amount) )
-        (IntField (Just raw.amount_exp) (String.fromInt raw.amount_exp) )
+        (IntField (Just raw.amount) (String.fromInt raw.amount))
+        (IntField (Just raw.amount_exp) (String.fromInt raw.amount_exp))
         raw.transaction_id
-        (if raw.amount >= 0 then DR else CR)
+        (if raw.amount >= 0 then
+            DR
+
+         else
+            CR
+        )
 
 
 updateAccountID : DistributionEB -> String -> DistributionEB
@@ -186,17 +190,18 @@ updateAccountID d newValue =
     }
 
 
+
 --updateAmount : DistributionEB -> String -> DistributionEB
 --updateAmount d newValue =
-    --{ d
-        --| amount =
-            --case String.toInt newValue of
-                --Just v ->
-                    --(IntField (Just v) (String.fromInt v) )
+--{ d
+--| amount =
+--case String.toInt newValue of
+--Just v ->
+--(IntField (Just v) (String.fromInt v) )
+--Nothing ->
+--IntField (Just -1) "-1"
+--}
 
-                --Nothing ->
-                    --IntField (Just -1) "-1"
-    --}
 
 updateAmount : DistributionEB -> String -> DistributionEB
 updateAmount d newValue =
@@ -204,11 +209,12 @@ updateAmount d newValue =
         | amount =
             case String.toInt newValue of
                 Just v ->
-                    (IntField (Just v) newValue )
+                    IntField (Just v) newValue
 
                 Nothing ->
                     IntField Nothing newValue
     }
+
 
 updateAmountExp : DistributionEB -> String -> DistributionEB
 updateAmountExp d newValue =
@@ -226,18 +232,22 @@ updateAmountExp d newValue =
 updateDRCR : String -> DistributionEB -> DistributionEB
 updateDRCR drcr d =
     let
-        newDEB
-            = if drcr == "dr" then
-                {d | drcr = DR}
-            else
-                {d | drcr = CR}
+        newDEB =
+            if drcr == "dr" then
+                { d | drcr = DR }
 
-        absAmount = abs <| intFieldToInt <| d.amount
-        negAmount = -absAmount
+            else
+                { d | drcr = CR }
+
+        absAmount =
+            abs <| intFieldToInt <| d.amount
+
+        negAmount =
+            -absAmount
     in
     case newDEB.drcr of
         DR ->
-            {newDEB | amount = IntField (Just absAmount) (String.fromInt absAmount) }
+            { newDEB | amount = IntField (Just absAmount) (String.fromInt absAmount) }
 
         CR ->
-            {newDEB | amount = IntField (Just negAmount) (String.fromInt negAmount) }
+            { newDEB | amount = IntField (Just negAmount) (String.fromInt negAmount) }

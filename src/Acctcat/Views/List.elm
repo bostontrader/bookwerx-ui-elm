@@ -2,8 +2,8 @@ module Acctcat.Views.List exposing (view)
 
 import Account.Model
 import Acctcat.Acctcat exposing (Acctcat, AcctcatJoined)
-import Acctcat.MsgB exposing (MsgB(..))
 import Acctcat.Model
+import Acctcat.MsgB exposing (MsgB(..))
 import Category.Model
 import Flash exposing (viewFlash)
 import Html exposing (Html, a, button, div, h3, p, table, tbody, td, text, th, thead, tr)
@@ -66,7 +66,7 @@ rightContent model =
             --[ text (tx model.language {e = "Acctcats", c = "货币", p = "huòbì"}) ]
             [ text ("Accounts tagged as category " ++ getCategoryTitle model.categories model.acctcats.category_id) ]
         , viewFlash model.flashMessages
-        , a [href "/acctcats/add", class "button is-link" ]
+        , a [ href "/acctcats/add", class "button is-link" ]
             --[ text (tx model.language {e = "Create new acctcat", c = "创建新货币", p = "chuàngjiàn xīn huòbì"}) ]
             [ text "Tag another account with this category" ]
         , viewAcctcatsPanel model model.acctcats
@@ -111,31 +111,33 @@ viewAcctcat model acctcat =
         ]
 
 
+
 --viewAcctcatsPanel : Model.Model -> Acctcat.Model.Model -> Html Msg
 --viewAcctcatsPanel model acctcat_model =
-    --div [ class "box" ]
-        --[ if List.isEmpty acctcat_model.acctcats then
-            --div [ id "acctcats-index" ]
-                --[ h3 [ id "acctcats-empty" ] [ text "No acctcats present" ] ]
+--div [ class "box" ]
+--[ if List.isEmpty acctcat_model.acctcats then
+--div [ id "acctcats-index" ]
+--[ h3 [ id "acctcats-empty" ] [ text "No acctcats present" ] ]
+--else
+--div [ id "acctcats-index", style [ ( "margin-top", "1.0em" ) ] ]
+--[ viewAcctcatsTable model acctcat_model.acctcats
+--]
+--]
 
-          --else
-            --div [ id "acctcats-index", style [ ( "margin-top", "1.0em" ) ] ]
-                --[ viewAcctcatsTable model acctcat_model.acctcats
-                --]
-        --]
 
 viewAcctcatsPanel : Model.Model -> Acctcat.Model.Model -> Html Msg
 viewAcctcatsPanel model acctcat_model =
     div [ class "box", style "margin-top" "1.0em" ]
         [ case model.acctcats.wdAcctcats of
-            RemoteData.Success s ->
+            RemoteData.Success _ ->
                 if List.isEmpty acctcat_model.acctcats then
                     h3 [] [ text "No acctcats present" ]
+
                 else
                     viewAcctcatsTable model acctcat_model.acctcats
+
             _ ->
                 h3 [] [ text (getRemoteDataStatusMessage model.acctcats.wdAcctcats model.language) ]
-
         ]
 
 

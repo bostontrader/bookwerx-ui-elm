@@ -1,9 +1,9 @@
 module Apikey.Update exposing (apikeyUpdate)
 
-import Apikey.Post exposing (postApikeyCommand)
-import Apikey.MsgB exposing (MsgB(..))
 import Apikey.Model exposing (Model)
-import Apikey.Plumbing exposing( ApikeyPostHttpResponseRecord)
+import Apikey.MsgB exposing (MsgB(..))
+import Apikey.Plumbing exposing (ApikeyPostHttpResponseRecord)
+import Apikey.Post exposing (postApikeyCommand)
 import Json.Decode as D
 import Msg exposing (Msg)
 import RemoteData
@@ -12,7 +12,7 @@ import Util exposing (getRemoteDataStatusMessage)
 
 
 apikeyUpdate : MsgB -> Language -> Model -> { apikeys : Model, cmd : Cmd Msg, log : List String }
-apikeyUpdate apikeyMsgB language model  =
+apikeyUpdate apikeyMsgB language model =
     case apikeyMsgB of
         PostApikey url ->
             { apikeys =
@@ -46,5 +46,5 @@ apikeyUpdate apikeyMsgB language model  =
 
 apikeyDecoder : D.Decoder ApikeyPostHttpResponseRecord
 apikeyDecoder =
-    D.map (\k -> {apikey = k})
-        (D.at ["apikey"] D.string)
+    D.map (\k -> { apikey = k })
+        (D.at [ "apikey" ] D.string)

@@ -4,11 +4,11 @@ import Flash exposing (FlashMsg, viewFlash)
 import Html exposing (Html, button, div, h3, p, table, tbody, td, text, th, thead, tr)
 import Html.Attributes exposing (class, style)
 import Html.Events exposing (onClick)
+import Lint.Lint exposing (Lint)
+import Lint.MsgB exposing (..)
 import Model
 import Msg exposing (Msg(..))
 import RemoteData
-import Lint.Lint exposing (Lint)
-import Lint.MsgB exposing (..)
 import Template exposing (template)
 import Translate exposing (Language, tx)
 import Util exposing (getRemoteDataStatusMessage)
@@ -16,13 +16,18 @@ import ViewHelpers exposing (viewHttpPanel)
 
 
 getURL : String -> Model.Model -> String
-getURL linter model = model.bservers.baseURL ++ "/linter/" ++ linter
-    ++ "?apikey=" ++ model.apikeys.apikey
+getURL linter model =
+    model.bservers.baseURL
+        ++ "/linter/"
+        ++ linter
+        ++ "?apikey="
+        ++ model.apikeys.apikey
+
 
 leftContent : Model.Model -> Html Msg
 leftContent model =
     div []
-        [ p [ style "margin-top" "0.5em"  ]
+        [ p [ style "margin-top" "0.5em" ]
             [ text
                 (tx model.language
                     { e = "This is the linter."
@@ -55,13 +60,13 @@ rightContent model =
             [ class "button is-link"
             , onClick <| LintMsgA <| GetLintCategories <| getURL "categories" <| model
             ]
-            [ text (tx model.language {e = "Unused categories", c = "Unused categories", p = "Unused categories"}) ]
+            [ text (tx model.language { e = "Unused categories", c = "Unused categories", p = "Unused categories" }) ]
         , button
             [ class "button is-link"
             , onClick <| LintMsgA <| GetLintCurrencies <| getURL "currencies" <| model
             , style "margin-left" "0.2em"
             ]
-            [ text (tx model.language {e = "Unused currencies", c = "Unused currencies", p = "Unused currencies"}) ]
+            [ text (tx model.language { e = "Unused currencies", c = "Unused currencies", p = "Unused currencies" }) ]
         , viewReport model
         ]
 
@@ -74,35 +79,34 @@ viewLint model lint =
         , td [] [ text lint.title ]
         ]
 
+
 viewReport : Model.Model -> Html Msg
 viewReport model =
     --div [ class "box", style [ ( "margin-top", "1.0em" ) ] ]
-        --[
+    --[
+    case model.lint.wdLints of
+        RemoteData.Success _ ->
+            if List.isEmpty model.lint.lints then
+                h3 [] [ text "No data found for this report." ]
 
-
-        case model.lint.wdLints of
-            RemoteData.Success s ->
-                if List.isEmpty model.lint.lints then
-                    h3 [] [ text "No data found for this report." ]
-                else
-                    table[ class "table is-striped" ]
-                        [ thead []
-                            [ th [] [ text "account_id"]
-                            , th [] [ text "symbol"]
-                            , th [] [ text "title"]
-                            ]
-                        , tbody [] (List.map (viewLint model) model.lint.lints)
-
-
-
+            else
+                table [ class "table is-striped" ]
+                    [ thead []
+                        [ th [] [ text "account_id" ]
+                        , th [] [ text "symbol" ]
+                        , th [] [ text "title" ]
                         ]
-            _ ->
-                h3 [] [ text (getRemoteDataStatusMessage model.lint.wdLints model.language) ]
+                    , tbody [] (List.map (viewLint model) model.lint.lints)
+                    ]
 
-        --]
+        _ ->
+            h3 [] [ text (getRemoteDataStatusMessage model.lint.wdLints model.language) ]
+
+
+
+--]
 
 
 view : Model.Model -> Html Msg
 view model =
     template model (leftContent model) (rightContent model)
-

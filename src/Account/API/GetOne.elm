@@ -6,7 +6,6 @@ import Msg exposing (Msg)
 import RemoteData
 
 
-
 getOneAccountCommand : String -> Cmd Msg
 getOneAccountCommand url =
     Http.request

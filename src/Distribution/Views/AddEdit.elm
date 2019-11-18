@@ -2,10 +2,10 @@ module Distribution.Views.AddEdit exposing (view)
 
 -- Add and Edit are very similar. Unify them thus...
 
-import Category.Category exposing (CategoryShort)
 import Account.Model
-import Distribution.MsgB exposing ( MsgB(..))
+import Category.Category exposing (CategoryShort)
 import Distribution.Model
+import Distribution.MsgB exposing (MsgB(..))
 import Flash exposing (viewFlash)
 import Html exposing (Html, a, button, div, h3, input, label, option, p, select, table, td, text, tr)
 import Html.Attributes exposing (checked, class, href, name, selected, type_, value)
@@ -14,7 +14,7 @@ import IntField exposing (IntField(..), intFieldToInt, intFieldToString, intVali
 import Model
 import Msg exposing (Msg(..))
 import Template exposing (template)
-import Translate exposing (Language, tx, tx_save)
+import Translate exposing (Language, tx_save)
 import Types exposing (AEMode(..), DRCR(..), DRCRFormat(..))
 import ViewHelpers exposing (viewHttpPanel)
 
@@ -31,7 +31,6 @@ addeditForm distribution_model drcr_format accountOptions =
                     ]
                 ]
             ]
-
         , case drcr_format of
             DRCR ->
                 div [ class "control" ]
@@ -60,8 +59,7 @@ addeditForm distribution_model drcr_format accountOptions =
                     ]
 
             PlusAndMinus ->
-                div[][]
-
+                div [] []
         , case drcr_format of
             DRCR ->
                 div [ class "field" ]
@@ -72,16 +70,17 @@ addeditForm distribution_model drcr_format accountOptions =
                             , class (intValidationClass distribution_model.editBuffer.amount)
                             , type_ "text"
                             , onInput (\newValue -> DistributionMsgA (UpdateAmount newValue))
-
                             , case distribution_model.editBuffer.amount of
-                                IntField Nothing int ->
+                                IntField Nothing _ ->
                                     value ""
-                                IntField (Just int) _ ->
-                                    value ( String.fromInt <| abs <| intFieldToInt <| distribution_model.editBuffer.amount)
+
+                                IntField (Just _) _ ->
+                                    value (String.fromInt <| abs <| intFieldToInt <| distribution_model.editBuffer.amount)
                             ]
                             []
                         ]
                     ]
+
             PlusAndMinus ->
                 div [ class "field" ]
                     [ label [ class "label" ] [ text "Amount" ]
@@ -96,8 +95,6 @@ addeditForm distribution_model drcr_format accountOptions =
                             []
                         ]
                     ]
-
-
         , div [ class "field" ]
             [ label [ class "label" ] [ text "Amount Exp" ]
             , div [ class "control" ]
@@ -113,6 +110,7 @@ addeditForm distribution_model drcr_format accountOptions =
             ]
         ]
 
+
 buildAccountSelect : Int -> Account.Model.Model -> List (Html Msg)
 buildAccountSelect selected_id model =
     List.append [ option [ value "-1" ] [ text "None Selected" ] ]
@@ -120,54 +118,54 @@ buildAccountSelect selected_id model =
             (\a ->
                 option [ value (String.fromInt a.id), selected (a.id == selected_id) ]
                     [ text a.title
-                    , p[][text ("," ++ a.currency.symbol)]
+                    , p [] [ text ("," ++ a.currency.symbol) ]
                     , viewCategories a.categories
                     ]
             )
-            (List.sortBy .title (List.filter (\a -> intFieldToInt a.rarity < intFieldToInt model.rarityFilter || (a.id == selected_id)) model.accounts) )
+            (List.sortBy .title (List.filter (\a -> intFieldToInt a.rarity < intFieldToInt model.rarityFilter || (a.id == selected_id)) model.accounts))
         )
+
 
 leftContent : String -> DRCRFormat -> Language -> Html Msg
 leftContent logMsg drcr_format language =
     div []
-        [ p[][ text "An amount is represented using two integers, using scientific notation."]
-        , p[][ text "For example:"]
-        , table[class "table"]
-            [ tr[]
-                [ td[][ text "100"]
-                , td[][ text "1"]
-                , td[][ text "2"]
+        [ p [] [ text "An amount is represented using two integers, using scientific notation." ]
+        , p [] [ text "For example:" ]
+        , table [ class "table" ]
+            [ tr []
+                [ td [] [ text "100" ]
+                , td [] [ text "1" ]
+                , td [] [ text "2" ]
                 ]
-            , tr[]
-                [ td[][ text "1.5"]
-                , td[][ text "15"]
-                , td[][ text "-1"]
+            , tr []
+                [ td [] [ text "1.5" ]
+                , td [] [ text "15" ]
+                , td [] [ text "-1" ]
                 ]
-            , tr[]
-                [ td[][ text "0.00000042"]
-                , td[][ text "42"]
-                , td[][ text "-8"]
+            , tr []
+                [ td [] [ text "0.00000042" ]
+                , td [] [ text "42" ]
+                , td [] [ text "-8" ]
                 ]
-
             ]
-
         , case drcr_format of
             DRCR ->
-                p[][ text "Because your settings specify the use of DR/CR, you should make all amounts positive."]
+                p [] [ text "Because your settings specify the use of DR/CR, you should make all amounts positive." ]
+
             PlusAndMinus ->
-                p[][ text "Use positive numbers to mean DR and negative to mean CR."]
-
-
+                p [] [ text "Use positive numbers to mean DR and negative to mean CR." ]
         , viewHttpPanel logMsg "" language
         ]
 
-rightContent : String ->   Msg -> Model.Model -> Html Msg
+
+rightContent : String -> Msg -> Model.Model -> Html Msg
 rightContent r_title r_onclick model =
     div []
         [ h3 [ class "title is-3" ] [ text r_title ]
         , viewFlash model.flashMessages
-        , a [href "/distributions" ] [ text "Distributions index" ]
-        , addeditForm model.distributions model.drcr_format
+        , a [ href "/distributions" ] [ text "Distributions index" ]
+        , addeditForm model.distributions
+            model.drcr_format
             (buildAccountSelect model.distributions.editBuffer.account_id model.accounts)
         , div []
             [ button
@@ -233,8 +231,9 @@ view model aemode =
                             ++ putParams
                     }
     in
-        template model
-            (leftContent r.logMsg model.drcr_format model.language) (rightContent r.title r.onClick model)
+    template model
+        (leftContent r.logMsg model.drcr_format model.language)
+        (rightContent r.title r.onClick model)
 
 
 viewCategories : List CategoryShort -> Html Msg

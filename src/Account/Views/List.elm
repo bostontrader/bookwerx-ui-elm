@@ -1,14 +1,14 @@
 module Account.Views.List exposing (view)
 
 import Account.Account exposing (AccountJoined)
-import Account.MsgB exposing (MsgB(..))
 import Account.Model
+import Account.MsgB exposing (MsgB(..))
 import Category.Category exposing (CategoryShort)
 import Flash exposing (viewFlash)
 import Html exposing (Html, a, button, div, h3, input, label, li, p, table, tbody, td, text, th, thead, tr, ul)
 import Html.Attributes exposing (class, href, placeholder, style, type_, value)
 import Html.Events exposing (onClick, onInput)
-import IntField exposing (IntField(..),intFieldToInt, intFieldToString, intValidationClass)
+import IntField exposing (IntField(..), intFieldToInt, intFieldToString, intValidationClass)
 import Model
 import Msg exposing (Msg(..))
 import RemoteData
@@ -21,8 +21,8 @@ import ViewHelpers exposing (viewHttpPanel)
 leftContent : Model.Model -> Html Msg
 leftContent model =
     div []
-        [ div [ class "box", style "margin-top" "0.5em"  ]
-            [ p [ style  "margin-top" "0.5em" ]
+        [ div [ class "box", style "margin-top" "0.5em" ]
+            [ p [ style "margin-top" "0.5em" ]
                 --[ text "Now it's time to define the accounts that are relevant for your use. You must define at least a single account but you're free to define as many accounts as you wish." ]
                 [ text
                     (tx model.language
@@ -78,7 +78,7 @@ rightContent model =
         [ h3 [ class "title is-3" ]
             [ text (tx model.language { e = "Accounts", c = "账户", p = "zhànghù" }) ]
         , viewFlash model.flashMessages
-        , a [href "/accounts/add", class "button is-link" ]
+        , a [ href "/accounts/add", class "button is-link" ]
             [ text (tx model.language { e = "Create new account", c = "创建新账户", p = "chuàngjiàn xīn zhànghù" }) ]
         , viewAccountsPanel model model.accounts
         ]
@@ -102,12 +102,11 @@ viewAccount model account =
         , td [] [ viewCategories <| account.categories ]
         , td [] [ text (intFieldToString account.rarity) ]
         , td []
-            [ a [href (accountPath ++ "/transactions"), class "button is-link" ]
+            [ a [ href (accountPath ++ "/transactions"), class "button is-link" ]
                 [ text (tx model.language { e = "Transactions", c = "交易", p = "jiāoyì" }) ]
             ]
         , td []
-            [ a [href accountPath, class "button is-link" ] [ model.language |> tx_edit |> text ] ]
-
+            [ a [ href accountPath, class "button is-link" ] [ model.language |> tx_edit |> text ] ]
         , td []
             [ button
                 [ class "button is-link is-danger"
@@ -129,11 +128,12 @@ viewAccount model account =
 
 viewAccountsPanel : Model.Model -> Account.Model.Model -> Html Msg
 viewAccountsPanel model account_model =
-    div [ class "box", style  "margin-top" "1.0em"  ]
+    div [ class "box", style "margin-top" "1.0em" ]
         [ case model.accounts.wdAccounts of
-            RemoteData.Success s ->
+            RemoteData.Success _ ->
                 if List.isEmpty account_model.accounts then
                     h3 [] [ text "No accounts present" ]
+
                 else
                     div []
                         [ div [ class "field" ]
@@ -155,9 +155,9 @@ viewAccountsPanel model account_model =
                             ]
                         , viewAccountsTable model account_model.accounts
                         ]
+
             _ ->
                 h3 [] [ text (getRemoteDataStatusMessage model.accounts.wdAccounts model.language) ]
-
         ]
 
 
@@ -166,7 +166,7 @@ viewAccountsTable model accounts =
     table [ class "table is-striped" ]
         [ thead [] [ viewTableHeader model.language ]
         , case model.accounts.rarityFilter of
-            IntField Nothing r ->
+            IntField Nothing _ ->
                 tbody [] (List.map (viewAccount model) (List.sortBy .title accounts))
 
             IntField (Just r) _ ->
@@ -176,7 +176,7 @@ viewAccountsTable model accounts =
 
 viewCategories : List CategoryShort -> Html Msg
 viewCategories categories =
-    ul [] (List.map (\c -> li[][text (" " ++ c.category_symbol)]) categories)
+    ul [] (List.map (\c -> li [] [ text (" " ++ c.category_symbol) ]) categories)
 
 
 viewTableHeader : Language -> Html Msg

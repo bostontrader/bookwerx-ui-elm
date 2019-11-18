@@ -12,11 +12,12 @@ import Msg exposing (Msg(..))
 import Route exposing (Route(..))
 import Routing exposing (extractUrl)
 import Template exposing (template)
+import Transaction.MsgB exposing (MsgB(..))
 import Transaction.Transaction exposing (Transaction)
-import Transaction.MsgB exposing( MsgB(..))
 import Translate exposing (Language, tx, tx_save)
 import Types exposing (AEMode(..))
 import ViewHelpers exposing (viewHttpPanel)
+
 
 addeditForm : Language -> Transaction -> Html Msg
 addeditForm language editBuffer =
@@ -47,6 +48,7 @@ addeditForm language editBuffer =
             ]
         ]
 
+
 leftContent : String -> Language -> Html Msg
 leftContent logMsg language =
     div []
@@ -55,27 +57,25 @@ leftContent logMsg language =
 
 rightContent : String -> String -> Msg -> Bool -> Model.Model -> Html Msg
 rightContent r_id r_title r_onclick r_distribution_button model =
-    div [ ]
-            [ h3 [ class "title is-3" ] [ text r_title ]
-            , viewFlash model.flashMessages
-            , a [href "/transactions", class "button is-link" ]
-                [ text (tx model.language { e = "Transactions Index", c = "返回交易目录", p = "fanhui jiāoyì mulu" })]
-            , if r_distribution_button then
-                a [href (extractUrl DistributionsIndex), class "button is-link", style "margin-left" "0.5em" ] [ text "Distributions" ]
-            else
-                div[][]
+    div []
+        [ h3 [ class "title is-3" ] [ text r_title ]
+        , viewFlash model.flashMessages
+        , a [ href "/transactions", class "button is-link" ]
+            [ text (tx model.language { e = "Transactions Index", c = "返回交易目录", p = "fanhui jiāoyì mulu" }) ]
+        , if r_distribution_button then
+            a [ href (extractUrl DistributionsIndex), class "button is-link", style "margin-left" "0.5em" ] [ text "Distributions" ]
 
-            , addeditForm model.language model.transactions.editBuffer
-            , div []
-                [ button
-                    [ class "button is-link"
-                    , onClick r_onclick
-                    ]
-                    [ model.language |> tx_save |> text ]
+          else
+            div [] []
+        , addeditForm model.language model.transactions.editBuffer
+        , div []
+            [ button
+                [ class "button is-link"
+                , onClick r_onclick
                 ]
-
-
+                [ model.language |> tx_save |> text ]
             ]
+        ]
 
 
 view : Model.Model -> AEMode -> Html Msg
@@ -137,10 +137,4 @@ view model aemode =
                     , distributionButton = True
                     }
     in
-        template model (leftContent r.logMsg model.language) (rightContent r.id r.title r.onClick r.distributionButton model)
-
-
-
-
-
-
+    template model (leftContent r.logMsg model.language) (rightContent r.id r.title r.onClick r.distributionButton model)

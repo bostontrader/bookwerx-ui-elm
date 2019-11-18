@@ -2,8 +2,8 @@ module Account.Model exposing (Model)
 
 import Account.Account exposing (Account, AccountJoined)
 import Distribution.Distribution exposing (DistributionJoined)
-import RemoteData exposing (WebData)
 import IntField exposing (IntField(..))
+import RemoteData exposing (WebData)
 
 
 type alias Model =

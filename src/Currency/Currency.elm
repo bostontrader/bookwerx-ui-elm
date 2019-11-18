@@ -11,7 +11,11 @@ type alias Currency =
     , title : String
     }
 
+
+
 -- Need this for the convenience of the UI
+
+
 type alias CurrencyShort =
     { symbol : String
     , title : String

@@ -1,9 +1,9 @@
 module Report.API.GetDistributions exposing (getDistributionsCmd)
 
-import Report.MsgB exposing (MsgB(..))
 import Http
 import Msg exposing (Msg(..))
 import RemoteData
+import Report.MsgB exposing (MsgB(..))
 
 
 getDistributionsCmd : String -> Cmd Msg

@@ -9,22 +9,22 @@ import Currency.API.JSON exposing (currenciesDecoder, currencyDecoder)
 import Currency.API.Post exposing (postCurrencyCommand)
 import Currency.API.Put exposing (putCurrencyCommand)
 import Currency.Currency exposing (Currency)
-import Currency.MsgB exposing (MsgB(..))
 import Currency.Model
+import Currency.MsgB exposing (MsgB(..))
+import Flash exposing (FlashMsg, FlashSeverity(..), expires)
+import IntField exposing (IntField(..))
 import Json.Decode exposing (decodeString)
 import Msg exposing (Msg(..))
 import RemoteData
-import Route exposing (..)
+import Route exposing (Route(..))
 import Routing exposing (extractUrl)
 import Time
 import Translate exposing (Language(..))
-import IntField exposing (IntField(..))
-import Flash exposing (FlashMsg, FlashSeverity(..), expires)
 import Util exposing (getRemoteDataStatusMessage)
 
 
 currenciesUpdate : MsgB -> Nav.Key -> Language -> Time.Posix -> Currency.Model.Model -> { currencies : Currency.Model.Model, cmd : Cmd Msg, log : List String, flashMessages : List FlashMsg }
-currenciesUpdate currencyMsgB key language currentTime model  =
+currenciesUpdate currencyMsgB key language currentTime model =
     case currencyMsgB of
         -- delete
         DeleteCurrency url ->
@@ -169,19 +169,19 @@ updateRarity c newValue =
     }
 
 
-updateRarityFilter : String -> Int
-updateRarityFilter newValue =
-    case String.toInt newValue of
-        --Ok v ->
-            --v
 
-        --Err _ ->
-            ---1
-        Just v ->
-            v
+--updateRarityFilter : String -> Int
+--updateRarityFilter newValue =
+--case String.toInt newValue of
+--Ok v ->
+--v
+--Err _ ->
+---1
+--Just v ->
+--v
+--Nothing ->
+---1
 
-        Nothing ->
-            -1
 
 updateSymbol : Currency -> String -> Currency
 updateSymbol c newSymbol =

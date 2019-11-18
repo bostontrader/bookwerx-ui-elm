@@ -1,10 +1,10 @@
 module Distribution.Model exposing (Model)
 
-import Distribution.Distribution exposing (
-    DistributionEB,
-    DistributionJoined
-    )
-
+import Distribution.Distribution
+    exposing
+        ( DistributionEB
+        , DistributionJoined
+        )
 import IntField exposing (IntField(..))
 import RemoteData exposing (WebData)
 
@@ -20,5 +20,4 @@ type alias Model =
 
     -- How many decimal places do we want to see in the Distribution's index (for a transaction)?
     , decimalPlaces : Int
-
     }

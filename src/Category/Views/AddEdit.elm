@@ -4,7 +4,7 @@ module Category.Views.AddEdit exposing (view)
 
 import Account.Model
 import Category.Category exposing (Category)
-import Category.MsgB exposing( MsgB(..))
+import Category.MsgB exposing (MsgB(..))
 import Flash exposing (viewFlash)
 import Html exposing (Html, a, button, div, h3, input, label, option, text)
 import Html.Attributes exposing (class, href, selected, type_, value)
@@ -76,8 +76,8 @@ rightContent r_id r_title r_onclick model =
     div []
         [ h3 [ class "title is-3" ] [ text r_title ]
         , viewFlash model.flashMessages
-        , a [href "/categories" ]
-            [ text (tx model.language { e = "Accounts Index", c = "返回类别目录", p = "fanhui lèibié mulu" })]
+        , a [ href "/categories" ]
+            [ text (tx model.language { e = "Accounts Index", c = "返回类别目录", p = "fanhui lèibié mulu" }) ]
         , addeditForm model.language model.categories.editBuffer (buildAccountSelect model.accounts [ 274, 257 ])
         , div []
             [ button
@@ -112,7 +112,6 @@ view model aemode =
                 Add ->
                     { id = "categories-add"
                     , title = tx model.language { e = "Create new category", c = "创建新类别", p = "chuàngjiàn xīn lèibié" }
-
                     , onClick =
                         CategoryMsgA
                             (PostCategory

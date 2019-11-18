@@ -1,9 +1,11 @@
 module Translate exposing (Language(..), tx, tx_accounts, tx_delete, tx_edit, tx_request, tx_response, tx_save)
 
+
 type Language
     = English
     | Chinese
     | Pinyin
+
 
 tx : Language -> { e : String, c : String, p : String } -> String
 tx language t =
