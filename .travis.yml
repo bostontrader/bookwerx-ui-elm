@@ -1,11 +1,3 @@
-# We need this line because otherwise webpack-elm-loader mysteriously hangs.
-# See https://gist.github.com/bostontrader/0739f5794eab30339c7a105d4da15e5e
-sudo: required
-
 language: node_js
 node_js:
-  - "8.5"
-
-before_script:
-  - npm install
-  - npx webpack
+  - "12.0"
