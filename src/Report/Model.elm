@@ -8,7 +8,7 @@ import RemoteData exposing (WebData)
 type alias Model =
     { distributionReports : List DistributionReport -- JSON decoded from wdAccounts
     , wdDistributionReports : WebData String -- the raw string http response
-    , decimalPlaces : IntField
+    , decimalPlaces : Int
     , category_id : Int
     , startTime : String
     , sof : Maybe StockOrFlow

@@ -31,7 +31,7 @@ type
     | AccountPosted (WebData AccountPostHttpResponseString)
       -- edit
     | UpdateCurrencyID String
-    | UpdateDecimalPlaces String
+    | UpdateDecimalPlaces Int
     | UpdateRarity String
     | UpdateRarityFilter String
     | UpdateTitle String

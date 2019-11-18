@@ -1,13 +1,12 @@
 module Report.View exposing (view)
 
 import Category.Model
-import Decimal exposing (dadd, dvColumnHeader, viewDV)
+import DecimalFP exposing (DFP)
 import Distribution.Distribution exposing (DistributionReport)
 import Flash exposing (viewFlash)
 import Html exposing (Html, button, div, h3, label, input, option, p, select, table, tbody, td, text, th, thead, tr)
 import Html.Attributes exposing (class, name, placeholder, selected, style, type_, value)
 import Html.Events exposing (onClick, onInput)
-import IntField exposing (intFieldToInt, intFieldToString)
 import Model
 import Msg exposing (Msg(..))
 import RemoteData
@@ -16,7 +15,7 @@ import Report.MsgB exposing (..)
 import Template exposing (template)
 import Translate exposing (tx)
 import Util exposing (getAccountTitle, getRemoteDataStatusMessage)
-import ViewHelpers exposing (viewHttpPanel)
+import ViewHelpers exposing (dvColumnHeader, viewDFP, viewHttpPanel)
 
 
 buildCategorySelect : Category.Model.Model -> Int -> List (Html msg)
@@ -217,27 +216,41 @@ viewReport model =
 
 
          case model.report.wdDistributionReports of
-            RemoteData.Success s ->
+            RemoteData.Success _ ->
                 if List.isEmpty model.report.distributionReports then
                     h3 [] [ text "No data found for this report." ]
                 else
                     div[]
-                        [ div [ class "field" ]
-                                      [ label [ class "label" ]
-                                          [ text
-                                              (tx model.language { e = "Decimal places", c = "小数位", p = "xiǎoshù wèi" })
-                                          ]
-                                      , div [ class "control" ]
-                                        [ input
-                                            [ class "input"
-                                                , placeholder "decimal places"
-                                                , onInput (\newValue -> ReportMsgA (UpdateDecimalPlaces newValue))
-                                                , type_ "text"
-                                                , value (intFieldToString model.report.decimalPlaces)
-                                            ]
-                                            []
-                                        ]
-                                      ]
+                        [ label [ class "label" ]
+                            [ text
+                                (tx model.language { e = "Decimal places", c = "小数位", p = "xiǎoshù wèi" })
+                            ]
+                        , div [ class "control" ]
+                            [ input
+                                [ class "input"
+                                --, placeholder "decimal places"
+                                --, onInput (\newValue -> ReportMsgA (UpdateDecimalPlaces newValue))
+                                , type_ "text"
+                                , value (String.fromInt model.report.decimalPlaces)
+                                ]
+                                []
+                            ]
+                        , button
+                            [ class "button is-link"
+                            , style "margin-top" "0.3em"
+                            , onClick
+                                ( ReportMsgA (UpdateDecimalPlaces (model.report.decimalPlaces + 1) ) )
+                            ]
+                            [ text "+" ]
+
+                        , button
+                            [ class "button is-link"
+                            , style "margin-left" "0.3em"
+                            , style "margin-top" "0.3em"
+                            , onClick
+                                ( ReportMsgA (UpdateDecimalPlaces (model.report.decimalPlaces - 1) ) )
+                            ]
+                            [ text "-" ]
                     , table[ class "table is-striped" ]
                             [ thead []
                                 (
@@ -258,11 +271,10 @@ viewReport model =
                                             --[ text (dfmt (intFieldToInt model.report.decimalPlaces) { amt = dogfood.damt.amt, exp = dogfood.damt.exp }) ]
 
                                         ]
-                                        ++ viewDV
+                                        ++ viewDFP
                                             dogfood.damt
-                                            ( intFieldToInt <| model.report.decimalPlaces)
+                                            model.report.decimalPlaces
                                             model.drcr_format
-                                            "has-text-right" [("","")]
                                             --( (roundingAlertStyle ( intFieldToInt <| model.report.decimalPlaces) dogfood.damt.exp) ++ [("padding-right","0em")] )
                                             )
                                         ) (rollup model.report))
@@ -300,7 +312,7 @@ viewReport model =
 
 type alias Dogfood =
     { account_id : Int
-    , damt : {amt : Int, exp : Int}
+    , damt : DFP
     }
 
 
@@ -322,17 +334,18 @@ rollupInner distributionReports =
                         head.account_id
                             ( List.foldl
                                 add
-                                {amt = head.amount, exp = head.amount_exp}
+                                --{sig = head.amount, exp = head.amount_exp}
+                                (DFP head.amount head.amount_exp)
                                 ( tail |> List.filter (\c -> c.account_id == head.account_id) ))
 
                     :: rollupInner (List.filter (\c -> c.account_id /= head.account_id) tail)
 
                 Nothing ->
-                    [Dogfood head.account_id {amt = head.amount, exp = head.amount_exp}]
+                    [Dogfood head.account_id (DFP head.amount head.amount_exp) ]
 
         Nothing ->
             [] -- no head means empty list
 
 
-add : DistributionReport -> { amt : Int, exp : Int } -> { amt : Int, exp : Int }
-add dr b = dadd {amt = dr.amount, exp = dr.amount_exp} b
+add : DistributionReport -> DFP -> DFP
+add dr b = DecimalFP.dfp_add (DFP dr.amount dr.amount_exp) b

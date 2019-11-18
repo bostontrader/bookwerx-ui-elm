@@ -1,23 +1,21 @@
 module Distribution.Views.List exposing (view)
 
-import Decimal exposing (DV, dvColumnHeader, viewDV)
+import DecimalFP exposing (DFP)
 import Distribution.Distribution exposing (DistributionJoined)
 import Distribution.MsgB exposing (MsgB(..))
 import Distribution.Model
 import Flash exposing (viewFlash)
-import Html exposing (Html, a, button, div, h3, table, tbody, td, text, th, thead, tr)
-import Html.Attributes exposing (class, href, style)
+import Html exposing (Html, a, button, div, h3, input, label, table, tbody, td, text, th, thead, tr)
+import Html.Attributes exposing (class, href, style, type_, value)
 import Html.Events exposing (onClick)
-import IntField exposing (intFieldToInt)
 import Model
 import Msg exposing (Msg(..))
 import RemoteData
 import Template exposing (template)
 import Translate exposing (Language, tx, tx_delete, tx_edit)
 import Types exposing (DRCRFormat(..))
---import Util exposing (, , roundingAlertStyle)
 import Util exposing (getRemoteDataStatusMessage)
-import ViewHelpers exposing (viewHttpPanel)
+import ViewHelpers exposing (dvColumnHeader, viewDFP, viewHttpPanel)
 
 
 leftContent : Model.Model -> Html Msg
@@ -61,7 +59,7 @@ viewDistribution model distributionJoined =
             [ td [] [ text (String.fromInt distributionJoined.id) ]
             , td [] [ text distributionJoined.account_title ]
             ]
-            ++ viewDV (DV distributionJoined.amount distributionJoined.amount_exp) (intFieldToInt model.accounts.decimalPlaces) model.drcr_format "has-text-right" [("","")]
+            ++ viewDFP (DFP distributionJoined.amount distributionJoined.amount_exp) model.distributions.decimalPlaces model.drcr_format
             --( (roundingAlertStyle (intFieldToInt model.accounts.decimalPlaces) distributionJoined.amount_exp) ++ [("padding-right","0em")] )
             --, --td
             --[ class "has-text-right"
@@ -98,11 +96,46 @@ viewDistributionsPanel : Model.Model -> Distribution.Model.Model -> Html Msg
 viewDistributionsPanel model distribution_model =
     div [ class "box", style "margin-top" "1.0em"]
         [ case model.distributions.wdDistributionJoineds of
-            RemoteData.Success s ->
+            RemoteData.Success _ ->
                 if List.isEmpty distribution_model.distributionJoineds then
-                    h3 [] [ text "No distributions present" ]
+                    h3 [] [ text "This transaction does not have any distributions" ]
                 else
-                    viewDistributionsTable model distribution_model.distributionJoineds
+                    div [ style "margin-top" "1.0em"  ]
+                        [ label [ class "label" ]
+                            [ text
+                                (tx model.language { e = "Decimal places", c = "小数位", p = "xiǎoshù wèi" })
+                            ]
+                        , div [ class "control" ]
+                            [ input
+                                [ class "input"
+                                --, class (intValidationClass distribution_model.decimalPlaces)
+                                --, placeholder "decimal places"
+                                --, onInput (\newValue -> DistributionMsgA (UpdateDecimalPlaces newValue))
+                                , type_ "text"
+                                , value (String.fromInt distribution_model.decimalPlaces)
+                                ]
+                                []
+                            ]
+
+                        , button
+                            [ class "button is-link"
+                            , style "margin-top" "0.3em"
+                            , onClick
+                                ( DistributionMsgA (UpdateDecimalPlaces (distribution_model.decimalPlaces + 1) ) )
+                            ]
+                            [ text "+" ]
+
+                        , button
+                            [ class "button is-link"
+                            , style "margin-left" "0.3em"
+                            , style "margin-top" "0.3em"
+                            , onClick
+                                ( DistributionMsgA (UpdateDecimalPlaces (distribution_model.decimalPlaces - 1) ) )
+                            ]
+                            [ text "-" ]
+                        , viewDistributionsTable model distribution_model.distributionJoineds
+                        ]
+
             _ ->
                 h3 [] [ text (getRemoteDataStatusMessage model.distributions.wdDistributionJoineds model.language) ]
 

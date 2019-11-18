@@ -31,5 +31,6 @@ type
     | UpdateAccountID String
     | UpdateAmount String
     | UpdateAmountExp String
+    | UpdateDecimalPlaces Int
     | UpdateDRCR String
 

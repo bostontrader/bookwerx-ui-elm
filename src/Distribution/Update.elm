@@ -124,7 +124,6 @@ distributionsUpdate distributionMsgB key language currentTime model  =
             , flashMessages = [ FlashMsg (getRemoteDataStatusMessage response language) FlashSuccess (expires currentTime flashMessageDuration) ]
             }
 
-        -- edit
         UpdateAccountID newValue ->
             { distributions = { model | editBuffer = updateAccountID model.editBuffer newValue }
             , cmd = Cmd.none
@@ -141,6 +140,13 @@ distributionsUpdate distributionMsgB key language currentTime model  =
 
         UpdateAmountExp newValue ->
             { distributions = { model | editBuffer = updateAmountExp model.editBuffer newValue }
+            , cmd = Cmd.none
+            , log = []
+            , flashMessages = []
+            }
+
+        UpdateDecimalPlaces newValue ->
+            { distributions = { model | decimalPlaces = newValue}
             , cmd = Cmd.none
             , log = []
             , flashMessages = []

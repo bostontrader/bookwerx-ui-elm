@@ -52,13 +52,7 @@ accountsUpdate accountMsgB key language currentTime model  =
             }
 
         UpdateDecimalPlaces newValue ->
-            { accounts =
-                case newValue |> String.toInt of
-                    Nothing ->
-                        { model | decimalPlaces = IntField Nothing newValue }
-
-                    Just v ->
-                        { model | decimalPlaces = IntField (Just v) newValue }
+            { accounts = { model | decimalPlaces = newValue}
             , cmd = Cmd.none
             , log = []
             , flashMessages = []

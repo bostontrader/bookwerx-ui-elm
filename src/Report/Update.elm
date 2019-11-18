@@ -58,13 +58,7 @@ reportUpdate reportMsgB language model =
 
 
         UpdateDecimalPlaces newValue ->
-            { report =
-                case newValue |> String.toInt of
-                    Nothing ->
-                        { model | decimalPlaces = IntField Nothing newValue }
-
-                    Just v ->
-                        { model | decimalPlaces = IntField (Just v) newValue }
+            { report = { model | decimalPlaces = newValue}
             , cmd = Cmd.none
             , log = []
             , flashMessages = []

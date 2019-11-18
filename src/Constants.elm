@@ -13,7 +13,7 @@ import Translate exposing (Language(..))
 import Types exposing (DRCRFormat(..))
 
 bwuiVersion : String
-bwuiVersion = "1.0.0" -- sync with package.json
+bwuiVersion = "1.0.1" -- sync with package.json
 
 
 flashMessageDuration : Int

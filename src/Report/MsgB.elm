@@ -12,7 +12,7 @@ type
 
     -- edit
     | UpdateCategoryID String
-    | UpdateDecimalPlaces String
+    | UpdateDecimalPlaces Int
     | UpdateSOF String
     | UpdateStartTime String
     | UpdateStopTime String

@@ -5,9 +5,8 @@ import Distribution.Distribution exposing (
     DistributionJoined
     )
 
+import IntField exposing (IntField(..))
 import RemoteData exposing (WebData)
-import Types exposing (DRCR)
---import TypesB exposing (IntField(..))
 
 
 type alias Model =
@@ -19,9 +18,7 @@ type alias Model =
     , distributionJoineds : List DistributionJoined
     , wdDistributionJoineds : WebData String
 
-
-
-    --, amountLHS : IntField
-    --, amountRHS : IntField
+    -- How many decimal places do we want to see in the Distribution's index (for a transaction)?
+    , decimalPlaces : Int
 
     }

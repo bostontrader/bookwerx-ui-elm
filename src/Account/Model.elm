@@ -16,7 +16,7 @@ type alias Model =
     , wdAccount : WebData String
 
     -- How many decimal places do we want to see in the Account's list of transactions?
-    , decimalPlaces : IntField
+    , decimalPlaces : Int
 
     -- Only list accounts with rarity < rarityFilter
     , rarityFilter : IntField
