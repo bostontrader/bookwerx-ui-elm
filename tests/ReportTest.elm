@@ -5,7 +5,7 @@ import Account.Model
 import Currency.Currency exposing (CurrencyShort)
 import DecimalFP exposing (DFP)
 import Dict exposing (Dict)
-import Distribution.Distribution exposing (DistributionReport, DistributionReportEx)
+import Distribution.Distribution exposing (DistributionReport)
 import Expect exposing (Expectation)
 import Fuzz exposing (Fuzzer, int, list, string)
 import IntField exposing (IntField(..))
