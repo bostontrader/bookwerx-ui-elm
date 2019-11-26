@@ -43,6 +43,13 @@ reportUpdate reportMsgB language model =
             , flashMessages = []
             }
 
+        ToggleOmitZeros ->
+            { report = { model | omitZeros = not model.omitZeros }
+            , cmd = Cmd.none
+            , log = []
+            , flashMessages = []
+            }
+
         UpdateCategoryID newValue ->
             { report =
                 case newValue |> String.toInt of

@@ -4,7 +4,7 @@
 -}
 
 
-module DecimalFP exposing (DFP, DFPFmt, dfp_abs, dfp_add, dfp_fmt, round)
+module DecimalFP exposing (DFP, DFPFmt, dfp_abs, dfp_add, dfp_equal, dfp_fmt, round)
 
 
 type alias DFP =

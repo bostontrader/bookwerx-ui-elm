@@ -1,11 +1,7 @@
 module Util exposing
-    (  getAccountTitle
-       --, getCurrencyTitle
-
-    ,  getRemoteDataStatusMessage
-       --, roundingAlertStyle
-       --, updateTutorialLevel
-
+    ( getAccountTitle
+    , getCurrencySymbol
+    , getRemoteDataStatusMessage
     )
 
 import Account.Model
@@ -22,6 +18,20 @@ getAccountTitle model cid =
 
         Nothing ->
             "not set"
+
+
+
+-- Given an account_id, return the associated currency symbol
+
+
+getCurrencySymbol : Account.Model.Model -> Int -> String
+getCurrencySymbol model account_id =
+    case List.head (List.filter (\c -> c.id == account_id) model.accounts) of
+        Just c ->
+            c.currency.symbol
+
+        Nothing ->
+            ""
 
 
 

@@ -9,6 +9,7 @@ type
     = GetDistributions String
     | DistributionsReceived (WebData String)
       -- edit
+    | ToggleOmitZeros
     | UpdateCategoryID String
     | UpdateDecimalPlaces Int
     | UpdateSOF String

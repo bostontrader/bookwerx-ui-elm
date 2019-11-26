@@ -134,6 +134,7 @@ modelAfterAPIKey =
         , wdDistributionReports = RemoteData.NotAsked
         , decimalPlaces = 2
         , category_id = -1
+        , omitZeros = False
         , startTime = ""
         , sof = Nothing
         , stopTime = ""

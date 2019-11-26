@@ -10,6 +10,7 @@ type alias Model =
     , wdDistributionReports : WebData String -- the raw string http response
     , decimalPlaces : Int
     , category_id : Int
+    , omitZeros : Bool
     , startTime : String
     , sof : Maybe StockOrFlow
     , stopTime : String

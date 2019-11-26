@@ -1,19 +1,22 @@
 module Report.View exposing (view)
 
 import Category.Model
-import DecimalFP exposing (DFP)
-import Distribution.Distribution exposing (DistributionReport)
+import DecimalFP exposing (DFP, dfp_add)
+import Dict
 import Flash exposing (viewFlash)
 import Html exposing (Html, button, div, h3, input, label, option, p, select, table, tbody, td, text, th, thead, tr)
-import Html.Attributes exposing (class, name, placeholder, selected, style, type_, value)
+import Html.Attributes exposing (checked, class, name, placeholder, selected, style, type_, value)
 import Html.Events exposing (onClick, onInput)
 import Model
 import Msg exposing (Msg(..))
 import RemoteData
 import Report.Model exposing (StockOrFlow(..))
-import Report.MsgB exposing (..)
+import Report.MsgB
+import Report.Report exposing (AccountSummary)
+import Report.Transform exposing (xform1, xform2, xform2a, xform3)
 import Template exposing (template)
 import Translate exposing (tx)
+import Types exposing (DRCRFormat(..))
 import Util exposing (getAccountTitle, getRemoteDataStatusMessage)
 import ViewHelpers exposing (dvColumnHeader, viewDFP, viewHttpPanel)
 
@@ -73,20 +76,16 @@ rightContent model =
         [ h3 [ class "title is-3" ]
             [ text
                 (tx model.language
-                    { e = "Report"
-                    , c = "Report"
-                    , p = "Report"
-                    }
+                    { e = "Report", c = "汇报", p = "Huìbào" }
                 )
             ]
         , viewFlash model.flashMessages
         , div [ class "field" ]
-            [ label [ class "label" ] [ text "Category" ]
+            [ label [ class "label" ] [ text (tx model.language { e = "Category", c = "类别", p = "lèibié" }) ]
             , div [ class "control" ]
                 [ div [ class "select" ]
                     [ select
-                        [ onInput (\newValue -> ReportMsgA (UpdateCategoryID newValue))
-                        ]
+                        [ onInput (\newValue -> ReportMsgA (Report.MsgB.UpdateCategoryID newValue)) ]
                         (buildCategorySelect model.categories -1)
                     ]
                 ]
@@ -96,7 +95,7 @@ rightContent model =
                 [ label [ class "radio" ]
                     [ input
                         [ name "sof"
-                        , onInput (\newValue -> ReportMsgA (UpdateSOF newValue))
+                        , onInput (\newValue -> ReportMsgA (Report.MsgB.UpdateSOF newValue))
                         , type_ "radio"
                         , value "stock"
                         ]
@@ -106,7 +105,7 @@ rightContent model =
                 , label [ class "radio" ]
                     [ input
                         [ name "sof"
-                        , onInput (\newValue -> ReportMsgA (UpdateSOF newValue))
+                        , onInput (\newValue -> ReportMsgA (Report.MsgB.UpdateSOF newValue))
                         , type_ "radio"
                         , value "flow"
                         ]
@@ -128,20 +127,12 @@ rightContent model =
                 , onClick (ReportMsgA (Report.MsgB.GetDistributions (getURL model)))
                 , style "margin-top" "1.0em"
                 ]
-                [ text (tx model.language { e = "Produce report", c = "Produce report", p = "Produce report" }) ]
+                [ text (tx model.language { e = "Produce report", c = "产生报告", p = "chǎnshēng bàogào" }) ]
 
           else
             div [] []
         , viewReport model
         ]
-
-
-
---viewFlowControls : Html Msg
---viewFlowControls  =
---div[] [
---text "flow controls"
---]
 
 
 readyFreddie : Model.Model -> Bool
@@ -164,16 +155,6 @@ view model =
     template model (leftContent model) (rightContent model)
 
 
-
---viewFlowReport : Model.Model -> Html Msg
---viewFlowReport model  =
---div []
---[ viewFlowControls
---, text "flow report"
---, viewReport model
---]
-
-
 viewTimeControls : Model.Model -> Html Msg
 viewTimeControls model =
     case model.report.sof of
@@ -191,7 +172,7 @@ viewTimeControls model =
                                     [ class "input"
                                     , type_ "text"
                                     , value model.report.startTime
-                                    , onInput (\newValue -> ReportMsgA (UpdateStartTime newValue))
+                                    , onInput (\newValue -> ReportMsgA (Report.MsgB.UpdateStartTime newValue))
                                     , placeholder "2019-09-01T12:35:45.123Z"
                                     ]
                                     []
@@ -204,7 +185,7 @@ viewTimeControls model =
                             [ class "input"
                             , type_ "text"
                             , value model.report.stopTime
-                            , onInput (\newValue -> ReportMsgA (UpdateStopTime newValue))
+                            , onInput (\newValue -> ReportMsgA (Report.MsgB.UpdateStopTime newValue))
                             , placeholder "2019-09-01T12:35:45.123Z"
                             ]
                             []
@@ -222,7 +203,15 @@ viewReport model =
         [ case model.report.wdDistributionReports of
             RemoteData.Success _ ->
                 if List.isEmpty model.report.distributionReports then
-                    h3 [] [ text "No data found for this report." ]
+                    h3 []
+                        [ text
+                            (tx model.language
+                                { e = "No data found for this report"
+                                , c = "找不到此报告的数据"
+                                , p = "Zhǎo bù dào cǐ bàogào de shùjù"
+                                }
+                            )
+                        ]
 
                 else
                     div []
@@ -233,9 +222,6 @@ viewReport model =
                         , div [ class "control" ]
                             [ input
                                 [ class "input"
-
-                                --, placeholder "decimal places"
-                                --, onInput (\newValue -> ReportMsgA (UpdateDecimalPlaces newValue))
                                 , type_ "text"
                                 , value (String.fromInt model.report.decimalPlaces)
                                 ]
@@ -245,7 +231,7 @@ viewReport model =
                             [ class "button is-link"
                             , style "margin-top" "0.3em"
                             , onClick
-                                (ReportMsgA (UpdateDecimalPlaces (model.report.decimalPlaces + 1)))
+                                (ReportMsgA (Report.MsgB.UpdateDecimalPlaces (model.report.decimalPlaces + 1)))
                             ]
                             [ text "+" ]
                         , button
@@ -253,39 +239,32 @@ viewReport model =
                             , style "margin-left" "0.3em"
                             , style "margin-top" "0.3em"
                             , onClick
-                                (ReportMsgA (UpdateDecimalPlaces (model.report.decimalPlaces - 1)))
+                                (ReportMsgA (Report.MsgB.UpdateDecimalPlaces (model.report.decimalPlaces - 1)))
                             ]
                             [ text "-" ]
-                        , table [ class "table is-striped" ]
-                            [ thead []
-                                ([ th [] [ text "Account ID" ]
-                                 , th [] [ text "Title" ]
-                                 ]
-                                    ++ dvColumnHeader "Amount" model.drcr_format
-                                )
-                            , tbody []
-                                (List.map
-                                    (\dogfood ->
-                                        tr []
-                                            ([ td [] [ text (String.fromInt dogfood.account_id) ]
-                                             , td [] [ text (getAccountTitle model.accounts dogfood.account_id) ]
-
-                                             --, td
-                                             --[ class "has-text-right"
-                                             --, style (roundingAlertStyle 2 dogfood.amount_exp)
-                                             --]
-                                             --[ text (dfmt (intFieldToInt model.report.decimalPlaces) { amt = dogfood.damt.amt, exp = dogfood.damt.exp }) ]
-                                             ]
-                                                ++ viewDFP
-                                                    dogfood.damt
-                                                    model.report.decimalPlaces
-                                                    model.drcr_format
-                                             --( (roundingAlertStyle ( intFieldToInt <| model.report.decimalPlaces) dogfood.damt.exp) ++ [("padding-right","0em")] )
-                                            )
-                                    )
-                                    (rollup model.report)
-                                )
+                        , label [ class "label", style "margin-top" "0.5em" ]
+                            [ text
+                                (tx model.language { e = "Omit accounts with zero balances.", c = "忽略余额为零的帐户", p = "hūlüè yú'é wéi líng de zhànghù" })
                             ]
+                        , input
+                            [ checked model.report.omitZeros
+                            , onClick (ReportMsgA Report.MsgB.ToggleOmitZeros)
+                            , type_ "checkbox"
+                            ]
+                            []
+                        , div []
+                            (List.map (\n -> viewCurrencySection n model)
+                                (Dict.toList
+                                    (xform3
+                                        (xform2a model.report.omitZeros
+                                            (xform2
+                                                (xform1 model.report.startTime model.report.stopTime model.report.distributionReports)
+                                            )
+                                        )
+                                        model.accounts
+                                    )
+                                )
+                            )
                         ]
 
             _ ->
@@ -293,67 +272,47 @@ viewReport model =
         ]
 
 
-
---viewStockControls : Html Msg
---viewStockControls  =
---div[] [
---text "stock controls"
---]
---viewStockReport : Model.Model -> Html Msg
---viewStockReport model =
---div []
---[ viewStockControls
---, text "stock report"
---, viewReport model
---]
-
-
-type alias Dogfood =
-    { account_id : Int
-    , damt : DFP
-    }
-
-
-
--- A wrapper to ensure that the List of DistributionReport is properly sorted, as well as to filter according to datetime
-
-
-rollup : Report.Model.Model -> List Dogfood
-rollup reportModel =
-    rollupInner (List.sortBy .account_id (List.filter (\d -> d.time >= reportModel.startTime) reportModel.distributionReports))
-
-
-
--- The List of DistributionReport must be sorted by account_id
-
-
-rollupInner : List DistributionReport -> List Dogfood
-rollupInner distributionReports =
-    case List.head distributionReports of
-        Just head ->
-            case List.tail distributionReports of
-                Just tail ->
-                    Dogfood
-                        head.account_id
-                        (List.foldl
-                            add
-                            --{sig = head.amount, exp = head.amount_exp}
-                            (DFP head.amount head.amount_exp)
-                            (tail |> List.filter (\c -> c.account_id == head.account_id))
-                        )
-                        :: rollupInner (List.filter (\c -> c.account_id /= head.account_id) tail)
-
-                Nothing ->
-                    [ Dogfood head.account_id (DFP head.amount head.amount_exp) ]
-
-        Nothing ->
-            []
+viewCurrencySection : ( String, List AccountSummary ) -> Model.Model -> Html Msg
+viewCurrencySection cs model =
+    div [ class "box", style "margin-top" "0.5em" ]
+        [ p [] [ text (Tuple.first cs) ]
+        , table [ class "table is-striped" ]
+            [ thead []
+                ([ th [] [ text (tx model.language { e = "Account ID", c = "账户号码", p = "zhànghù haoma" }) ]
+                 , th [] [ text (tx model.language { e = "Title", c = "标题", p = "biāotí" }) ]
+                 ]
+                    ++ dvColumnHeader (tx model.language { e = "Amount", c = "量", p = "Liàng" }) model.drcr_format
+                )
+            , tbody []
+                (List.map
+                    (\line ->
+                        tr []
+                            ([ td [] [ text (String.fromInt line.account_id) ]
+                             , td [] [ text (getAccountTitle model.accounts line.account_id) ]
+                             ]
+                                ++ viewDFP
+                                    line.damt
+                                    model.report.decimalPlaces
+                                    model.drcr_format
+                            )
+                    )
+                    (Tuple.second cs)
+                    ++ [ tr []
+                            ([ td [] [], td [ class "has-text-right has-text-weight-bold" ] [ text (tx model.language { e = "Total", c = "总", p = "zǒng" }) ] ]
+                                ++ viewDFP
+                                    (calcSum (Tuple.second cs))
+                                    model.report.decimalPlaces
+                                    model.drcr_format
+                            )
+                       ]
+                )
+            ]
+        ]
 
 
-
--- no head means empty list
-
-
-add : DistributionReport -> DFP -> DFP
-add dr b =
-    DecimalFP.dfp_add (DFP dr.amount dr.amount_exp) b
+calcSum : List AccountSummary -> DFP
+calcSum list =
+    List.foldl
+        (\a b -> dfp_add a.damt b)
+        (DFP 0 0)
+        list

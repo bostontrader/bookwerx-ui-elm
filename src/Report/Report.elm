@@ -1,9 +1,13 @@
-module Report.Report exposing (BalanceSheet)
+module Report.Report exposing (AccountSummary)
+
+import DecimalFP exposing (DFP)
 
 
-type alias BalanceSheet =
+
+-- One line of the report
+
+
+type alias AccountSummary =
     { account_id : Int
-    , amount : Int
-    , amount_exp : Int
-    , time : String
+    , damt : DFP
     }
