@@ -63,6 +63,15 @@ leftContent model =
                     }
                 )
             ]
+        , p [ style "margin-top" "0.5em" ]
+            [ text
+                (tx model.language
+                    { e = "The API call retrieves all relevant distributions for transactions <= the stop date.  It is the job of the client to filter, fold, and sort these distributions into a sensible output format."
+                    , c = "The API call retrieves all relevant distributions for transactions <= the stop date.  It is the job of the client to filter, fold, and sort these distributions into a sensible output format."
+                    , p = "The API call retrieves all relevant distributions for transactions <= the stop date.  It is the job of the client to filter, fold, and sort these distributions into a sensible output format."
+                    }
+                )
+            ]
         , viewHttpPanel
             (getURL model)
             (getRemoteDataStatusMessage model.report.wdDistributionReports model.language)
