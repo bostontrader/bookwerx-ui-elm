@@ -4,6 +4,7 @@ import Account.Model
 import Acctcat.Model
 import Apikey.Model
 import Browser.Navigation as Nav
+import BS.Model
 import Bserver.Model
 import Category.Model
 import Currency.Model
@@ -23,6 +24,7 @@ type alias Model =
     { accounts : Account.Model.Model
     , acctcats : Acctcat.Model.Model
     , apikeys : Apikey.Model.Model
+    , bs : BS.Model.Model
     , bservers : Bserver.Model.Model
     , categories : Category.Model.Model
     , currencies : Currency.Model.Model
@@ -50,6 +52,7 @@ type alias Model =
 type alias ModelAfterAPIKey =
     { accounts : Account.Model.Model
     , acctcats : Acctcat.Model.Model
+    , bs : BS.Model.Model
     , categories : Category.Model.Model
     , currencies : Currency.Model.Model
     , distributions : Distribution.Model.Model

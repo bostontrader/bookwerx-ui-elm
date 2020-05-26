@@ -7,6 +7,7 @@ import Acctcat.Views.AddEdit
 import Acctcat.Views.List
 import Apikey.View
 import Browser
+import BS.View
 import Bserver.View
 import Category.Views.AddEdit
 import Category.Views.List
@@ -64,6 +65,11 @@ view model =
             , title = "Bookwerx UI"
             }
 
+        BS ->
+            { body = [ BS.View.view model ]
+            , title = "Bookwerx UI"
+            }
+
         BserversIndex ->
             { body =
                 [ Bserver.View.view model ]
@@ -114,7 +120,6 @@ view model =
             , title = "Bookwerx UI"
             }
 
-        -- Distributions
         DistributionsAdd ->
             { body =
                 [ Distribution.Views.AddEdit.view model Add ]

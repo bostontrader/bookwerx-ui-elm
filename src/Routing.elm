@@ -25,6 +25,7 @@ matchRoute =
         , map AccountsIndex (s "accounts")
         , map AcctcatsAdd (s "acctcats" </> s "add")
         , map ApikeysIndex (s "apikeys")
+        , map BS (s "bs")
         , map BserversIndex (s "bservers")
         , map CategoriesAccounts (s "categories" </> int </> s "accounts")
         , map CategoriesAdd (s "categories" </> s "add")
@@ -54,6 +55,9 @@ extractUrl route =
 
         ApikeysIndex ->
             "/apikeys"
+
+        BS ->
+            "/bs"
 
         BserversIndex ->
             "/bservers"

@@ -9,6 +9,7 @@ type Route
     | AccountsIndex
     | AcctcatsAdd
     | ApikeysIndex
+    | BS
     | BserversIndex
     | CategoriesAccounts Int
     | CategoriesAdd

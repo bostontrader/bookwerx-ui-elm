@@ -1,9 +1,5 @@
 [![Build Status](https://travis-ci.org/bostontrader/bookwerx-ui-elm.svg?branch=master)](https://travis-ci.org/bostontrader/bookwerx-ui-elm)
-[![Known Vulnerabilities](https://snyk.io/test/github/bostontrader/bookwerx-ui-elm/badge.svg)](https://snyk.io/test/github/bostontrader/bookwerx-ui-elm)
-
 [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
-[![Dependency Status](https://david-dm.org/bostontrader/bookwerx-ui-elm.svg)](https://david-dm.org/bostontrader/bookwerx-ui-elm)
-[![devDependency Status](https://david-dm.org/bostontrader/bookwerx-ui-elm/dev-status.svg)](https://david-dm.org/bostontrader/bookwerx-ui-elm#info=devDependencies)
 
 # Welcome to bookwerx-ui-elm
 
@@ -13,7 +9,7 @@ Said UI displays the actual HTTP commands sent to the server, as well as their r
 
 # Getting started
 
-## Prerequisits
+## Prerequisites
 
 * git
 * node

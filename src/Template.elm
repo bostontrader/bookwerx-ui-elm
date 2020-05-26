@@ -52,6 +52,11 @@ template model leftContent mainContent =
                   else
                     div [] []
                 , if model.tutorialLevel >= 6 then
+                    a [ href (extractUrl BS), class "navbar-item button is-link", style "margin-left" "0.2em" ] [ text "BS" ]
+
+                  else
+                    div [] []
+                , if model.tutorialLevel >= 6 then
                     a [ href (extractUrl Lint), class "navbar-item button is-link", style "margin-left" "0.2em" ]
                         [ tx model.language { e = "Linter", c = "Linter", p = "Linter" } |> text
                         ]
