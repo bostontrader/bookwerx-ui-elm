@@ -7,9 +7,6 @@ import Acctcat.Update exposing (acctcatsUpdate)
 import Apikey.Update exposing (apikeyUpdate)
 import Browser exposing (UrlRequest(..))
 import Browser.Navigation as Nav
-import BS.Model exposing (FModel, FValues)
-import BS.MsgB exposing (MsgB(..))
-import BS.Update
 import Bserver.MsgB exposing (MsgB(..))
 import Bserver.Update exposing (bserverUpdate)
 import Category.MsgB exposing (MsgB(..))
@@ -23,8 +20,9 @@ import Iso8601
 import Lint.Update exposing (lintUpdate)
 import Model
 import Msg exposing (Msg(..))
-import Report.MsgB exposing (MsgB(..))
-import Report.Update exposing (reportUpdate)
+import Report.Model
+import Report.Msg
+import Report.Update
 import Route exposing (Route(..))
 import Routing exposing (extractRoute)
 import Time
@@ -34,6 +32,7 @@ import Translate exposing (Language(..))
 import Tutorial exposing (updateTutorialLevel)
 import Types exposing (DRCRFormat(..))
 import Url
+
 
 update : Msg -> Model.Model -> ( Model.Model, Cmd Msg )
 update msgA model =
@@ -121,21 +120,19 @@ update msgA model =
                     in
                     ( { newModel | acctcats = newAcctcats }, Cmd.none )
 
-                BS ->
-                    let
-                        ts = Iso8601.fromTime model.currentTime
-                        bsURLBase
-                            = model.bservers.baseURL
-                            ++ "/balance?"
-                            ++ "apikey="
-                            ++ model.apikeys.apikey
-
-                    in
-                        ( updateAsofTime ts
-                            <| updateBSURLbase bsURLBase newModel
-                        , Cmd.none
-                        )
-
+                --BS ->
+                --let
+                --ts = Iso8601.fromTime model.currentTime
+                --bsURLBase
+                --= model.bservers.baseURL
+                --++ "/balance?"
+                --++ "apikey="
+                --++ model.apikeys.apikey
+                --in
+                --( updateAsofTime ts
+                --<| updateBSURLbase bsURLBase newModel
+                --, Cmd.none
+                --)
                 CategoriesAccounts category_id ->
                     let
                         n =
@@ -250,6 +247,19 @@ update msgA model =
                     in
                     ( { newModel | distributions = n.distributions, http_log = List.append n.log newModel.http_log }, n.cmd )
 
+                ReportRoute ->
+                    let
+                        --ts = Iso8601.fromTime model.currentTime
+                        reportURLBase =
+                            model.bservers.baseURL
+                                ++ "/category_dist_sums?"
+                                ++ "apikey="
+                                ++ model.apikeys.apikey
+                    in
+                    ( updateReportURLBase reportURLBase newModel
+                    , Cmd.none
+                    )
+
                 TransactionsEdit id ->
                     let
                         n =
@@ -352,19 +362,18 @@ update msgA model =
             )
 
         -- Not the same as the other branches!
-        BSMsgA msgB ->
-            let
-                n =
-                    BS.Update.update msgB model.language model.bs
-            in
-            ( { model
-                | bs = n.bs
-                , http_log = List.append n.log model.http_log
-                , flashMessages = List.append model.flashMessages n.flashMessages
-              }
-            , n.cmd
-            )
-
+        --BSMsgA msgB ->
+        --let
+        --n =
+        --BS.Update.update msgB model.language model.bs
+        --in
+        --( { model
+        --| bs = n.bs
+        --, http_log = List.append n.log model.http_log
+        --, flashMessages = List.append model.flashMessages n.flashMessages
+        --}
+        --, n.cmd
+        --)
         -- ANY Bserver message, except PingReceived, will result in the model getting reset
         BserverMsgA msgB ->
             let
@@ -440,11 +449,10 @@ update msgA model =
             , n.cmd
             )
 
-        -- Not the same as the other branches!
-        ReportMsgA msgB ->
+        Report msgB ->
             let
                 n =
-                    reportUpdate msgB model.language model.report
+                    Report.Update.update msgB model.language model.report
             in
             ( { model
                 | report = n.report
@@ -468,49 +476,22 @@ update msgA model =
             , n.cmd
             )
 
---type alias Foo =
-    --{ bar : Bar }
-
-
---type alias Bar =
-    --{ baz : Baz }
-
---type alias Baz =
-    --{ biz : String }
-
 
 
 -- How to update nested records
 -- https://gist.github.com/s-m-i-t-a/2a83c0bc5b7d7081b019d18520ebc62c
-------- 1
-setBS : (BS.Model.Model -> BS.Model.Model) -> Model.Model -> Model.Model
-setBS fn model =
-    { model | bs = fn model.bs }
-
-------- 2
-setForm : (FModel -> FModel) -> BS.Model.Model -> BS.Model.Model
-setForm fn bs =
-    { bs | form = fn bs.form }
-
-setBSURLbase : String -> BS.Model.Model -> BS.Model.Model
-setBSURLbase str bs =
-    { bs | bsURLBase = str }
-
-------- 3
-setValues : (FValues -> FValues) -> FModel -> FModel
-setValues fn fvalues =
-    { fvalues | values = fn fvalues.values }
-
-------- 4
-setAsofTime : String -> FValues -> FValues
-setAsofTime str fvalues =
-    { fvalues | asofTime = str }
 
 
-updateAsofTime : String -> Model.Model -> Model.Model
-updateAsofTime str =
-    setBS <| setForm <| setValues <| setAsofTime str
+setReport : (Report.Model.Model -> Report.Model.Model) -> Model.Model -> Model.Model
+setReport fn model =
+    { model | report = fn model.report }
 
-updateBSURLbase : String -> Model.Model -> Model.Model
-updateBSURLbase str =
-    setBS <| setBSURLbase str
+
+setReportURLBase : String -> Report.Model.Model -> Report.Model.Model
+setReportURLBase str report =
+    { report | reportURLBase = str }
+
+
+updateReportURLBase : String -> Model.Model -> Model.Model
+updateReportURLBase str =
+    setReport <| setReportURLBase str

@@ -25,7 +25,6 @@ matchRoute =
         , map AccountsIndex (s "accounts")
         , map AcctcatsAdd (s "acctcats" </> s "add")
         , map ApikeysIndex (s "apikeys")
-        , map BS (s "bs")
         , map BserversIndex (s "bservers")
         , map CategoriesAccounts (s "categories" </> int </> s "accounts")
         , map CategoriesAdd (s "categories" </> s "add")
@@ -39,7 +38,7 @@ matchRoute =
         , map DistributionsIndex (s "distributions")
         , map HttpLog (s "http_log")
         , map Lint (s "lint")
-        , map Report (s "report")
+        , map ReportRoute (s "report")
         , map Settings (s "settings")
         , map TransactionsAdd (s "transactions" </> s "add")
         , map TransactionsEdit (s "transactions" </> string)
@@ -55,9 +54,6 @@ extractUrl route =
 
         ApikeysIndex ->
             "/apikeys"
-
-        BS ->
-            "/bs"
 
         BserversIndex ->
             "/bservers"
@@ -77,7 +73,7 @@ extractUrl route =
         Lint ->
             "/lint"
 
-        Report ->
+        ReportRoute ->
             "/report"
 
         Settings ->

@@ -1,13 +1,38 @@
-module Report.Report exposing (AccountSummary)
+module Report.Report exposing (..)
 
-import DecimalFP exposing (DFP)
+import Account.Account exposing (AccountCurrency, accountCurrencyDecoder)
+import DecimalFP exposing (DFP, dfpDecoder)
+import Json.Decode exposing (Decoder)
+import Json.Decode.Pipeline exposing (required)
 
 
 
--- One line of the report
+-- This alias and decoder directly matches a struct in bookwerx-core.
 
 
-type alias AccountSummary =
-    { account_id : Int
-    , damt : DFP
+type alias BalanceResultDecorated =
+    { account : AccountCurrency
+    , sum : DFP
     }
+
+
+balanceResultDecoratedDecoder : Decoder BalanceResultDecorated
+balanceResultDecoratedDecoder =
+    Json.Decode.succeed BalanceResultDecorated
+        |> required "account" accountCurrencyDecoder
+        |> required "sum" dfpDecoder
+
+
+balanceResultsDecoratedDecoder : Decoder (List BalanceResultDecorated)
+balanceResultsDecoratedDecoder =
+    Json.Decode.list balanceResultDecoratedDecoder
+
+
+type alias SumsDecorated =
+    { sums : List BalanceResultDecorated }
+
+
+sumsDecoratedDecoder : Decoder SumsDecorated
+sumsDecoratedDecoder =
+    Json.Decode.succeed SumsDecorated
+        |> required "sums" balanceResultsDecoratedDecoder

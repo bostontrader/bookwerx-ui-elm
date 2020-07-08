@@ -4,13 +4,23 @@
 -}
 
 
-module DecimalFP exposing (DFP, DFPFmt, dfp_abs, dfp_add, dfp_equal, dfp_fmt, round)
+module DecimalFP exposing (DFP, DFPFmt, dfpDecoder, dfp_abs, dfp_add, dfp_equal, dfp_fmt, round)
+
+import Json.Decode exposing (Decoder, int)
+import Json.Decode.Pipeline exposing (required)
 
 
 type alias DFP =
-    { sig : Int
+    { amount : Int
     , exp : Int
     }
+
+
+dfpDecoder : Decoder DFP
+dfpDecoder =
+    Json.Decode.succeed DFP
+        |> required "amount" int
+        |> required "exp" int
 
 
 
@@ -29,8 +39,8 @@ type alias DFPFmt =
 
 dfp_abs : DFP -> DFP
 dfp_abs n =
-    if n.sig < 0 then
-        DFP -n.sig n.exp
+    if n.amount < 0 then
+        DFP -n.amount n.exp
 
     else
         n
@@ -47,10 +57,10 @@ dfp_add n1 n2 =
             n1.exp - n2.exp
     in
     if d >= 1 then
-        dfp_add { sig = n1.sig * 10, exp = n1.exp - 1 } n2
+        dfp_add { amount = n1.amount * 10, exp = n1.exp - 1 } n2
 
     else if d == 0 then
-        { sig = n1.sig + n2.sig, exp = n1.exp }
+        { amount = n1.amount + n2.amount, exp = n1.exp }
 
     else
         -- d < 0
@@ -59,7 +69,7 @@ dfp_add n1 n2 =
 
 dfp_equal : DFP -> DFP -> Bool
 dfp_equal d1 d2 =
-    d1.sig == d2.sig && d1.exp == d2.exp
+    d1.amount == d2.amount && d1.exp == d2.exp
 
 
 
@@ -73,7 +83,7 @@ dfp_fmt : Int -> DFP -> DFPFmt
 dfp_fmt p dfp =
     let
         negative =
-            dfp.sig < 0
+            dfp.amount < 0
 
         sign =
             if negative then
@@ -89,10 +99,10 @@ dfp_fmt p dfp =
 
         samt =
             if negative then
-                String.slice 1 99 (String.fromInt dfp_norm.sig)
+                String.slice 1 99 (String.fromInt dfp_norm.amount)
 
             else
-                String.fromInt dfp_norm.sig
+                String.fromInt dfp_norm.amount
 
         slen =
             String.length samt
@@ -149,19 +159,19 @@ insertDp pos samt =
 
 
 
-{- Normalize a DFP. Given a DFP A, return a new DFP B, such that the significand of DFP B has no trailing zeros.
+{- Normalize a DFP. Given a DFP A, return a new DFP B, such that the amountnificand of DFP B has no trailing zeros.
 
-   For example: {sig: 1, exp: 3}, {sig: 10, exp 2}, and {sig:100, exp 1} all represent 1000, but let's use the first choice as the normalized value.
+   For example: {amount: 1, exp: 3}, {amount: 10, exp 2}, and {amount:100, exp 1} all represent 1000, but let's use the first choice as the normalized value.
 -}
 
 
 norm : DFP -> DFP
 norm d =
-    if d.sig == 0 then
+    if d.amount == 0 then
         DFP 0 0
 
-    else if modBy 10 d.sig == 0 then
-        norm (DFP (d.sig // 10) (d.exp + 1))
+    else if modBy 10 d.amount == 0 then
+        norm (DFP (d.amount // 10) (d.exp + 1))
 
     else
         -- already in normal form
@@ -181,16 +191,16 @@ round p d =
     else
         let
             last_digit =
-                modBy 10 d.sig
+                modBy 10 d.amount
 
-            new_sig =
+            new_amount =
                 if last_digit >= 5 then
-                    d.sig // 10 + 1
+                    d.amount // 10 + 1
 
                 else
-                    d.sig // 10
+                    d.amount // 10
 
             new_dfp =
-                DFP new_sig (d.exp + 1)
+                DFP new_amount (d.exp + 1)
         in
         round p new_dfp

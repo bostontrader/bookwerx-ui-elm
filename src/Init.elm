@@ -12,6 +12,8 @@ import IntField exposing (IntField(..))
 import Model exposing (Model, ModelAfterAPIKey)
 import Msg exposing (Msg(..))
 import RemoteData
+import Report.Model exposing (ReportTypes(..))
+import Report.Report exposing (SumsDecorated)
 import Route exposing (Route(..))
 import Routing exposing (extractRoute)
 import Time
@@ -59,7 +61,7 @@ initialModel route key url =
     , http_log = modelAfterAPIKey.http_log
     , key = key
     , tutorialLevel = 0
-    , tutorialActive = True
+    , tutorialActive = False
     , language = C.initialLanguage
     , url = url
     , accounts = modelAfterAPIKey.accounts
@@ -68,7 +70,6 @@ initialModel route key url =
         { apikey = ""
         , wdApikey = RemoteData.NotAsked
         }
-    , bs = modelAfterAPIKey.bs
     , bservers =
         { baseURL = C.initialBserver -- This is the base URL for the other API calls.
         , wdBserver = RemoteData.NotAsked
@@ -104,42 +105,6 @@ modelAfterAPIKey =
         , editBuffer = emptyAcctcat
         , category_id = -1
         }
-    , bs =
-        { category_idA = Nothing
-        , distributionReportsA = []
-        , wdDistributionReportsA = RemoteData.NotAsked
-
-        , category_idEq = Nothing
-        , distributionReportsEq = []
-        , wdDistributionReportsEq = RemoteData.NotAsked
-
-        , category_idEx = Nothing
-        , distributionReportsEx = []
-        , wdDistributionReportsEx = RemoteData.NotAsked
-
-        , category_idL = Nothing
-        , distributionReportsL = []
-        , wdDistributionReportsL = RemoteData.NotAsked
-
-        , category_idR = Nothing
-        , distributionReportsR = []
-        , wdDistributionReportsR = RemoteData.NotAsked
-
-        , decimalPlaces = 2
-        , omitZeros = False
-
-        , form =
-            { assetsCategory = ""
-            , equityCategory = ""
-            , expensesCategory = ""
-            , liabilitiesCategory = ""
-            , revenueCategory = ""
-            , asofTime = ""
-            }
-            |> Form.View.idle
-        , bsURLBase = ""
-        }
-
     , categories =
         { categories = []
         , wdCategories = RemoteData.NotAsked
@@ -168,15 +133,40 @@ modelAfterAPIKey =
         , linter = ""
         }
     , report =
-        { distributionReports = []
+        { distributionReports = SumsDecorated []
         , wdDistributionReports = RemoteData.NotAsked
+        , distributionReportsA = SumsDecorated []
+        , wdDistributionReportsA = RemoteData.NotAsked
+        , distributionReportsEq = SumsDecorated []
+        , wdDistributionReportsEq = RemoteData.NotAsked
+        , distributionReportsEx = SumsDecorated []
+        , wdDistributionReportsEx = RemoteData.NotAsked
+        , distributionReportsL = SumsDecorated []
+        , wdDistributionReportsL = RemoteData.NotAsked
+        , distributionReportsR = SumsDecorated []
+        , wdDistributionReportsR = RemoteData.NotAsked
         , decimalPlaces = 2
-        , category_id = -1
         , omitZeros = False
-        , startTime = ""
-        , sof = Nothing
-        , stopTime = ""
-        , uiLevel = 0
+        , form =
+            { category = ""
+            , categoryAssets = ""
+            , categoryEquity = ""
+            , categoryExpenses = ""
+            , categoryLiabilities = ""
+            , categoryRevenue = ""
+            , reportType = ""
+            , startTime = ""
+            , stopTime = ""
+            , title = ""
+
+            --, equityCategory = ""
+            --, expensesCategory = ""
+            --, liabilitiesCategory = ""
+            --, revenueCategory = ""
+            }
+                |> Form.View.idle
+        , reportType = Nothing
+        , reportURLBase = ""
         }
     , transactions =
         { transactions = []

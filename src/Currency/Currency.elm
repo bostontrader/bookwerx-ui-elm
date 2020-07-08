@@ -1,6 +1,29 @@
-module Currency.Currency exposing (Currency, CurrencyShort)
+module Currency.Currency exposing (..)
 
 import IntField exposing (IntField)
+import Json.Decode exposing (Decoder, int, string)
+import Json.Decode.Pipeline exposing (required)
+
+
+
+-- This alias and decoder directly matches a struct in bookwerx-core.
+
+
+type alias CurrencySymbol =
+    { currency_id : Int
+    , symbol : String
+    }
+
+
+currencySymbolDecoder : Decoder CurrencySymbol
+currencySymbolDecoder =
+    Json.Decode.succeed CurrencySymbol
+        |> required "currency_id" int
+        |> required "symbol" string
+
+
+
+-- Legacy aliai.  Clean this up
 
 
 type alias Currency =
@@ -10,10 +33,6 @@ type alias Currency =
     , symbol : String
     , title : String
     }
-
-
-
--- Need this for the convenience of the UI
 
 
 type alias CurrencyShort =

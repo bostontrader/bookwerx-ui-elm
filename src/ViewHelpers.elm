@@ -53,7 +53,7 @@ viewDFP dv p drcr =
     in
     case drcr of
         DRCR ->
-            if dv.sig < 0 then
+            if dv.amount < 0 then
                 [ td
                     [ class "has-text-right"
                     , class (roClass dfp_fmt2)
@@ -62,7 +62,7 @@ viewDFP dv p drcr =
                 , td [ style "padding-left" "0.3em" ] [ text "CR" ]
                 ]
 
-            else if dv.sig == 0 then
+            else if dv.amount == 0 then
                 [ td
                     [ class "has-text-right"
                     , class (roClass dfp_fmt1)

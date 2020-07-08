@@ -47,15 +47,15 @@ template model leftContent mainContent =
                   else
                     div [] []
                 , if model.tutorialLevel >= 6 then
-                    a [ href (extractUrl Report), class "navbar-item button is-link", style "margin-left" "0.2em" ] [ text "Report" ]
+                    a [ href (extractUrl ReportRoute), class "navbar-item button is-link", style "margin-left" "0.2em" ] [ text "Report" ]
 
                   else
                     div [] []
-                , if model.tutorialLevel >= 6 then
-                    a [ href (extractUrl BS), class "navbar-item button is-link", style "margin-left" "0.2em" ] [ text "BS" ]
 
-                  else
-                    div [] []
+                --, if model.tutorialLevel >= 6 then
+                --a [ href (extractUrl BS), class "navbar-item button is-link", style "margin-left" "0.2em" ] [ text "BS" ]
+                --else
+                --div [] []
                 , if model.tutorialLevel >= 6 then
                     a [ href (extractUrl Lint), class "navbar-item button is-link", style "margin-left" "0.2em" ]
                         [ tx model.language { e = "Linter", c = "Linter", p = "Linter" } |> text
@@ -69,51 +69,11 @@ template model leftContent mainContent =
             ]
         , div [ class "columns" ]
             [ div [ class "column is-one-quarter" ]
-                [ div [ class "box", style "margin-left" "1.0em", style "margin-top" "1.0em" ]
+                [ div [ style "margin-left" "1.0em", style "margin-top" "1.0em" ]
                     [ leftContent ]
                 ]
             , div [ class "column" ]
-                [ div [ class "box", style "margin-top" "1.0em", style "margin-right" "1.0em" ] [ mainContent ]
+                [ div [ style "margin-top" "1.0em", style "margin-right" "1.0em" ] [ mainContent ]
                 ]
             ]
-
-        --        , div [class "has-background-danger" ] [ text "footer" ]
         ]
-
-
-
---
---
---txTutorial : Model.Model -> String
---txTutorial model =
---    case model.language of
---        English ->
---            "Tutorial"
---
---        Chinese ->
---            "教程"
---
---        Pinyin ->
---            "jiào chéng"
---
---
---
-----ifChinese : Model.Model -> Bool
-----ifChinese model =
-----True
-----, p [] [ text ("Level " ++ toString model.tutorialLevel) ]
---
---
---txLevel : Model.Model -> String
---txLevel model =
---    case model.language of
---        English ->
---            "Level " ++ toString model.tutorialLevel
---
---        Chinese ->
---            toString model.tutorialLevel ++ "级别"
---
---        Pinyin ->
---            toString model.tutorialLevel ++ " jíbié"
---
---

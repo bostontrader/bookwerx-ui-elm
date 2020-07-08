@@ -1,99 +1,191 @@
-module Report.Update exposing (reportUpdate)
+module Report.Update exposing (update)
 
---import TypesB exposing (, IntField(..))
-
-import Distribution.API.JSON exposing (distributionReportsDecoder)
 import Flash exposing (FlashMsg)
-import IntField exposing (IntField(..))
 import Json.Decode exposing (decodeString)
 import Msg exposing (Msg(..))
 import RemoteData
-import Report.API.GetDistributions exposing (getDistributionsCmd)
-import Report.Model exposing (StockOrFlow(..))
-import Report.MsgB exposing (MsgB(..))
+import Report.API.GetDistributions exposing (getDistributionsCmdA, getDistributionsCmdB)
+import Report.Model exposing (ReportSection(..), ReportTypes(..))
+import Report.Msg
+import Report.Report exposing (SumsDecorated, sumsDecoratedDecoder)
 import Translate exposing (Language)
 import Util exposing (getRemoteDataStatusMessage)
 
 
-reportUpdate : MsgB -> Language -> Report.Model.Model -> { report : Report.Model.Model, cmd : Cmd Msg, log : List String, flashMessages : List FlashMsg }
-reportUpdate reportMsgB language model =
-    case reportMsgB of
-        GetDistributions url ->
-            { report = { model | wdDistributionReports = RemoteData.Loading }
-            , cmd = getDistributionsCmd url
-            , log = [ "GET " ++ url ]
+update : Report.Msg.Msg -> Language -> Report.Model.Model -> { report : Report.Model.Model, cmd : Cmd Msg, log : List String, flashMessages : List FlashMsg }
+update msgB language model =
+    case msgB of
+        Report.Msg.DistributionsReceivedA key wdDistributionReports ->
+            let
+                distributionReports =
+                    case decodeString sumsDecoratedDecoder (getRemoteDataStatusMessage wdDistributionReports language) of
+                        Ok value ->
+                            value
+
+                        Err _ ->
+                            -- Here we ignore whatever error message comes from the decoder because we should never get any such error and it's otherwise too much trouble to deal with it.
+                            SumsDecorated []
+            in
+            { report =
+                case key of
+                    Assets ->
+                        { model
+                            | wdDistributionReportsA = wdDistributionReports
+                            , distributionReportsA = distributionReports
+                        }
+
+                    Equity ->
+                        { model
+                            | wdDistributionReportsEq = wdDistributionReports
+                            , distributionReportsEq = distributionReports
+                        }
+
+                    Expenses ->
+                        { model
+                            | wdDistributionReportsEx = wdDistributionReports
+                            , distributionReportsEx = distributionReports
+                        }
+
+                    Liabilities ->
+                        { model
+                            | wdDistributionReportsL = wdDistributionReports
+                            , distributionReportsL = distributionReports
+                        }
+
+                    Revenue ->
+                        { model
+                            | wdDistributionReportsR = wdDistributionReports
+                            , distributionReportsR = distributionReports
+                        }
+            , cmd = Cmd.none
+            , log = [ getRemoteDataStatusMessage wdDistributionReports language ]
             , flashMessages = []
             }
 
-        DistributionsReceived wdDistributionReports ->
+        Report.Msg.DistributionsReceivedB wdDistributionReports ->
             { report =
                 { model
                     | wdDistributionReports = wdDistributionReports
                     , distributionReports =
-                        case decodeString distributionReportsDecoder (getRemoteDataStatusMessage wdDistributionReports language) of
+                        case decodeString sumsDecoratedDecoder (getRemoteDataStatusMessage wdDistributionReports language) of
                             Ok value ->
                                 value
 
                             Err _ ->
                                 -- Here we ignore whatever error message comes from the decoder because we should never get any such error and it's otherwise too much trouble to deal with it.
-                                []
+                                SumsDecorated []
                 }
             , cmd = Cmd.none
             , log = [ getRemoteDataStatusMessage wdDistributionReports language ]
             , flashMessages = []
             }
 
-        ToggleOmitZeros ->
+        Report.Msg.FormChanged fmodel ->
+            { report = { model | form = fmodel }
+            , cmd = Cmd.none
+            , log = []
+            , flashMessages = []
+            }
+
+        Report.Msg.StockForm category stopTime ->
+            let
+                url =
+                    model.reportURLBase ++ "&category_id=" ++ category ++ "&time_stop=" ++ stopTime ++ "&decorate=true"
+            in
+            { report = { model | wdDistributionReports = RemoteData.Loading, reportType = Just Stock }
+            , cmd = getDistributionsCmdB url
+            , log = [ "GET " ++ url ]
+            , flashMessages = []
+            }
+
+        Report.Msg.FlowForm category startTime stopTime ->
+            let
+                url =
+                    model.reportURLBase ++ "&category_id=" ++ category ++ "&time_start=" ++ startTime ++ "&time_stop=" ++ stopTime ++ "&decorate=true"
+            in
+            { report = { model | wdDistributionReports = RemoteData.Loading, reportType = Just Flow }
+            , cmd = getDistributionsCmdB url
+            , log = [ "GET " ++ url ]
+            , flashMessages = []
+            }
+
+        Report.Msg.BSForm catA catL catEq catR catEx stopTime ->
+            let
+                baseUrl =
+                    model.reportURLBase ++ "&time_stop=" ++ stopTime ++ "&decorate=true" ++ "&category_id="
+
+                urls =
+                    { assetsURL = baseUrl ++ catA
+                    , liabilitiesURL = baseUrl ++ catL
+                    , equityURL = baseUrl ++ catEq
+                    , revenueURL = baseUrl ++ catR
+                    , expensesURL = baseUrl ++ catEx
+                    }
+            in
+            { report =
+                { model
+                    | reportType = Just BS
+                    , wdDistributionReportsA = RemoteData.Loading
+                    , wdDistributionReportsL = RemoteData.Loading
+                    , wdDistributionReportsEq = RemoteData.Loading
+                    , wdDistributionReportsR = RemoteData.Loading
+                    , wdDistributionReportsEx = RemoteData.Loading
+                }
+            , cmd =
+                Cmd.batch
+                    [ getDistributionsCmdA urls.assetsURL Assets
+                    , getDistributionsCmdA urls.liabilitiesURL Liabilities
+                    , getDistributionsCmdA urls.equityURL Equity
+                    , getDistributionsCmdA urls.revenueURL Revenue
+                    , getDistributionsCmdA urls.expensesURL Expenses
+                    ]
+            , log =
+                [ "GET " ++ urls.assetsURL
+                , "GET " ++ urls.liabilitiesURL
+                , "GET " ++ urls.equityURL
+                , "GET " ++ urls.revenueURL
+                , "GET " ++ urls.expensesURL
+                ]
+            , flashMessages = []
+            }
+
+        Report.Msg.PNLForm catR catEx startTime stopTime ->
+            let
+                baseUrl =
+                    model.reportURLBase ++ "&time_start=" ++ startTime ++ "&time_stop=" ++ stopTime ++ "&decorate=true" ++ "&category_id="
+
+                urls =
+                    { revenueURL = baseUrl ++ catR
+                    , expensesURL = baseUrl ++ catEx
+                    }
+            in
+            { report =
+                { model
+                    | reportType = Just PNL
+                    , wdDistributionReportsR = RemoteData.Loading
+                    , wdDistributionReportsEx = RemoteData.Loading
+                }
+            , cmd =
+                Cmd.batch
+                    [ getDistributionsCmdA urls.revenueURL Revenue
+                    , getDistributionsCmdA urls.expensesURL Expenses
+                    ]
+            , log =
+                [ "GET " ++ urls.revenueURL
+                , "GET " ++ urls.expensesURL
+                ]
+            , flashMessages = []
+            }
+
+        Report.Msg.ToggleOmitZeros ->
             { report = { model | omitZeros = not model.omitZeros }
             , cmd = Cmd.none
             , log = []
             , flashMessages = []
             }
 
-        UpdateCategoryID newValue ->
-            { report =
-                case newValue |> String.toInt of
-                    Nothing ->
-                        { model | category_id = -1, uiLevel = 1 }
-
-                    Just v ->
-                        { model | category_id = v, uiLevel = 1 }
-            , cmd = Cmd.none
-            , log = []
-            , flashMessages = []
-            }
-
-        UpdateDecimalPlaces newValue ->
+        Report.Msg.UpdateDecimalPlaces newValue ->
             { report = { model | decimalPlaces = newValue }
-            , cmd = Cmd.none
-            , log = []
-            , flashMessages = []
-            }
-
-        UpdateSOF newValue ->
-            { report =
-                if newValue == "stock" then
-                    { model | sof = Just Stock, uiLevel = 2 }
-
-                else if newValue == "flow" then
-                    { model | sof = Just Flow, uiLevel = 2 }
-
-                else
-                    model
-            , cmd = Cmd.none
-            , log = []
-            , flashMessages = []
-            }
-
-        UpdateStartTime newValue ->
-            { report = { model | startTime = newValue }
-            , cmd = Cmd.none
-            , log = []
-            , flashMessages = []
-            }
-
-        UpdateStopTime newValue ->
-            { report = { model | stopTime = newValue }
             , cmd = Cmd.none
             , log = []
             , flashMessages = []

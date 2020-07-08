@@ -50,10 +50,10 @@ npm run prod
 Please find these artifacts in the /dist directory.  Copy them to your webserver of choice and you're good to go!
 
 
-# Digger Deeper...
+# Digging Deeper...
 
 
-## Berver
+## Bserver
 
 Recall that this app is primarily a UI created as a tool of pedagogery to enable the user to study the API of **bookwerx-core-rust**  So the first step is to figure out which bookwerx-core server to connect to and use.
 

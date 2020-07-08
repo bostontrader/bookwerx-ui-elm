@@ -9,7 +9,6 @@ type Route
     | AccountsIndex
     | AcctcatsAdd
     | ApikeysIndex
-    | BS
     | BserversIndex
     | CategoriesAccounts Int
     | CategoriesAdd
@@ -24,7 +23,7 @@ type Route
     | HttpLog
     | Lint
     | NotFound
-    | Report
+    | ReportRoute
     | Settings
     | TransactionsAdd
     | TransactionsEdit String

@@ -6,7 +6,7 @@ module Currency.API.JSON exposing
 
 import Currency.Currency exposing (Currency, CurrencyShort)
 import IntField exposing (IntField(..))
-import Json.Decode exposing (Decoder, int, map, string)
+import Json.Decode exposing (Decoder, int, list, map, string)
 import Json.Decode.Pipeline exposing (required)
 
 
