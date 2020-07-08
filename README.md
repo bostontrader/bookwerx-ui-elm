@@ -57,7 +57,7 @@ Please find these artifacts in the /dist directory.  Copy them to your webserver
 
 Recall that this app is primarily a UI created as a tool of pedagogery to enable the user to study the API of **bookwerx-core-rust**  So the first step is to figure out which bookwerx-core server to connect to and use.
 
-You can use our hardwired public demonstration server or change that URL to another server that you might know about. Either way you'll need to test the connection before you can proceed.
+You can use our [hardwired public demonstration server](http://185.183.96.73:3005) or change that URL to another server that you might know about. Either way you'll need to test the connection before you can proceed.
 
 
 ## HTTP Logging
@@ -69,7 +69,7 @@ In this way, we hope the user can gain understanding and insight into the operat
 
 ## Public demonstration server
 
-Please realize that the hardwired public demonstration **bookwerx-core-rust** server is exactly that.  It's public, it's not very high performant, and it may be brainwiped at any time.  You don't know who we are, we don't have a privacy policy, and you don't know our neferious intentions with your highly confidential data.
+Please realize that the hardwired public demonstration **bookwerx-core-rust** server is exactly that.  It's public, it's not very high performant, and it may be brainwiped at any time.  You don't know who we are, we don't have a privacy policy, and you don't know our nefarious intentions with your highly confidential data.
 
 So please enjoy the public demonstration but think carefully about this before you put this to more important use.  In fact, for production use, you'd probably want to setup your own private **bookwerx-core-rust** server.
 
@@ -87,7 +87,7 @@ The first step in our path to the multi-currency nirvana is to define the curren
 
 ## Sum DR != Sum CR
 
-The secret to doing multi-currency bookkeeping is to simply drop the traditional constraint that the sum of the debits must equal the sum of the credits.  Conceptually that still holds, but the actual numbers involved no longer satisfy that constraint.  Whatever error checking the conventional system provides must therefore be provided in some other way.
+One of the secrets of doing multi-currency bookkeeping is to simply drop the traditional constraint that the sum of the debits must equal the sum of the credits.  Conceptually that still holds, but the actual numbers involved no longer satisfy that constraint.  Whatever error checking the conventional system provides must therefore be provided in some other way.
 
 For example: DR 500 Quatloos, CR 15 General Atomic Sheckles would violate the original constraint, but works just fine here.  Looks like a currency exchange to me, and the motivated reader is encouraged to calculate the implied exchange rate.
 
@@ -148,17 +148,15 @@ A transaction happens at an instant in time.  This time can be described by usin
 
 The fundamental goal in reporting is to determine the balance of an account as of a particular date (a stock) or the amount that an account has changed during a time period (a flow). Building on that we want to do the same for any particular category of accounts.
 
-Conceptually, this is very easy to do.  Ask the API to provide a list of _all_ distributions, and then filter, fold, map, fiddle with recursion or whatever it takes to gyrate the data into a format that you like.  In fact, that's basically what we do.  API only provides distributions and its the UI's responsibility to figure out how to present this info.
-
 
 ## Linting
 
-There are a variety of conditions that the pedantic reader might fret about.  Such as currencies or accounts that are not used, transactions that have zero distributions, and so on. Although harmless, their mere existance will doubtlessly disturb your sleep.  Crank up the linter and put these things out of your misery.
+There are a variety of conditions that the pedantic reader might fret about.  Such as currencies or accounts that are not used, transactions that have zero distributions, and so on. Although harmless, their mere existence will doubtlessly disturb your sleep.  Crank up the linter and put these things out of your misery.
 
 
 ## I18N
 
-Most of the UI has translations for Chinese and Pinyin.  This is mostly to demonstrate the ability to change the UI language, on the fly, via a setting.
+Most of the UI has translations for Chinese and Pinyin.
 
 ## Basic Architecture
 
@@ -173,8 +171,6 @@ We're using webpack for this, combined with copius inspiration from [elm-webpack
 During development, we use the webpack-dev-server.  It does all the webpacky things, but doesn't actually write the artifacts out.  In order to get the artifacts we want, we need to build for production (using npm run prod)  We can then copy said artifacts to an http server and just serve 'em up.
 
 src/index.html is a template and src/index.js contains the js logic to get the ball rolling.  webpack.config.js figures out what to do with these things and how to hook 'em together.
-
-There are no CSS files because all of this is handled by webpack and JS.
 
 /src/assets contains whatever images or other static files that we have and webpack copies these things to /dist
 
