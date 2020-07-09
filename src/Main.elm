@@ -28,6 +28,6 @@ main =
 subscriptions : Model.Model -> Sub Msg
 subscriptions _ =
     Sub.batch
-        [--Time.every C.flashMessagePollInterval UpdateCurrentTime
-         --, --Time.every C.flashMessagePollInterval TimeoutFlashElements
+        [ Time.every C.flashMessagePollInterval UpdateCurrentTime
+          , Time.every C.flashMessagePollInterval TimeoutFlashElements
         ]

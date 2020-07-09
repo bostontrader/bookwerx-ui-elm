@@ -20,16 +20,34 @@ viewOneCategory model webdata sumsDecorated title language =
         (case webdata of
             RemoteData.Success _ ->
                 if List.isEmpty sumsDecorated.sums then
-                    [ h3 []
-                        [ text
-                            (tx language
-                                { e = "No data found for this report"
-                                , c = "找不到此报告的数据"
-                                , p = "Zhǎo bù dào cǐ bàogào de shùjù"
-                                }
-                            )
-                        ]
-                    ]
+                    --[ h3 []
+                        --[ text
+                            --(tx language
+                                --{ e = "No data found for this report"
+                                --, c = "找不到此报告的数据"
+                                --, p = "Zhǎo bù dào cǐ bàogào de shùjù"
+                                --}
+                            --)
+                        --]
+                    --]
+
+                    let
+                        nodata = [p [ class "is-size-6", style "margin-bottom" "1em"] [ text (tx language
+                            { e = "No data found for this report"
+                            , c = "找不到此报告的数据"
+                            , p = "Zhǎo bù dào cǐ bàogào de shùjù"
+                            } ) ] ]
+
+                    in
+                    case title of
+                        Just t ->
+                            p [ class "is-size-4" ] [ text t ] :: nodata
+
+                        Nothing ->
+                            nodata
+
+
+
 
                 else
                     -- Take the JSON decoded response from the server, group all accounts with the same currency together using a Dict, and then viewCurrencySection for each different currency.  Append a title if given.

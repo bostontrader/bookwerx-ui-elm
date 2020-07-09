@@ -218,19 +218,19 @@ txPurpose model =
     case model.language of
         English ->
             [ text "The purpose of bookwerx-ui is to provide everything you need to get started using the"
-            , a [ href "https://github.com/bostontrader/bookwerx-core " ] [ text " bookwerx-core " ]
+            , a [ href "https://github.com/bostontrader/bookwerx-core-rust " ] [ text " bookwerx-core-rust " ]
             , text " multiple-currency bookkeeping engine."
             ]
 
         Chinese ->
             [ text "bookwerx-ui的目的是提供开始使用所需的一切"
-            , a [ href "https://github.com/bostontrader/bookwerx-core" ] [ text "bookwerx-core" ]
+            , a [ href "https://github.com/bostontrader/bookwerx-core-rust" ] [ text "bookwerx-core-rust" ]
             , text "多币种簿记引擎。"
             ]
 
         Pinyin ->
             [ text "bookwerx-ui de mùdì shì tígōng kāishǐ shǐyòng suǒ xū de yīqiè"
-            , a [ href "https://github.com/bostontrader/bookwerx-core" ] [ text "bookwerx-core" ]
+            , a [ href "https://github.com/bostontrader/bookwerx-core-rust" ] [ text "bookwerx-core-rust" ]
             , text "duō bì zhǒng bùjì yǐnqíng。"
             ]
 

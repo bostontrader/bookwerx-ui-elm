@@ -12,8 +12,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 var MODE =
     process.env.npm_lifecycle_event === "prod" ? "production" : "development";
 
-//var withDebug = !process.env["npm_config_nodebug"] && MODE == "development";
-withDebug = true;
+var withDebug = !process.env["npm_config_nodebug"] && MODE == "development";
 
 //// this may help for Yarn users
 //// var withDebug = !npmParams.includes("--nodebug");
@@ -148,12 +147,14 @@ if (MODE === "production") {
                 verbose: true,
                 dry: false
             }),
-            // Copy static assets
-            new CopyWebpackPlugin([
-                {
-                    from: "src/assets"
-                }
-            ]),
+            // Copy static assets. This doesn't work. Why not?
+            //new CopyWebpackPlugin([
+                //{
+                    //patterns: [
+                        //{from: "src/assets", to: "dist/images"}
+                    //]
+                //}
+            //]),
 //            new MiniCssExtractPlugin({
 //                // Options similar to the same options in webpackOptions.output
 //                // both options are optional
