@@ -1,10 +1,10 @@
-{- A Decimal Floating Point (DFP) is a type composed of two integers, a signifcand and an exponent. Using this format we can readily represent the _exact_ amounts that we find in financial transactions using a method similar to scientific notation, w/o rounding error. Please see https://en.wikipedia.org/wiki/Decimal_floating_point for more info.
+{- A Decimal Floating Point (DFP) is a type composed of two integers, a significand and an exponent. Using this format we can readily represent the _exact_ amounts that we find in financial transactions using a method similar to scientific notation, w/o rounding error. Please see https://en.wikipedia.org/wiki/Decimal_floating_point for more info.
 
    Not only must we represent DFP but we must be able to perform a handful of useful operations on them such as adding, rounding, and string formatting.  This is a small subset of possible operations that can be imagined, but it's enough for this application.
 -}
 
 
-module DecimalFP exposing (DFP, DFPFmt, dfpDecoder, dfp_abs, dfp_add, dfp_equal, dfp_fmt, round)
+module DecimalFP exposing (DFP, DFPFmt, dfpDecoder, dfp_abs, dfp_add, dfp_equal, dfp_fmt, dfp_round)
 
 import Json.Decode exposing (Decoder, int)
 import Json.Decode.Pipeline exposing (required)
@@ -95,7 +95,7 @@ dfp_fmt p dfp =
         -- Ensure that the quantity of digits available does not exceed the quantity desired to display.
         -- If dfp_norm != norm dfp then there are digits obscured by rounding.
         dfp_norm =
-            norm (round p dfp)
+            norm (dfp_round p dfp)
 
         samt =
             if negative then
@@ -159,7 +159,7 @@ insertDp pos samt =
 
 
 
-{- Normalize a DFP. Given a DFP A, return a new DFP B, such that the amountnificand of DFP B has no trailing zeros.
+{- Normalize a DFP. Given a DFP A, return a new DFP B, such that the significand of DFP B has no trailing zeros.
 
    For example: {amount: 1, exp: 3}, {amount: 10, exp 2}, and {amount:100, exp 1} all represent 1000, but let's use the first choice as the normalized value.
 -}
@@ -171,8 +171,8 @@ norm d =
         DFP 0 0
 
     else if modBy 10 d.amount == 0 then
-        norm (DFP (d.amount // 10) (d.exp + 1))
-
+        --norm (DFP (d.amount // 10) (d.exp + 1))
+        norm (DFP (round(toFloat(d.amount) / 10)) (d.exp + 1))
     else
         -- already in normal form
         d
@@ -182,8 +182,8 @@ norm d =
 -- Given an Int p and a DFP d, round d as necessary such that 10^p is the last digit, and return the final rounded DFP result
 
 
-round : Int -> DFP -> DFP
-round p d =
+dfp_round : Int -> DFP -> DFP
+dfp_round p d =
     if p <= d.exp then
         -- already rounded enough
         d
@@ -195,12 +195,11 @@ round p d =
 
             new_amount =
                 if last_digit >= 5 then
-                    d.amount // 10 + 1
-
+                    (d.amount |> toFloat) / 10 |> round
                 else
-                    d.amount // 10
+                    (d.amount |> toFloat) / 10 |> round
 
             new_dfp =
                 DFP new_amount (d.exp + 1)
         in
-        round p new_dfp
+        dfp_round p new_dfp

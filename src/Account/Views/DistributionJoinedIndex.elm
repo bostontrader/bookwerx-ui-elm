@@ -43,7 +43,7 @@ view model =
 
    A Langugage
    An Int p that specifies the number of decimal places after the zero to display.
-   A DFP representation of the running total from the previous invokations.
+   A DFP representation of the running total from the previous invocations.
    A DistributedJoined
    The specification of which DRCRFormat to use
 
@@ -53,6 +53,7 @@ view model =
 
 viewDistributionJoined : Language -> Int -> DFP -> DistributionJoined -> DRCRFormat -> Html Msg
 viewDistributionJoined language p runtot dj drcr =
+
     tr []
         ([ td [] [ text dj.tx_time ]
          , td [] [ text dj.tx_notes ]
