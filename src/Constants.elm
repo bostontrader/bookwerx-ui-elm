@@ -15,7 +15,7 @@ import Types exposing (DRCRFormat(..))
 
 bwuiVersion : String
 bwuiVersion =
-    "1.2.1"
+    "1.2.2"
 
 
 
@@ -42,7 +42,7 @@ flashMessagePollInterval =
 
 initialBserver : String
 initialBserver =
-    "http://185.183.96.73:3003"
+    "http://94.74.116.6:3003"
 
 
 initialDecimalPlaces : Int

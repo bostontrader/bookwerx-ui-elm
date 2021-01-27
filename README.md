@@ -57,7 +57,7 @@ Please find these artifacts in the /dist directory.  Copy them to your webserver
 
 Recall that this app is primarily a UI created as a tool of pedagogery to enable the user to study the API of **bookwerx-core-rust**  So the first step is to figure out which bookwerx-core server to connect to and use.
 
-You can use our [hardwired public demonstration server](http://185.183.96.73:3005) or change that URL to another server that you might know about. Either way you'll need to test the connection before you can proceed.
+You can use our [hardwired public demonstration server](http://94.74.116.6:3005) or change that URL to another server that you might know about. Either way you'll need to test the connection before you can proceed.
 
 
 ## HTTP Logging
