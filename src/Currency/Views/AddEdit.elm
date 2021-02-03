@@ -44,20 +44,6 @@ addeditForm language editBuffer =
                     []
                 ]
             ]
-        , div [ class "field" ]
-            [ label [ class "label" ] [ text (tx language { e = "Rarity", c = "常用", p = "chángyòng" }) ]
-            , div [ class "control" ]
-                [ input
-                    [ class "input"
-                    , class (intValidationClass editBuffer.rarity)
-                    , placeholder "rarity"
-                    , type_ "text"
-                    , onInput (\newValue -> CurrencyMsgA (UpdateRarity newValue))
-                    , value (intFieldToString editBuffer.rarity)
-                    ]
-                    []
-                ]
-            ]
         ]
 
 
@@ -91,8 +77,6 @@ view model aemode =
         postParams =
             "apikey="
                 ++ model.apikeys.apikey
-                ++ "&rarity="
-                ++ intFieldToString model.currencies.editBuffer.rarity
                 ++ "&symbol="
                 ++ model.currencies.editBuffer.symbol
                 ++ "&title="

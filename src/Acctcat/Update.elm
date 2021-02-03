@@ -39,13 +39,6 @@ acctcatsUpdate acctcatMsgB key language currentTime model =
             }
 
         -- edit
-        --UpdateRarity newValue ->
-        --{ acctcats = { model | editBuffer = updateRarity model.editBuffer newValue }
-        --, cmd = Cmd.none
-        --, log = []
-        --, flashMessages = []
-        --}
-        -- edit
         UpdateAccountID newAccountID ->
             { acctcats = { model | editBuffer = updateAccountID model.editBuffer newAccountID }
             , cmd = Cmd.none
@@ -53,16 +46,6 @@ acctcatsUpdate acctcatMsgB key language currentTime model =
             , flashMessages = []
             }
 
-        --UpdateRarityFilter newValue ->
-        --{ acctcats = case newValue |> String.toInt |> Result.toMaybe of
-        --Nothing ->
-        --{ model | rarityFilter = IntField Nothing newValue }
-        --Just v ->
-        --{ model | rarityFilter = IntField (Just v) newValue }
-        --, cmd = Cmd.none
-        --, log = []
-        --, flashMessages = []
-        --}
         --UpdateAcctcatAccount newSymbol ->
         --let
         --n = Debug.log "select" newSymbol

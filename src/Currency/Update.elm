@@ -42,26 +42,6 @@ currenciesUpdate currencyMsgB key language currentTime model =
             }
 
         -- edit
-        UpdateRarity newValue ->
-            { currencies = { model | editBuffer = updateRarity model.editBuffer newValue }
-            , cmd = Cmd.none
-            , log = []
-            , flashMessages = []
-            }
-
-        UpdateRarityFilter newValue ->
-            { currencies =
-                case newValue |> String.toInt of
-                    Nothing ->
-                        { model | rarityFilter = IntField Nothing newValue }
-
-                    Just v ->
-                        { model | rarityFilter = IntField (Just v) newValue }
-            , cmd = Cmd.none
-            , log = []
-            , flashMessages = []
-            }
-
         UpdateSymbol newSymbol ->
             { currencies = { model | editBuffer = updateSymbol model.editBuffer newSymbol }
             , cmd = Cmd.none
@@ -114,7 +94,6 @@ currenciesUpdate currencyMsgB key language currentTime model =
             { currencies =
                 case decodeString currencyDecoder (getRemoteDataStatusMessage response language) of
                     Ok value ->
-                        --{ model | editBuffer = value, editBufferRarity = IntField (Just value.rarity) (toString value.rarity) }
                         { model | editBuffer = value }
 
                     Err _ ->
@@ -154,33 +133,6 @@ currenciesUpdate currencyMsgB key language currentTime model =
             , log = [ getRemoteDataStatusMessage response language ]
             , flashMessages = [ FlashMsg (getRemoteDataStatusMessage response language) FlashSuccess (expires currentTime flashMessageDuration) ]
             }
-
-
-updateRarity : Currency -> String -> Currency
-updateRarity c newValue =
-    { c
-        | rarity =
-            case String.toInt newValue of
-                Just v ->
-                    IntField (Just v) newValue
-
-                Nothing ->
-                    IntField Nothing newValue
-    }
-
-
-
---updateRarityFilter : String -> Int
---updateRarityFilter newValue =
---case String.toInt newValue of
---Ok v ->
---v
---Err _ ->
----1
---Just v ->
---v
---Nothing ->
----1
 
 
 updateSymbol : Currency -> String -> Currency

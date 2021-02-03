@@ -58,26 +58,6 @@ accountsUpdate accountMsgB key language currentTime model =
             , flashMessages = []
             }
 
-        UpdateRarity newValue ->
-            { accounts = { model | editBuffer = updateRarity model.editBuffer newValue }
-            , cmd = Cmd.none
-            , log = []
-            , flashMessages = []
-            }
-
-        UpdateRarityFilter newValue ->
-            { accounts =
-                case newValue |> String.toInt of
-                    Nothing ->
-                        { model | rarityFilter = IntField Nothing newValue }
-
-                    Just v ->
-                        { model | rarityFilter = IntField (Just v) newValue }
-            , cmd = Cmd.none
-            , log = []
-            , flashMessages = []
-            }
-
         UpdateTitle newTitle ->
             { accounts = { model | editBuffer = updateTitle model.editBuffer newTitle }
             , cmd = Cmd.none
@@ -200,19 +180,6 @@ updateCurrencyID c newValue =
 
                 Nothing ->
                     -1
-    }
-
-
-updateRarity : Account -> String -> Account
-updateRarity c newValue =
-    { c
-        | rarity =
-            case String.toInt newValue of
-                Just v ->
-                    IntField (Just v) newValue
-
-                Nothing ->
-                    IntField Nothing newValue
     }
 
 

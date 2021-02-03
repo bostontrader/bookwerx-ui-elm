@@ -29,7 +29,6 @@ currencySymbolDecoder =
 type alias Currency =
     { id : Int
     , apikey : String
-    , rarity : IntField
     , symbol : String
     , title : String
     }

@@ -6,8 +6,8 @@ module Currency.API.JSON exposing
 
 import Currency.Currency exposing (Currency, CurrencyShort)
 import IntField exposing (IntField(..))
-import Json.Decode exposing (Decoder, int, list, map, string)
-import Json.Decode.Pipeline exposing (required)
+import Json.Decode exposing (Decoder, int, map, string)
+import Json.Decode.Pipeline exposing (optional, required)
 
 
 currenciesDecoder : Decoder (List Currency)
@@ -20,7 +20,6 @@ currencyDecoder =
     Json.Decode.succeed Currency
         |> required "id" int
         |> required "apikey" string
-        |> required "rarity" (map (\n -> IntField (Just n) (String.fromInt n)) int)
         |> required "symbol" string
         |> required "title" string
 

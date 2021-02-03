@@ -34,7 +34,6 @@ type alias Account =
     { id : Int
     , apikey : String
     , currency_id : Int
-    , rarity : IntField
     , title : String
     }
 
@@ -44,6 +43,5 @@ type alias AccountJoined =
     , apikey : String
     , categories : List CategoryShort
     , currency : CurrencyShort
-    , rarity : IntField
     , title : String
     }

@@ -9,7 +9,7 @@ import Category.API.JSON exposing (categoryShortDecoder)
 import Currency.API.JSON exposing (currencyShortDecoder)
 import IntField exposing (IntField(..))
 import Json.Decode exposing (Decoder, int, map, string)
-import Json.Decode.Pipeline exposing (required)
+import Json.Decode.Pipeline exposing (optional, required)
 
 
 accountsDecoder : Decoder (List Account)
@@ -23,7 +23,6 @@ accountDecoder =
         |> required "id" int
         |> required "apikey" string
         |> required "currency_id" int
-        |> required "rarity" (map (\n -> IntField (Just n) (String.fromInt n)) int)
         |> required "title" string
 
 
@@ -39,5 +38,4 @@ accountJoinedDecoder =
         |> required "apikey" string
         |> required "categories" (Json.Decode.list categoryShortDecoder)
         |> required "currency" currencyShortDecoder
-        |> required "rarity" (map (\n -> IntField (Just n) (String.fromInt n)) int)
         |> required "title" string

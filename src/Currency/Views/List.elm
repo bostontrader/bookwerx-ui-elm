@@ -39,29 +39,6 @@ leftContent model =
                         }
                     )
                 ]
-            , p []
-                [ text
-                    (tx model.language
-                        { e = "If you accumulate a large collection of currencies you may find that many of them are seldom used."
-                        , c = "如果你积累记录大量的币种，其中许多币种并不经常使用。"
-                        , p = "If you accumulate a large collection of currencies you may find that many of them are seldom used."
-                        }
-                    )
-                ]
-            , p []
-                [ text
-                    (tx model.language
-                        { e = "You can tweak the rarity field and filter to adjust what you see."
-                        , c = "可以调整和过滤器您所看到的"
-                        , p = "You can tweak the rarity field and filter to adjust what you see."
-                        }
-                    )
-                ]
-
-            --, if List.length model.currencies.currencies > 0 then
-            --p[][text "If you accumulate a large collection of currencies you may find that many of them are seldom used. You can tweak the rarity field and filter to adjust what you see."]
-            --else
-            --p[][]
             ]
         , viewHttpPanel
             ("GET " ++ model.bservers.baseURL ++ "/currencies?apikey=" ++ model.apikeys.apikey)
@@ -97,25 +74,7 @@ viewCurrenciesPanel model currency_model =
 
                 else
                     div []
-                        [ div [ class "field" ]
-                            [ label [ class "label" ]
-                                [ text
-                                    (tx model.language { e = "Filter rarity ", c = "筛选常用", p = "shāixuǎn chángyòng" } ++ "< n")
-                                ]
-                            , div [ class "control" ]
-                                [ input
-                                    [ class "input"
-                                    , class (intValidationClass currency_model.rarityFilter)
-                                    , placeholder "rarity"
-                                    , onInput (\newValue -> CurrencyMsgA (UpdateRarityFilter newValue))
-                                    , type_ "text"
-                                    , value (intFieldToString currency_model.rarityFilter)
-                                    ]
-                                    []
-                                ]
-                            ]
-                        , viewCurrenciesTable model currency_model.currencies
-                        ]
+                        [ viewCurrenciesTable model currency_model.currencies ]
 
             _ ->
                 h3 [] [ text (getRemoteDataStatusMessage model.currencies.wdCurrencies model.language) ]
@@ -126,12 +85,7 @@ viewCurrenciesTable : Model.Model -> List Currency -> Html Msg
 viewCurrenciesTable model currencies =
     table [ class "table is-striped" ]
         [ thead [] [ viewTableHeader model.language ]
-        , case model.currencies.rarityFilter of
-            IntField Nothing _ ->
-                tbody [] (List.map (viewCurrency model) (List.sortBy .symbol currencies))
-
-            IntField (Just r) _ ->
-                tbody [] (List.map (viewCurrency model) (List.sortBy .symbol (List.filter (\c -> intFieldToInt c.rarity < r) currencies)))
+        , tbody [] (List.map (viewCurrency model) (List.sortBy .symbol currencies))
         ]
 
 
@@ -145,7 +99,6 @@ viewCurrency model currency =
         [ td [] [ text (String.fromInt currency.id) ]
         , td [] [ text currency.symbol ]
         , td [] [ text currency.title ]
-        , td [] [ text (intFieldToString currency.rarity) ]
         , td []
             [ a [ href currencyPath, class "button is-link" ] [ model.language |> tx_edit |> text ] ]
         , td []
@@ -173,7 +126,6 @@ viewTableHeader language =
         [ th [] [ text (tx language { e = "ID", c = "号码", p = "hao ma" }) ]
         , th [] [ text (tx language { e = "Symbol", c = "标记", p = "biāojì" }) ]
         , th [] [ text (tx language { e = "Title", c = "标题", p = "biāotí" }) ]
-        , th [] [ text (tx language { e = "Rarity", c = "常用", p = "chángyòng" }) ]
         , th [] [] -- extra headers for edit and delete
         , th [] []
         ]

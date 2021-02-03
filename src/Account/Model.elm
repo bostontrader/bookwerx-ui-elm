@@ -18,9 +18,6 @@ type alias Model =
     -- How many decimal places do we want to see in the Account's list of transactions?
     , decimalPlaces : Int
 
-    -- Only list accounts with rarity < rarityFilter
-    , rarityFilter : IntField
-
     -- GetAccountDistributionJoineds will get the distributionJoineds related to a particular account.
     , distributionJoineds : List DistributionJoined -- JSON decoded from wdDistributionsJoined
     , wdDistributionJoineds : WebData String -- the raw string response from GetTransactions

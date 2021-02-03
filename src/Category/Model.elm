@@ -11,5 +11,4 @@ type alias Model =
     , wdCategories : WebData String -- the raw string response from GetMany
     , wdCategory : WebData String
     , editBuffer : Category
-    , rarityFilter : IntField
     }

@@ -11,7 +11,4 @@ type alias Model =
     , wdCurrencies : WebData String -- the raw string response from GetMany
     , wdCurrency : WebData String
     , editBuffer : Currency
-
-    --, editBufferRarity : IntField -- hack
-    , rarityFilter : IntField
     }

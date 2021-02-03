@@ -27,7 +27,5 @@ type
     | PostCurrency String String String -- url content-type body
     | CurrencyPosted (WebData CurrencyPostHttpResponseString)
       -- edit
-    | UpdateRarity String
-    | UpdateRarityFilter String
     | UpdateSymbol String
     | UpdateTitle String

@@ -122,7 +122,7 @@ buildAccountSelect selected_id model =
                     , viewCategories a.categories
                     ]
             )
-            (List.sortBy .title (List.filter (\a -> intFieldToInt a.rarity < intFieldToInt model.rarityFilter || (a.id == selected_id)) model.accounts))
+            (List.sortBy .title (List.filter (\a -> True || (a.id == selected_id)) model.accounts))
         )
 
 

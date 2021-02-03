@@ -90,12 +90,7 @@ viewCategoriesTable : Model.Model -> List Category -> Html Msg
 viewCategoriesTable model categories =
     table [ class "table is-striped" ]
         [ thead [] [ viewTableHeader model.language ]
-        , --case model.categories.rarityFilter of
-          --IntField Nothing r ->
-          tbody [] (List.map (viewCategory model) categories)
-
-        --IntField (Just r) _ ->
-        --tbody [] (List.map (viewCategory model) (List.filter (\c -> c.rarity < r) categories))
+        , tbody [] (List.map (viewCategory model) categories)
         ]
 
 

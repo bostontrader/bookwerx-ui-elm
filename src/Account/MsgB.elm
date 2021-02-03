@@ -31,6 +31,4 @@ type
       -- edit
     | UpdateCurrencyID String
     | UpdateDecimalPlaces Int
-    | UpdateRarity String
-    | UpdateRarityFilter String
     | UpdateTitle String

@@ -155,14 +155,7 @@ viewAcctcatsTable : Model.Model -> List Acctcat -> Html Msg
 viewAcctcatsTable model acctcats =
     table [ class "table is-striped" ]
         [ thead [] [ viewTableHeader model.language ]
-
-        --, --case model.acctcats.rarityFilter of
-        --IntField Nothing r ->
-        --, tbody [] (List.map (viewAcctcat model) acctcats)
         , tbody [] (List.map (viewAcctcat model) (List.sortBy .account_title (List.map (join <| model) <| acctcats)))
-
-        --IntField (Just r) _ ->
-        --tbody [] (List.map (viewAcctcat model) (List.filter (\c -> c.rarity < r) acctcats))
         ]
 
 

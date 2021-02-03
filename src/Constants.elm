@@ -6,7 +6,6 @@ module Constants exposing
     , initialDRCRFormat
     , initialDecimalPlaces
     , initialLanguage
-    , initialRarityFilter
     )
 
 import Translate exposing (Language(..))
@@ -15,7 +14,7 @@ import Types exposing (DRCRFormat(..))
 
 bwuiVersion : String
 bwuiVersion =
-    "1.2.2"
+    "1.3.0"
 
 
 
@@ -58,8 +57,3 @@ initialDRCRFormat =
 initialLanguage : Language
 initialLanguage =
     English
-
-
-initialRarityFilter : Int
-initialRarityFilter =
-    10

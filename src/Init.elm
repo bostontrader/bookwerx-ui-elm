@@ -24,7 +24,7 @@ import Url
 
 emptyAccount : Account
 emptyAccount =
-    Account -1 "" -1 (IntField (Just 0) "0") ""
+    Account -1 "" -1 ""
 
 
 emptyAcctcat : Acctcat
@@ -39,7 +39,7 @@ emptyCategory =
 
 emptyCurrency : Currency
 emptyCurrency =
-    Currency -1 "" (IntField (Just 0) "0") "" ""
+    Currency -1 "" "" ""
 
 
 emptyDistribution : DistributionEB
@@ -95,7 +95,6 @@ modelAfterAPIKey =
         , wdAccount = RemoteData.NotAsked
         , editBuffer = emptyAccount
         , decimalPlaces = 2
-        , rarityFilter = IntField (Just 10) "10"
         , distributionJoineds = []
         , wdDistributionJoineds = RemoteData.NotAsked
         }
@@ -110,7 +109,6 @@ modelAfterAPIKey =
         , wdCategories = RemoteData.NotAsked
         , wdCategory = RemoteData.NotAsked
         , editBuffer = emptyCategory
-        , rarityFilter = IntField (Just 10) "10"
         }
     , http_log = []
     , currencies =
@@ -118,7 +116,6 @@ modelAfterAPIKey =
         , wdCurrencies = RemoteData.NotAsked
         , wdCurrency = RemoteData.NotAsked
         , editBuffer = emptyCurrency
-        , rarityFilter = IntField (Just 10) "10"
         }
     , distributions =
         { wdDistribution = RemoteData.NotAsked
