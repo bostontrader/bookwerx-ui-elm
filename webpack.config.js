@@ -72,7 +72,7 @@ if (MODE === "development") {
                             options: {
                                 // add Elm's debug overlay to output
                                 debug: withDebug,
-                                //forceWatch: true
+                                cwd: __dirname
                             }
                         }
                     ]

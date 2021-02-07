@@ -44,7 +44,7 @@ emptyCurrency =
 
 emptyDistribution : DistributionEB
 emptyDistribution =
-    DistributionEB -1 "" -1 (IntField (Just 0) "0") (IntField (Just 0) "0") -1 DR
+    DistributionEB -1 "" -1 -1 (IntField (Just 0) "0") (IntField (Just 0) "0") -1 DR
 
 
 emptyTransaction : Transaction

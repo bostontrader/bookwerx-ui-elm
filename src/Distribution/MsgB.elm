@@ -27,6 +27,7 @@ type
     | DistributionPosted (WebData DistributionPostHttpResponseString)
       -- edit
     | UpdateAccountID String
+    | UpdateFilterCurrencyID String
     | UpdateAmount String
     | UpdateAmountExp String
     | UpdateDecimalPlaces Int

@@ -1,10 +1,12 @@
 module Util exposing
     ( getAccountTitle
+    , getAccountCurrencySymbol
     , getCurrencySymbol
     , getRemoteDataStatusMessage
     )
 
 import Account.Model
+import Currency.Model
 import Http
 import RemoteData exposing (WebData)
 import Translate exposing (Language(..), tx)
@@ -21,11 +23,12 @@ getAccountTitle model cid =
 
 
 
--- Given an account_id, return the associated currency symbol
+-- Given an account_id, return the currency symbol for the associated currency
 
 
-getCurrencySymbol : Account.Model.Model -> Int -> String
-getCurrencySymbol model account_id =
+getAccountCurrencySymbol : Account.Model.Model -> Int -> String
+getAccountCurrencySymbol model account_id =
+
     case List.head (List.filter (\c -> c.id == account_id) model.accounts) of
         Just c ->
             c.currency.symbol
@@ -34,14 +37,15 @@ getCurrencySymbol model account_id =
             ""
 
 
+-- Given a currency_id, return the symbol for said currency.
+getCurrencySymbol : Currency.Model.Model -> Int -> String
+getCurrencySymbol model currency_id =
 
---getCurrencyTitle : Currency.Model.Model -> Int -> String
---getCurrencyTitle model cid =
---case List.head (List.filter (\c -> c.id == cid) model.currencies) of
---Just c ->
---c.title
---Nothing ->
---"not set"
+    case List.head (List.filter (\c -> c.id == currency_id) model.currencies) of
+        Just c ->
+            c.symbol
+        Nothing ->
+            "no symbol"
 
 
 getRemoteDataStatusMessage : WebData String -> Language -> String
