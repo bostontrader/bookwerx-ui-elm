@@ -131,6 +131,13 @@ distributionsUpdate distributionMsgB key language currentTime model =
             , flashMessages = []
             }
 
+        UpdateFilterCategoryID newValue ->
+            { distributions = { model | editBuffer = updateCategoryFilterID model.editBuffer newValue }
+            , cmd = Cmd.none
+            , log = []
+            , flashMessages = []
+            }
+
         UpdateFilterCurrencyID newValue ->
             { distributions = { model | editBuffer = updateCurrencyFilterID model.editBuffer newValue }
             , cmd = Cmd.none
@@ -174,6 +181,7 @@ raw2EB raw =
         raw.apikey
         raw.account_id
         -1 -- no currency filter
+        -1 -- no category filter
         (IntField (Just raw.amount) (String.fromInt raw.amount))
         (IntField (Just raw.amount_exp) (String.fromInt raw.amount_exp))
         raw.transaction_id
@@ -197,6 +205,18 @@ updateAccountID d newValue =
                     -1
     }
 
+updateCategoryFilterID : DistributionEB -> String -> DistributionEB
+updateCategoryFilterID d newValue =
+    { d
+        | category_filter_id =
+            case String.toInt newValue of
+                Just v ->
+                    v
+
+                Nothing ->
+                    -1
+    }
+
 updateCurrencyFilterID : DistributionEB -> String -> DistributionEB
 updateCurrencyFilterID d newValue =
     { d
@@ -208,17 +228,6 @@ updateCurrencyFilterID d newValue =
                 Nothing ->
                     -1
     }
-
---updateAmount : DistributionEB -> String -> DistributionEB
---updateAmount d newValue =
---{ d
---| amount =
---case String.toInt newValue of
---Just v ->
---(IntField (Just v) (String.fromInt v) )
---Nothing ->
---IntField (Just -1) "-1"
---}
 
 
 updateAmount : DistributionEB -> String -> DistributionEB

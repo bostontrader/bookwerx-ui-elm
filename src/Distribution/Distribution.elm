@@ -31,6 +31,7 @@ type alias DistributionEB =
     { id : Int
     , apikey : String
     , account_id : Int
+    , category_filter_id : Int
     , currency_filter_id : Int
     , amount : IntField
     , amount_exp : IntField

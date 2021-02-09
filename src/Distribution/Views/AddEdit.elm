@@ -4,6 +4,7 @@ module Distribution.Views.AddEdit exposing (view)
 
 import Account.Model
 import Category.Category exposing (CategoryShort)
+import Category.Model
 import Distribution.Model
 import Distribution.MsgB exposing (MsgB(..))
 import Flash exposing (viewFlash)
@@ -16,12 +17,12 @@ import Msg exposing (Msg(..))
 import Template exposing (template)
 import Translate exposing (Language, tx_save)
 import Types exposing (AEMode(..), DRCR(..), DRCRFormat(..))
-import Util exposing (getAccountCurrencySymbol, getCurrencySymbol)
+import Util exposing (getCategorySymbol, getCurrencySymbol)
 import ViewHelpers exposing (viewHttpPanel)
 
 
-addeditForm : Distribution.Model.Model -> DRCRFormat -> List (Html Msg) -> List (Html Msg) -> Html Msg
-addeditForm distribution_model drcr_format accountOptions currencyOptions =
+addeditForm : Distribution.Model.Model -> DRCRFormat -> List (Html Msg) -> List (Html Msg) -> List (Html Msg) -> Html Msg
+addeditForm distribution_model drcr_format accountOptions categoryOptions currencyOptions =
     div [ class "box" ]
         [ div[ class "box" ]
             [ h1[class "title is-4"][ text "Account selection"]
@@ -31,6 +32,15 @@ addeditForm distribution_model drcr_format accountOptions currencyOptions =
                     [ div [ class "select" ]
                         [ select [ onInput (\newValue -> DistributionMsgA (UpdateFilterCurrencyID newValue)) ]
                             currencyOptions
+                        ]
+                    ]
+                ]
+            , div [ class "field" ]
+                [ label [ class "label" ] [ text "Filter on Category" ]
+                , div [ class "control" ]
+                    [ div [ class "select" ]
+                        [ select [ onInput (\newValue -> DistributionMsgA (UpdateFilterCategoryID newValue)) ]
+                            categoryOptions
                         ]
                     ]
                 ]
@@ -127,53 +137,54 @@ addeditForm distribution_model drcr_format accountOptions currencyOptions =
 {-
 This function will build a List of select options for the accounts available to select from.
 
-The contents of this list depend upon whatever filter currency has been selected, if any,
+The contents of this list depend upon whatever filter currency and/or category has been selected, if any,
 and whether or not this is a new or existing distribution record.
 -}
 
 buildAccountSelect : Int -> Model.Model -> List (Html Msg)
 buildAccountSelect selected_currency_id model =
     let
-        currency_filter = not (model.distributions.editBuffer.currency_filter_id == -1) -- True means there is a currency filter
-        new_record = model.distributions.editBuffer.account_id == -1                    -- True means this is a new record
+        new_record = model.distributions.editBuffer.account_id == -1   -- True means this is a new record
 
-        (account_filter, base_option_list) = case (currency_filter, new_record) of
-
-            -- 1. No currency filter, existing record (not new)
-            (False, False) ->
-                ( (List.filter (\a -> True) model.accounts.accounts)
-                , []
+        -- filter accounts by category _or_ whichever account is already selected
+        category_filter = if (model.distributions.editBuffer.category_filter_id == -1) then
+                (\_ -> True) -- no filter
+            else
+                let
+                    category_symbol = getCategorySymbol model.categories model.distributions.editBuffer.category_filter_id
+                in
+                (\acct ->
+                    case
+                        ( List.filter (\cat -> cat.category_symbol == category_symbol) acct.categories
+                        , acct.id == selected_currency_id
+                        ) of
+                        ( [], False )
+                            -> False
+                        ( _, False )
+                            -> True
+                        ( [], True )
+                            -> True
+                        ( _, True )
+                            -> True
                 )
 
-            -- 2. No currency filter, new record
-            -- None Selected at the top, nothing selected, and all accounts sorted by desc.
-            (False, True) ->
-                ( (List.filter (\a -> True) model.accounts.accounts)
-                , [option [ value "-1" ] [ text "None Selected" ]]
-                )
-
-            -- 3. Currency filter, existing record (not new)
-            -- Only accounts for the filter currency, plus the currency selected account no matter
-            -- what its currency is, all sorted by desc, and with the existing account already selected.
-            (True, False) ->
+        -- filter accounts by currency _or_ whichever account is already selected
+        currency_filter = if (model.distributions.editBuffer.currency_filter_id == -1) then
+                (\_ -> True) -- no filter
+            else
                 let
                     currency_symbol = getCurrencySymbol model.currencies model.distributions.editBuffer.currency_filter_id
                 in
-                ( (List.filter (\a -> a.currency.symbol == currency_symbol || (a.id == selected_currency_id)) model.accounts.accounts)
-                , []
-                )
+                (\acct -> acct.currency.symbol == currency_symbol || (acct.id == selected_currency_id))
 
-            -- 4. Currency filter, new distribution record
-            -- None Selected at the top, and only accounts for the filter currency sorted by desc.
-            (True, True) ->
-                let
-                    currency_symbol = getCurrencySymbol model.currencies model.distributions.editBuffer.currency_filter_id
-                in
-                ( (List.filter (\a -> a.currency.symbol == currency_symbol || (a.id == selected_currency_id)) model.accounts.accounts)
-                , [option [ value "-1" ] [ text "None Selected" ]]
-                )
+        base_option_list =
+            if new_record then
+                [option [ value "-1" ] [ text "None Selected" ] ]
+            else
+                []
 
     in
+
         List.append base_option_list
             <| List.map
                 (\a ->
@@ -183,9 +194,19 @@ buildAccountSelect selected_currency_id model =
                         , viewCategories a.categories
                         ]
                 )
-                <| List.sortBy .title account_filter
+                <| List.sortBy .title <| List.filter currency_filter <| List.filter category_filter model.accounts.accounts
 
 
+-- Give a Category.Model and a selected_id, return a List of option for the Categories
+buildCategorySelect : Category.Model.Model -> Int -> List (Html msg)
+buildCategorySelect model selected_id =
+    List.append [ option [ value "-1" ] [ text "None Selected" ] ]
+        <| List.map
+            (\category -> option
+                [ value (String.fromInt category.id), selected (category.id == selected_id) ]
+                [ text (category.symbol ++ "- " ++ category.title) ]
+            )
+        <| List.sortBy .title model.categories
 
 
 -- This is duplicated from Account/Views/AddEdit.  Factor these out.
@@ -239,6 +260,7 @@ rightContent r_title r_onclick model =
         , addeditForm model.distributions
             model.drcr_format
             (buildAccountSelect model.distributions.editBuffer.account_id model)
+            (buildCategorySelect model.categories model.distributions.editBuffer.category_filter_id)
             (buildCurrencySelect model model.distributions.editBuffer.currency_filter_id)
         , div []
             [ button

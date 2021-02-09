@@ -1,11 +1,13 @@
 module Util exposing
     ( getAccountTitle
     , getAccountCurrencySymbol
+    , getCategorySymbol
     , getCurrencySymbol
     , getRemoteDataStatusMessage
     )
 
 import Account.Model
+import Category.Model
 import Currency.Model
 import Http
 import RemoteData exposing (WebData)
@@ -36,6 +38,16 @@ getAccountCurrencySymbol model account_id =
         Nothing ->
             ""
 
+
+-- Given a category_id, return the symbol for said category.
+getCategorySymbol : Category.Model.Model -> Int -> String
+getCategorySymbol model category_id =
+
+    case List.head (List.filter (\c -> c.id == category_id) model.categories) of
+        Just c ->
+            c.symbol
+        Nothing ->
+            "no symbol"
 
 -- Given a currency_id, return the symbol for said currency.
 getCurrencySymbol : Currency.Model.Model -> Int -> String
