@@ -14,7 +14,7 @@ import Types exposing (DRCRFormat(..))
 
 bwuiVersion : String
 bwuiVersion =
-    "1.3.4" -- sync with package.json
+    "1.3.5" -- sync with package.json
 
 
 
