@@ -1,6 +1,7 @@
 module Report.View.OneCategory exposing (viewOneCategory)
 
-import DecimalFP exposing (DFP, dfp_add)
+--import DecimalFPx exposing (DFPx, dfp_addx)
+import DecimalFP exposing (DFP, Sign(..), dfp_add)
 import Dict exposing (Dict)
 import Html exposing (Html, div, h3, p, table, tbody, td, text, tfoot, th, thead, tr)
 import Html.Attributes exposing (class, style)
@@ -100,16 +101,17 @@ viewAccount brd decimalPlaces =
         ([ td [] [ text (String.fromInt brd.account.account_id) ]
          , td [] [ text brd.account.title ]
          ]
-            ++ viewDFP brd.sum decimalPlaces DRCR
+            --++ viewDFP brd.sum decimalPlaces DRCR
+            ++ viewDFP (DFP [] 0 Zero) decimalPlaces DRCR
         )
 
 
-calcSum : List BalanceResultDecorated -> DFP
-calcSum list =
-    List.foldl
-        (\a b -> dfp_add a.sum b)
-        (DFP 0 0)
-        list
+--calcSum : List BalanceResultDecorated -> DFPx
+--calcSum list =
+    --List.foldl
+        --(\a b -> dfp_addx a.sum b)
+        --(DFPx 0 0)
+        --list
 
 
 
@@ -159,7 +161,8 @@ viewCurrencySectionB lbrd model currencySymbol language =
                 ([ td [] []
                  , td [ class "has-text-right has-text-weight-bold" ] [ text (tx language { e = "Total", c = "总", p = "zǒng" } ++ " " ++ currencySymbol) ]
                  ]
-                    ++ viewDFP (calcSum lbrd) model.decimalPlaces DRCR
+                    --++ viewDFP (calcSum lbrd) model.decimalPlaces DRCR
+                    ++ viewDFP (DFP [] 0 Zero) model.decimalPlaces DRCR
                 )
             ]
         ]

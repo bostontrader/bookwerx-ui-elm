@@ -1,5 +1,6 @@
 module ViewHelpers exposing (dvColumnHeader, viewDFP, viewHttpPanel)
 
+import DecimalFPx exposing (DFPx, DFPFmtx, dfp_absx, dfp_fmtx)
 import DecimalFP exposing (DFP, DFPFmt, dfp_abs, dfp_fmt)
 import Html exposing (Html, div, label, p, td, text, th)
 import Html.Attributes exposing (class, style)
@@ -21,10 +22,10 @@ dvColumnHeader heading drcr =
 
 
 
--- Given a DFPFmt, deterine which class, if any, to use in display CSS.
+-- Given a DFPFmt, determine which class, if any, to use in display CSS.
 
 
-roClass : DFPFmt -> String
+roClass : DFPFmtx -> String
 roClass dfpfmt =
     if dfpfmt.r then
         "has-text-danger"
@@ -44,51 +45,12 @@ roClass dfpfmt =
 
 viewDFP : DFP -> Int -> DRCRFormat -> List (Html Msg)
 viewDFP dv p drcr =
-    let
-        dfp_fmt1 =
-            dfp_fmt -p dv
-
-        dfp_fmt2 =
-            dfp_fmt -p (dfp_abs dv)
-    in
-    case drcr of
-        DRCR ->
-            if dv.amount < 0 then
-                [ td
-                    [ class "has-text-right"
-                    , class (roClass dfp_fmt2)
-                    ]
-                    [ text dfp_fmt2.s ]
-                , td [ style "padding-left" "0.3em" ] [ text "CR" ]
-                ]
-
-            else if dv.amount == 0 then
-                [ td
-                    [ class "has-text-right"
-                    , class (roClass dfp_fmt1)
-                    ]
-                    [ text dfp_fmt1.s ]
-                , td [] [ text "" ]
-                ]
-
-            else
-                -- must be > 0
-                [ td
-                    [ class "has-text-right"
-                    , class (roClass dfp_fmt1)
-                    ]
-                    [ text dfp_fmt1.s ]
-                , td [ style "padding-left" "0.3em" ] [ text "DR" ]
-                ]
-
-        PlusAndMinus ->
-            [ td
-                [ class "has-text-right"
-                , class (roClass dfp_fmt1)
-                ]
-                [ text dfp_fmt1.s ]
-            ]
-
+    [ td
+        [ class "has-text-right"
+        ]
+        [ text "dfp_fmt2.s" ]
+    , td [ style "padding-left" "0.3em" ] [ text "CR" ]
+    ]
 
 viewHttpPanel : String -> String -> Language -> Html Msg
 viewHttpPanel request response language =

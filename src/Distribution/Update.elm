@@ -183,6 +183,7 @@ raw2EB raw =
         -1 -- no currency filter
         -1 -- no category filter
         (IntField (Just raw.amount) (String.fromInt raw.amount))
+        raw.amountbt
         (IntField (Just raw.amount_exp) (String.fromInt raw.amount_exp))
         raw.transaction_id
         (if raw.amount >= 0 then

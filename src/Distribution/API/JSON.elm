@@ -14,12 +14,6 @@ import Json.Decode exposing (Decoder, int, string)
 import Json.Decode.Pipeline exposing (required)
 
 
-
---distributionsDecoder : Decoder (List Distribution)
---distributionsDecoder =
---Json.Decode.list distributionDecoder
-
-
 distributionDecoder : Decoder DistributionRaw
 distributionDecoder =
     Json.Decode.succeed DistributionRaw
@@ -27,6 +21,7 @@ distributionDecoder =
         |> required "apikey" string
         |> required "account_id" int
         |> required "amount" int
+        |> required "amountbt" string
         |> required "amount_exp" int
         |> required "transaction_id" int
 
@@ -42,6 +37,7 @@ distributionJoinedDecoder =
         |> required "account_title" string
         |> required "aid" int
         |> required "amount" int
+        |> required "amountbt" string
         |> required "amount_exp" int
         |> required "apikey" string
         |> required "id" int
@@ -60,5 +56,6 @@ distributionReportDecoder =
     Json.Decode.succeed DistributionReport
         |> required "account_id" int
         |> required "amount" int
+        |> required "amountb" string
         |> required "amount_exp" int
         |> required "time" string

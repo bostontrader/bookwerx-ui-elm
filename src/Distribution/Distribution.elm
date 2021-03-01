@@ -18,6 +18,7 @@ type alias DistributionRaw =
     , apikey : String
     , account_id : Int
     , amount : Int
+    , amountbt : String
     , amount_exp : Int
     , transaction_id : Int
     }
@@ -34,6 +35,7 @@ type alias DistributionEB =
     , category_filter_id : Int
     , currency_filter_id : Int
     , amount : IntField
+    , amountbt : String
     , amount_exp : IntField
     , transaction_id : Int
     , drcr : DRCR
@@ -48,6 +50,7 @@ type alias DistributionJoined =
     { account_title : String
     , aid : Int
     , amount : Int
+    , amountbt : String
     , amount_exp : Int
     , apikey : String
     , id : Int
@@ -60,6 +63,7 @@ type alias DistributionJoined =
 type alias DistributionReport =
     { account_id : Int
     , amount : Int
+    , amountbt : String
     , amount_exp : Int
     , time : String
     }

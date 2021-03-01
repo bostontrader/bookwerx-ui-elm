@@ -282,6 +282,8 @@ view model aemode =
                 ++ String.fromInt model.distributions.editBuffer.account_id
                 ++ "&amount="
                 ++ intFieldToString model.distributions.editBuffer.amount
+                ++ "&amountbt="
+                ++ intFieldToString model.distributions.editBuffer.amount
                 ++ "&amount_exp="
                 ++ intFieldToString model.distributions.editBuffer.amount_exp
                 ++ "&transaction_id="

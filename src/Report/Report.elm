@@ -1,7 +1,7 @@
 module Report.Report exposing (..)
 
 import Account.Account exposing (AccountCurrency, accountCurrencyDecoder)
-import DecimalFP exposing (DFP, dfpDecoder)
+import DecimalFPx exposing (DFPx, dfpDecoderx)
 import Json.Decode exposing (Decoder)
 import Json.Decode.Pipeline exposing (required)
 
@@ -12,7 +12,7 @@ import Json.Decode.Pipeline exposing (required)
 
 type alias BalanceResultDecorated =
     { account : AccountCurrency
-    , sum : DFP
+    , sum : DFPx
     }
 
 
@@ -20,7 +20,7 @@ balanceResultDecoratedDecoder : Decoder BalanceResultDecorated
 balanceResultDecoratedDecoder =
     Json.Decode.succeed BalanceResultDecorated
         |> required "account" accountCurrencyDecoder
-        |> required "sum" dfpDecoder
+        |> required "sum" dfpDecoderx
 
 
 balanceResultsDecoratedDecoder : Decoder (List BalanceResultDecorated)

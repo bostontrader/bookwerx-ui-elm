@@ -1,6 +1,7 @@
 module Distribution.Views.List exposing (view)
 
-import DecimalFP exposing (DFP)
+import DecimalFPx exposing (DFPx)
+import DecimalFP exposing (DFP, Sign(..))
 import Distribution.Distribution exposing (DistributionJoined)
 import Distribution.Model
 import Distribution.MsgB exposing (MsgB(..))
@@ -62,7 +63,9 @@ viewDistribution model distributionJoined =
         ([ td [] [ text (String.fromInt distributionJoined.id) ]
          , td [] [ text distributionJoined.account_title ]
          ]
-            ++ viewDFP (DFP distributionJoined.amount distributionJoined.amount_exp) model.distributions.decimalPlaces model.drcr_format
+            --++ viewDFP (DFP distributionJoined.amount distributionJoined.amount_exp) model.distributions.decimalPlaces model.drcr_format
+            ++ viewDFP (DFP [] distributionJoined.amount_exp Positive) model.distributions.decimalPlaces model.drcr_format
+
             --( (roundingAlertStyle (intFieldToInt model.accounts.decimalPlaces) distributionJoined.amount_exp) ++ [("padding-right","0em")] )
             --, --td
             --[ class "has-text-right"
