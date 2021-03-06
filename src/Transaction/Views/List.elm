@@ -2,7 +2,6 @@ module Transaction.Views.List exposing (view)
 
 --import Util exposing (getCurrencyTitle, )
 
-import Currency.Model exposing (Model)
 import Flash exposing (viewFlash)
 import Html exposing (Html, a, button, div, h3, p, table, tbody, td, text, th, thead, tr)
 import Html.Attributes exposing (class, href, style)

@@ -1,6 +1,5 @@
 module Currency.MsgB exposing (MsgB(..))
 
-import Currency.Currency exposing (Currency)
 import Currency.Plumbing
     exposing
         ( CurrencyPostHttpResponseString

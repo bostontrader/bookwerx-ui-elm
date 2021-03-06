@@ -11,7 +11,7 @@ type IntField
 intFieldToInt : IntField -> Int
 intFieldToInt intField =
     case intField of
-        IntField Nothing int ->
+        IntField Nothing _ ->
             0
 
         IntField (Just int) _ ->
@@ -43,5 +43,5 @@ intValidationClass intField =
             else
                 "has-background-danger"
 
-        IntField (Just int) _ ->
+        IntField (Just _) _ ->
             ""

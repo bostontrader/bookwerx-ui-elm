@@ -1,6 +1,6 @@
 module Lint.View exposing (view)
 
-import Flash exposing (FlashMsg, viewFlash)
+import Flash exposing (viewFlash)
 import Html exposing (Html, button, div, h3, p, table, tbody, td, text, th, thead, tr)
 import Html.Attributes exposing (class, style)
 import Html.Events exposing (onClick)
@@ -10,7 +10,7 @@ import Model
 import Msg exposing (Msg(..))
 import RemoteData
 import Template exposing (template)
-import Translate exposing (Language, tx)
+import Translate exposing (tx)
 import Util exposing (getRemoteDataStatusMessage)
 import ViewHelpers exposing (viewHttpPanel)
 
@@ -72,7 +72,7 @@ rightContent model =
 
 
 viewLint : Model.Model -> Lint -> Html Msg
-viewLint model lint =
+viewLint _ lint =
     tr []
         [ td [] [ text (String.fromInt lint.id) ]
         , td [] [ text lint.symbol ]

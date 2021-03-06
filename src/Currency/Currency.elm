@@ -1,6 +1,5 @@
 module Currency.Currency exposing (..)
 
-import IntField exposing (IntField)
 import Json.Decode exposing (Decoder, int, string)
 import Json.Decode.Pipeline exposing (required)
 

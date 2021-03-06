@@ -288,26 +288,16 @@ dfp_fromString s =
                 if Char.isDigit c then
                     True
 
-                else if c == '.' then
-                    True
-
                 else
-                    False
+                    c == '.'
 
-        isDigit =
-            \c ->
-                if Char.isDigit c then
-                    True
-
-                else
-                    False
 
         s2 =
             String.filter isDigitOrDot s1
 
         -- only 0-9 or ., in ordinary order
         s3 =
-            String.filter isDigit s2
+            String.filter Char.isDigit s2
 
         -- only 0-9
         slen =
@@ -710,16 +700,8 @@ md_fromString s =
             else
                 ( False, s )
 
-        isDigit =
-            \c ->
-                if Char.isDigit c then
-                    True
-
-                else
-                    False
-
         s3 =
-            String.filter isDigit s1
+            String.filter Char.isDigit s1
 
         -- only 0-9
         c2d =
@@ -877,7 +859,7 @@ md_sub1 top bottom =
                     [ x - 1 ]
 
                 x :: xs ->
-                    [ x - 1 ] ++ xs
+                    x - 1  :: xs
 
         n5 =
             List.reverse n4

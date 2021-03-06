@@ -1,7 +1,6 @@
 module Distribution.Views.List exposing (view)
 
 import DecimalFP exposing (DFP, Sign(..), md_fromString)
-import DecimalFPx exposing (DFPx)
 import Distribution.Distribution exposing (DistributionJoined)
 import Distribution.Model
 import Distribution.MsgB exposing (MsgB(..))

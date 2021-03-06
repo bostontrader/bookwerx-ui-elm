@@ -2,7 +2,6 @@ module Distribution.Views.AddEdit exposing (view)
 
 -- Add and Edit are very similar. Unify them thus...
 
-import Account.Model
 import Category.Category exposing (CategoryShort)
 import Category.Model
 import Distribution.Model

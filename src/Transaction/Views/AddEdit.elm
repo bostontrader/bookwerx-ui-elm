@@ -2,7 +2,6 @@ module Transaction.Views.AddEdit exposing (view)
 
 -- Add and Edit are very similar. Unify them thus...
 
-import Distribution.Views.List as DVL
 import Flash exposing (viewFlash)
 import Html exposing (Html, a, button, div, h3, input, label, text)
 import Html.Attributes exposing (class, href, style, type_, value)
@@ -56,7 +55,7 @@ leftContent logMsg language =
 
 
 rightContent : String -> String -> Msg -> Bool -> Model.Model -> Html Msg
-rightContent r_id r_title r_onclick r_distribution_button model =
+rightContent _ r_title r_onclick r_distribution_button model =
     div []
         [ h3 [ class "title is-3" ] [ text r_title ]
         , viewFlash model.flashMessages

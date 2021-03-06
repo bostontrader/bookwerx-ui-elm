@@ -1,8 +1,6 @@
 module Report.View.OneCategory exposing (viewOneCategory)
 
---import DecimalFPx exposing (DFPx, dfp_addx)
-
-import DecimalFP exposing (DFP, Sign(..), dfp_add)
+import DecimalFP exposing (DFP, Sign(..))
 import Dict exposing (Dict)
 import Html exposing (Html, div, h3, p, table, tbody, td, text, tfoot, th, thead, tr)
 import Html.Attributes exposing (class, style)
@@ -119,7 +117,7 @@ viewAccount brd decimalPlaces =
 
 
 viewCurrencySection : List BalanceResultDecorated -> Report.Model.Model -> Maybe String -> Language -> Html Msg
-viewCurrencySection lbrd model title language =
+viewCurrencySection lbrd model _ language =
     let
         symbol =
             case lbrd of
@@ -153,7 +151,7 @@ viewCurrencySectionB lbrd model currencySymbol language =
         , tbody []
             --(List.map (\brd -> viewAccount brd model.decimalPlaces) lbrd)
             (lbrd
-                |> List.filter (\brd -> True)
+                |> List.filter (\_ -> True)
                 |> List.map (\brd -> viewAccount brd model.decimalPlaces)
             )
         , tfoot []

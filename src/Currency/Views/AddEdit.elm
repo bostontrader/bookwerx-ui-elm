@@ -6,9 +6,8 @@ import Currency.Currency exposing (Currency)
 import Currency.MsgB exposing (MsgB(..))
 import Flash exposing (viewFlash)
 import Html exposing (Html, a, button, div, h3, input, label, text)
-import Html.Attributes exposing (class, href, placeholder, type_, value)
+import Html.Attributes exposing (class, href, type_, value)
 import Html.Events exposing (onClick, onInput)
-import IntField exposing (IntField(..), intFieldToString, intValidationClass)
 import Model
 import Msg exposing (Msg(..))
 import Template exposing (template)
@@ -54,7 +53,7 @@ leftContent logMsg language =
 
 
 rightContent : String -> String -> Msg -> Model.Model -> Html Msg
-rightContent r_id r_title r_onclick model =
+rightContent _ r_title r_onclick model =
     div []
         [ h3 [ class "title is-3" ] [ text r_title ]
         , viewFlash model.flashMessages

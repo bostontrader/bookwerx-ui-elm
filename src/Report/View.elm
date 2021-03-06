@@ -8,7 +8,7 @@ import Html.Events exposing (onClick)
 import Model
 import Msg exposing (Msg(..))
 import Report.Form exposing (form)
-import Report.Model exposing (FModel, ManyCatTypes(..), ReportTypes(..))
+import Report.Model exposing (ManyCatTypes(..), ReportTypes(..))
 import Report.Msg
 import Report.View.ManyCategory as ManyCat
 import Report.View.OneCategory as OneCat
