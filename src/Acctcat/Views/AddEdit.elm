@@ -4,7 +4,6 @@ module Acctcat.Views.AddEdit exposing (view)
 
 import Acctcat.Acctcat exposing (Acctcat)
 import Acctcat.MsgB exposing (MsgB(..))
-import Category.Model
 import Flash exposing (viewFlash)
 import Html exposing (Html, a, button, div, h3, label, option, select, text)
 import Html.Attributes exposing (class, href, selected, value)
@@ -18,7 +17,7 @@ import ViewHelpers exposing (viewHttpPanel)
 
 
 addeditForm : Acctcat -> List (Html Msg) -> Html Msg
-addeditForm editBuffer accountSelectOptions =
+addeditForm _ accountSelectOptions =
     div [ class "box" ]
         [ div [ class "field" ]
             [ label [ class "label" ] [ text "Account" ]
@@ -77,7 +76,7 @@ rightContent r model =
 
 
 view : Model.Model -> AEMode -> Html Msg
-view model aemode =
+view model _ =
     let
         postParams =
             "apikey="
@@ -87,11 +86,10 @@ view model aemode =
                 ++ "&category_id="
                 ++ String.fromInt model.acctcats.category_id
 
-        putParams =
-            postParams
-                ++ "&id="
-                ++ String.fromInt model.acctcats.editBuffer.id
-
+        --putParams =
+        --postParams
+        --++ "&id="
+        --++ String.fromInt model.acctcats.editBuffer.id
         r =
             --case aemode of
             --Add ->

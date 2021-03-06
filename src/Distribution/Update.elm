@@ -180,8 +180,10 @@ raw2EB raw =
         raw.id
         raw.apikey
         raw.account_id
-        -1 -- no currency filter
-        -1 -- no category filter
+        -1
+        -- no currency filter
+        -1
+        -- no category filter
         (IntField (Just raw.amount) (String.fromInt raw.amount))
         raw.amountbt
         (IntField (Just raw.amount_exp) (String.fromInt raw.amount_exp))
@@ -206,6 +208,7 @@ updateAccountID d newValue =
                     -1
     }
 
+
 updateCategoryFilterID : DistributionEB -> String -> DistributionEB
 updateCategoryFilterID d newValue =
     { d
@@ -217,6 +220,7 @@ updateCategoryFilterID d newValue =
                 Nothing ->
                     -1
     }
+
 
 updateCurrencyFilterID : DistributionEB -> String -> DistributionEB
 updateCurrencyFilterID d newValue =

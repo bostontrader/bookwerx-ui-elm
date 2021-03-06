@@ -4,7 +4,7 @@
 -}
 
 
-module DecimalFPx exposing (DFPx, DFPFmtx, dfpDecoderx, dfp_absx, dfp_addx, dfp_equalx, dfp_fmtx, dfp_roundx)
+module DecimalFPx exposing (DFPFmtx, DFPx, dfpDecoderx, dfp_absx, dfp_addx, dfp_equalx, dfp_fmtx, dfp_roundx)
 
 import Json.Decode exposing (Decoder, int)
 import Json.Decode.Pipeline exposing (required)
@@ -172,7 +172,8 @@ norm d =
 
     else if modBy 10 d.amount == 0 then
         --norm (DFP (d.amount // 10) (d.exp + 1))
-        norm (DFPx (round(toFloat(d.amount) / 10)) (d.exp + 1))
+        norm (DFPx (round (toFloat d.amount / 10)) (d.exp + 1))
+
     else
         -- already in normal form
         d
@@ -196,6 +197,7 @@ dfp_roundx p d =
             new_amount =
                 if last_digit >= 5 then
                     (d.amount |> toFloat) / 10 |> round
+
                 else
                     (d.amount |> toFloat) / 10 |> round
 

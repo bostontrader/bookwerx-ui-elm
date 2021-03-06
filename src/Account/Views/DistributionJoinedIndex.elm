@@ -2,7 +2,6 @@ module Account.Views.DistributionJoinedIndex exposing (view)
 
 import Account.Model
 import Account.MsgB exposing (MsgB(..))
---import DecimalFPx exposing (DFPx)
 import DecimalFP exposing (DFP, Sign(..), dfp_add)
 import Distribution.Distribution exposing (DistributionJoined)
 import Flash exposing (viewFlash)
@@ -54,14 +53,12 @@ view model =
 
 viewDistributionJoined : Language -> Int -> DFP -> DistributionJoined -> DRCRFormat -> Html Msg
 viewDistributionJoined language p runtot dj drcr =
-
     tr []
         ([ td [] [ text dj.tx_time ]
          , td [] [ text dj.tx_notes ]
          ]
             --++ viewDFP (DFP dj.amountbt dj.amount_exp Positive) p drcr
             ++ viewDFP (DFP [] dj.amount_exp Positive) p drcr
-
             --++ viewDFP (DecimalFP.dfp_add (DFP dj.amount dj.amount_exp Positive) runtot) p drcr
             ++ viewDFP (DecimalFP.dfp_add (DFP [] dj.amount_exp Positive) runtot) p drcr
             ++ [ td []
@@ -92,12 +89,12 @@ viewDistributionJoineds model runtot distributionJoined =
 
 
 viewRESTPanel : Model.Model -> Html Msg
-viewRESTPanel model =
+viewRESTPanel _ =
     div [ class "box" ] []
 
 
 viewTableHeader : Language -> DRCRFormat -> Html Msg
-viewTableHeader language drcr =
+viewTableHeader _ drcr =
     tr []
         ([ th [] [ text "Time" ]
          , th [] [ text "Notes" ]
@@ -154,6 +151,7 @@ viewTransactionsTable : Model.Model -> List DistributionJoined -> Html Msg
 viewTransactionsTable model distributionJoineds =
     table [ class "table is-striped" ]
         [ thead [] [ viewTableHeader model.language model.drcr_format ]
+
         --, tbody [] (viewDistributionJoineds model (DFPx 0 0) distributionJoineds)
         , tbody [] (viewDistributionJoineds model (DFP [] 0 Positive) distributionJoineds)
         ]

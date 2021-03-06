@@ -7,13 +7,8 @@ import Account.MsgB exposing (MsgB(..))
 import Currency.Model
 import Flash exposing (viewFlash)
 import Html exposing (Html, a, button, div, h3, input, label, option, select, text)
-import Html.Attributes exposing (class, href, placeholder, selected, type_, value)
+import Html.Attributes exposing (class, href, selected, type_, value)
 import Html.Events exposing (onClick, onInput)
-import IntField
-    exposing
-        ( intFieldToString
-        , intValidationClass
-        )
 import Model
 import Msg exposing (Msg(..))
 import Template exposing (template)

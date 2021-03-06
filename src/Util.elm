@@ -1,6 +1,6 @@
 module Util exposing
-    ( getAccountTitle
-    , getAccountCurrencySymbol
+    ( getAccountCurrencySymbol
+    , getAccountTitle
     , getCategorySymbol
     , getCurrencySymbol
     , getRemoteDataStatusMessage
@@ -30,7 +30,6 @@ getAccountTitle model cid =
 
 getAccountCurrencySymbol : Account.Model.Model -> Int -> String
 getAccountCurrencySymbol model account_id =
-
     case List.head (List.filter (\c -> c.id == account_id) model.accounts) of
         Just c ->
             c.currency.symbol
@@ -39,23 +38,30 @@ getAccountCurrencySymbol model account_id =
             ""
 
 
+
 -- Given a category_id, return the symbol for said category.
+
+
 getCategorySymbol : Category.Model.Model -> Int -> String
 getCategorySymbol model category_id =
-
     case List.head (List.filter (\c -> c.id == category_id) model.categories) of
         Just c ->
             c.symbol
+
         Nothing ->
             "no symbol"
 
+
+
 -- Given a currency_id, return the symbol for said currency.
+
+
 getCurrencySymbol : Currency.Model.Model -> Int -> String
 getCurrencySymbol model currency_id =
-
     case List.head (List.filter (\c -> c.id == currency_id) model.currencies) of
         Just c ->
             c.symbol
+
         Nothing ->
             "no symbol"
 

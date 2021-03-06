@@ -1,6 +1,7 @@
 module Report.View.OneCategory exposing (viewOneCategory)
 
 --import DecimalFPx exposing (DFPx, dfp_addx)
+
 import DecimalFP exposing (DFP, Sign(..), dfp_add)
 import Dict exposing (Dict)
 import Html exposing (Html, div, h3, p, table, tbody, td, text, tfoot, th, thead, tr)
@@ -22,23 +23,27 @@ viewOneCategory model webdata sumsDecorated title language =
             RemoteData.Success _ ->
                 if List.isEmpty sumsDecorated.sums then
                     --[ h3 []
-                        --[ text
-                            --(tx language
-                                --{ e = "No data found for this report"
-                                --, c = "找不到此报告的数据"
-                                --, p = "Zhǎo bù dào cǐ bàogào de shùjù"
-                                --}
-                            --)
-                        --]
+                    --[ text
+                    --(tx language
+                    --{ e = "No data found for this report"
+                    --, c = "找不到此报告的数据"
+                    --, p = "Zhǎo bù dào cǐ bàogào de shùjù"
+                    --}
+                    --)
                     --]
-
+                    --]
                     let
-                        nodata = [p [ class "is-size-6", style "margin-bottom" "1em"] [ text (tx language
-                            { e = "No data found for this report"
-                            , c = "找不到此报告的数据"
-                            , p = "Zhǎo bù dào cǐ bàogào de shùjù"
-                            } ) ] ]
-
+                        nodata =
+                            [ p [ class "is-size-6", style "margin-bottom" "1em" ]
+                                [ text
+                                    (tx language
+                                        { e = "No data found for this report"
+                                        , c = "找不到此报告的数据"
+                                        , p = "Zhǎo bù dào cǐ bàogào de shùjù"
+                                        }
+                                    )
+                                ]
+                            ]
                     in
                     case title of
                         Just t ->
@@ -46,9 +51,6 @@ viewOneCategory model webdata sumsDecorated title language =
 
                         Nothing ->
                             nodata
-
-
-
 
                 else
                     -- Take the JSON decoded response from the server, group all accounts with the same currency together using a Dict, and then viewCurrencySection for each different currency.  Append a title if given.
@@ -106,15 +108,13 @@ viewAccount brd decimalPlaces =
         )
 
 
+
 --calcSum : List BalanceResultDecorated -> DFPx
 --calcSum list =
-    --List.foldl
-        --(\a b -> dfp_addx a.sum b)
-        --(DFPx 0 0)
-        --list
-
-
-
+--List.foldl
+--(\a b -> dfp_addx a.sum b)
+--(DFPx 0 0)
+--list
 -- Given a List BalanceResultDecorated containing the balances of accounts all of the same currency
 
 

@@ -18,7 +18,7 @@ import ViewHelpers exposing (viewHttpPanel)
 
 
 addeditForm : Language -> Category -> List (Html Msg) -> Html Msg
-addeditForm language editBuffer accountSelectOptions =
+addeditForm language editBuffer _ =
     div [ class "box" ]
         [ div [ class "field" ]
             [ label [ class "label" ] [ text (tx language { e = "Symbol", c = "标记", p = "biāojì" }) ]
@@ -72,7 +72,7 @@ leftContent logMsg language =
 
 
 rightContent : String -> String -> Msg -> Model.Model -> Html Msg
-rightContent r_id r_title r_onclick model =
+rightContent _ r_title r_onclick model =
     div []
         [ h3 [ class "title is-3" ] [ text r_title ]
         , viewFlash model.flashMessages

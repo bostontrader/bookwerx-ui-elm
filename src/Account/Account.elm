@@ -2,7 +2,6 @@ module Account.Account exposing (..)
 
 import Category.Category exposing (CategoryShort)
 import Currency.Currency exposing (CurrencyShort, CurrencySymbol, currencySymbolDecoder)
-import IntField exposing (IntField)
 import Json.Decode exposing (Decoder, int, string)
 import Json.Decode.Pipeline exposing (required)
 

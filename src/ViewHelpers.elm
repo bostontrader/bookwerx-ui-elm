@@ -1,7 +1,7 @@
 module ViewHelpers exposing (dvColumnHeader, viewDFP, viewHttpPanel)
 
-import DecimalFPx exposing (DFPx, DFPFmtx, dfp_absx, dfp_fmtx)
-import DecimalFP exposing (DFP, DFPFmt, dfp_abs, dfp_fmt)
+import DecimalFP exposing (DFP, DFPFmt, Sign(..), dfp_abs, dfp_fmt, dfp_fromString)
+import DecimalFPx exposing (DFPFmtx, DFPx, dfp_absx, dfp_fmtx)
 import Html exposing (Html, div, label, p, td, text, th)
 import Html.Attributes exposing (class, style)
 import Msg exposing (Msg)
@@ -45,12 +45,53 @@ roClass dfpfmt =
 
 viewDFP : DFP -> Int -> DRCRFormat -> List (Html Msg)
 viewDFP dv p drcr =
-    [ td
-        [ class "has-text-right"
-        ]
-        [ text "dfp_fmt2.s" ]
-    , td [ style "padding-left" "0.3em" ] [ text "CR" ]
-    ]
+    let
+        dfp_fmt1 =
+            Debug.log "viewDFP 1"
+                (dfp_fmt dv -p)
+
+        dfp_fmt2 =
+            Debug.log "viewDFP 2"
+                (dfp_fmt (dfp_abs dv) -p)
+    in
+    case drcr of
+        DRCR ->
+            case dv.sign of
+                Positive ->
+                    [ td
+                        [ class "has-text-right"
+                        , class (roClass dfp_fmt1)
+                        ]
+                        [ text dfp_fmt1.s ]
+                    , td [ style "padding-left" "0.3em" ] [ text "DR" ]
+                    ]
+
+                Negative ->
+                    [ td
+                        [ class "has-text-right"
+                        , class (roClass dfp_fmt2)
+                        ]
+                        [ text dfp_fmt2.s ]
+                    , td [ style "padding-left" "0.3em" ] [ text "CR" ]
+                    ]
+
+                Zero ->
+                    [ td
+                        [ class "has-text-right"
+                        , class (roClass dfp_fmt1)
+                        ]
+                        [ text dfp_fmt1.s ]
+                    , td [] [ text "" ]
+                    ]
+
+        PlusAndMinus ->
+            [ td
+                [ class "has-text-right"
+                , class (roClass dfp_fmt1)
+                ]
+                [ text dfp_fmt1.s ]
+            ]
+
 
 viewHttpPanel : String -> String -> Language -> Html Msg
 viewHttpPanel request response language =

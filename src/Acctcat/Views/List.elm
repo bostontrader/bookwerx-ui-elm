@@ -80,12 +80,11 @@ view model =
 
 viewAcctcat : Model.Model -> AcctcatJoined -> Html Msg
 viewAcctcat model acctcat =
-    let
-        acctcatPath =
-            "/acctcats/" ++ String.fromInt acctcat.id
-
-        --account_currency_id = getAccountCurrencyID model.accounts acctcat.account_id
-    in
+    --let
+    --acctcatPath =
+    --"/acctcats/" ++ String.fromInt acctcat.id
+    --account_currency_id = getAccountCurrencyID model.accounts acctcat.account_id
+    --in
     tr []
         [ td [] [ text (String.fromInt acctcat.id) ]
         , td [] [ text acctcat.account_title ]

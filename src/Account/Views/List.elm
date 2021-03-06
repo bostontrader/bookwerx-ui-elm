@@ -5,10 +5,9 @@ import Account.Model
 import Account.MsgB exposing (MsgB(..))
 import Category.Category exposing (CategoryShort)
 import Flash exposing (viewFlash)
-import Html exposing (Html, a, button, div, h3, input, label, li, p, table, tbody, td, text, th, thead, tr, ul)
-import Html.Attributes exposing (class, href, placeholder, style, type_, value)
-import Html.Events exposing (onClick, onInput)
-import IntField exposing (IntField(..), intFieldToInt, intFieldToString, intValidationClass)
+import Html exposing (Html, a, button, div, h3, li, p, table, tbody, td, text, th, thead, tr, ul)
+import Html.Attributes exposing (class, href, style)
+import Html.Events exposing (onClick)
 import Model
 import Msg exposing (Msg(..))
 import RemoteData

@@ -56,6 +56,6 @@ distributionReportDecoder =
     Json.Decode.succeed DistributionReport
         |> required "account_id" int
         |> required "amount" int
-        |> required "amountb" string
+        |> required "amountbt" string
         |> required "amount_exp" int
         |> required "time" string
