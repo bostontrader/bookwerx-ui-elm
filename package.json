@@ -4,7 +4,7 @@
         "email": "bostontrader@gmail.com",
         "url": "https://github.com/bostontrader"
     },
-    "version": "1.4.1",
+    "version": "1.4.2",
     "dependencies": {
         "elm": "0.19.1-5"
     },
@@ -23,7 +23,7 @@
         "html-webpack-plugin": "4.3.0",
         "install": "0.13.0",
         "node-sass": "5.0.0",
-        "npm": "7.6.0",
+        "npm": "7.6.1",
         "sass-loader": "10.1.1",
         "style-loader": "2.0.0",
         "webpack": "4.43.0",

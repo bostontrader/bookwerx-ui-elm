@@ -92,12 +92,7 @@ addeditForm distribution_model drcr_format accountOptions categoryOptions curren
                             , class (intValidationClass distribution_model.editBuffer.amount)
                             , type_ "text"
                             , onInput (\newValue -> DistributionMsgA (UpdateAmount newValue))
-                            , case distribution_model.editBuffer.amount of
-                                IntField Nothing _ ->
-                                    value ""
-
-                                IntField (Just _) _ ->
-                                    value (String.fromInt <| abs <| intFieldToInt <| distribution_model.editBuffer.amount)
+                            , value (intFieldToString distribution_model.editBuffer.amount)
                             ]
                             []
                         ]
