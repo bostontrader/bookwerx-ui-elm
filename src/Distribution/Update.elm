@@ -265,8 +265,6 @@ updateDRCR : String -> DistributionEB -> DistributionEB
 updateDRCR drcr d =
     let
 
-        n = Debug.log "eb, nv"  (d, drcr)
-
         newDEB =
             if drcr == "dr" then
                 { d | drcr = DR }
