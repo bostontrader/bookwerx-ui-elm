@@ -2,7 +2,7 @@ module Account.Views.DistributionJoinedIndex exposing (view)
 
 import Account.Model
 import Account.MsgB exposing (MsgB(..))
-import DecimalFP exposing (DFP, Sign(..), dfp_add)
+import DecimalFP exposing (DFP, Sign(..), dfp_add, dfp_fromStringExp)
 import Distribution.Distribution exposing (DistributionJoined)
 import Flash exposing (viewFlash)
 import Html exposing (Html, a, button, div, h3, input, label, table, tbody, td, text, th, thead, tr)
@@ -58,9 +58,12 @@ viewDistributionJoined language p runtot dj drcr =
          , td [] [ text dj.tx_notes ]
          ]
             --++ viewDFP (DFP dj.amountbt dj.amount_exp Positive) p drcr
-            ++ viewDFP (DFP [] dj.amount_exp Positive) p drcr
+            --++ viewDFP (DFP [] dj.amount_exp Positive) p drcr
+            ++ viewDFP (dfp_fromStringExp dj.amountbt dj.amount_exp) p drcr
+
             --++ viewDFP (DecimalFP.dfp_add (DFP dj.amount dj.amount_exp Positive) runtot) p drcr
-            ++ viewDFP (DecimalFP.dfp_add (DFP [] dj.amount_exp Positive) runtot) p drcr
+            ++ viewDFP (DecimalFP.dfp_add ( dfp_fromStringExp dj.amountbt dj.amount_exp) runtot) p drcr
+
             ++ [ td []
                     [ a
                         [ href ("/transactions/" ++ String.fromInt dj.tid)
@@ -84,8 +87,7 @@ viewDistributionJoineds model runtot distributionJoined =
 
         x :: xs ->
             viewDistributionJoined model.language model.accounts.decimalPlaces runtot x model.drcr_format
-                --:: viewDistributionJoineds model (DecimalFPx.dfp_addx (DFPx x.amount x.amount_exp) runtot) xs
-                :: viewDistributionJoineds model (DecimalFP.dfp_add (DFP [] x.amount_exp Positive) runtot) xs
+                :: viewDistributionJoineds model (DecimalFP.dfp_add (dfp_fromStringExp x.amountbt x.amount_exp) runtot) xs
 
 
 viewRESTPanel : Model.Model -> Html Msg
@@ -151,7 +153,5 @@ viewTransactionsTable : Model.Model -> List DistributionJoined -> Html Msg
 viewTransactionsTable model distributionJoineds =
     table [ class "table is-striped" ]
         [ thead [] [ viewTableHeader model.language model.drcr_format ]
-
-        --, tbody [] (viewDistributionJoineds model (DFPx 0 0) distributionJoineds)
         , tbody [] (viewDistributionJoineds model (DFP [] 0 Positive) distributionJoineds)
         ]

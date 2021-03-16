@@ -34,7 +34,7 @@
 -}
 
 
-module DecimalFP exposing (DFP, DFPFmt, Sign(..), dfp_abs, dfp_add, dfp_equal, dfp_fmt, dfp_fromString, dfp_neg, dfp_norm, dfp_norm_exp, dfp_round, dnc, insertDp, md_add, md_compare, md_fromString, md_sub, stripZ)
+module DecimalFP exposing (DFP, DFPFmt, Sign(..), dfp_abs, dfp_add, dfp_equal, dfp_fmt, dfp_fromString, dfp_fromStringExp, dfp_neg, dfp_norm, dfp_norm_exp, dfp_round, dnc, insertDp, md_add, md_compare, md_fromString, md_sub, stripZ)
 
 
 type Sign
@@ -62,6 +62,45 @@ type alias DFPFmt =
     , r : Bool -- True = loss of precision due to rounding.
     }
 
+{- Map the characters '0' - '9' to the Ints 0 - 9 -}
+c2d : List Char -> List Int
+c2d =
+    List.map
+        (\c ->
+            case c of
+                '0' ->
+                    0
+
+                '1' ->
+                    1
+
+                '2' ->
+                    2
+
+                '3' ->
+                    3
+
+                '4' ->
+                    4
+
+                '5' ->
+                    5
+
+                '6' ->
+                    6
+
+                '7' ->
+                    7
+
+                '8' ->
+                    8
+
+                '9' ->
+                    9
+
+                _ ->
+                    -1
+        )
 
 
 {- Given a DFP return its absolute value -}
@@ -84,8 +123,7 @@ dfp_add : DFP -> DFP -> DFP
 dfp_add dfp1 dfp2 =
     let
         -- normalize to identical exponents
-        ( n1, n2 ) =
-            dfp_norm_exp dfp1 dfp2
+        ( n1, n2 ) = dfp_norm_exp dfp1 dfp2
     in
     -- there are 9 permutations of Positive, Negative, and Zero.  But this simplifies to:
     case ( n1.sign, n2.sign ) of
@@ -159,8 +197,7 @@ dfp_add dfp1 dfp2 =
                 -- abs(a) > abs(b)
                 --just do the subtraction and return positive
                 let
-                    diff =
-                        md_sub n1.amount n2.amount
+                    diff = md_sub n1.amount n2.amount
                 in
                 case diff of
                     Just d ->
@@ -262,14 +299,12 @@ dfp_fmt dfp p =
     DFPFmt (sign ++ s3) (not (dfp_equal dfpn (dfp_norm dfp)))
 
 
-
 {- Recursively parse a string into a DFP.  If the first char is a "-" then the DFP is negative.
    Any character that's not 0-9, ., or - is simply ignored.  We will always get a DFP,
-   no Maybes
--}
-{- Parse a string into a DFP.  If the first char is a "-" then the DFP is negative.
-   Any character that's not 0-9, ., or - is simply ignored.  We will always get a DFP,
-   no Maybes
+   no Maybes.
+
+   This function is useful for UI where a human bean will enter a string of digits and optionally a - or .
+   in order to enter a number.
 -}
 
 
@@ -306,43 +341,6 @@ dfp_fromString s =
         dp =
             String.indexes "." s2
 
-        c2d =
-            List.map
-                (\c ->
-                    case c of
-                        '0' ->
-                            0
-
-                        '1' ->
-                            1
-
-                        '2' ->
-                            2
-
-                        '3' ->
-                            3
-
-                        '4' ->
-                            4
-
-                        '5' ->
-                            5
-
-                        '6' ->
-                            6
-
-                        '7' ->
-                            7
-
-                        '8' ->
-                            8
-
-                        '9' ->
-                            9
-
-                        _ ->
-                            -1
-                )
 
         n1 =
             List.reverse (String.toList s3)
@@ -374,6 +372,46 @@ dfp_fromString s =
         _ :: _ ->
             -- More than one decimal point is too much for my brain. It's got me under pressure!  Just return a Zero.
             DFP [] 0 Zero
+
+
+{- Given a string of the digits 0-9 only, and an optional first character of '-', as well as
+   an exponent, return a DFP.  For the string, any character that's not 0-9 or - is simply ignored.  We wil always get a DFP,
+   no Maybes.
+
+   This function is useful for parsing API results from the server where the desired DFP is represented
+   using a string and an integer exponent.
+-}
+dfp_fromStringExp : String -> Int -> DFP
+dfp_fromStringExp s exp =
+    let
+        ( negSign, s1 ) =
+            if String.startsWith "-" s then
+                ( True, String.dropLeft 1 s )
+
+            else
+                ( False, s )
+
+
+        -- only 0-9
+        s2 =
+            String.filter Char.isDigit s1
+
+
+        -- convert the string of digits only to a list and reverse the characters
+        n1 =
+            List.reverse (String.toList s2)
+
+        -- take the list of all the characters and convert to digits if possible
+        n2 =
+            c2d n1
+
+    in
+    if List.length n2 == 0 then
+        DFP n2 0 Zero
+    else if negSign then
+        DFP n2 exp Negative
+    else
+        DFP n2 exp Positive
 
 
 
@@ -438,11 +476,11 @@ dfp_norm_exp n1 n2 =
         ( n1, n2 )
 
     else if n1.exp > n2.exp then
-        ( DFP (0 :: n1.amount) (n1.exp - 1) n1.sign, n2 )
+        dfp_norm_exp (DFP (0 :: n1.amount) (n1.exp - 1) n1.sign) n2
 
     else
         -- n1.exp < n2.exp
-        ( n1, DFP (0 :: n2.amount) (n2.exp - 1) n2.sign )
+        dfp_norm_exp n1 (DFP (0 :: n2.amount) (n2.exp - 1) n2.sign)
 
 
 dfp_round : DFP -> Int -> DFP
@@ -700,47 +738,10 @@ md_fromString s =
             else
                 ( False, s )
 
+        -- only 0-9
         s3 =
             String.filter Char.isDigit s1
 
-        -- only 0-9
-        c2d =
-            List.map
-                (\c ->
-                    case c of
-                        '0' ->
-                            0
-
-                        '1' ->
-                            1
-
-                        '2' ->
-                            2
-
-                        '3' ->
-                            3
-
-                        '4' ->
-                            4
-
-                        '5' ->
-                            5
-
-                        '6' ->
-                            6
-
-                        '7' ->
-                            7
-
-                        '8' ->
-                            8
-
-                        '9' ->
-                            9
-
-                        _ ->
-                            -1
-                )
 
         n1 =
             List.reverse (String.toList s3)
@@ -833,25 +834,23 @@ md_sub top bottom =
    a List of Int containing the resulting value.
 
    This is a private method that recursively performs the actual subtraction for md_sub which is
-   responsible for any error checking.
+   responsible for any error checking.  md_sub is responsible for ensuring that top > bottom when
+   invoking this function.
 -}
 
 
 md_sub1 : List Int -> List Int -> List Int
 md_sub1 top bottom =
     let
-        n1 =
-            List.map (\d -> 9 - d) bottom
+        n1 = md_sub2 bottom (List.length top)
 
-        n2 =
-            md_add top n1 0 10
+        n2 = md_add top n1 0 10
 
-        n3 =
-            List.reverse n2
+        n3 = List.reverse n2
 
+        -- subtract 1000...
         n4 =
             case n3 of
-                -- subtract 1000...
                 [] ->
                     []
 
@@ -861,8 +860,7 @@ md_sub1 top bottom =
                 x :: xs ->
                     x - 1  :: xs
 
-        n5 =
-            List.reverse n4
+        n5 = List.reverse n4
 
         n6 =
             case n5 of
@@ -872,10 +870,37 @@ md_sub1 top bottom =
                 _ ->
                     md_add n5 [ 1 ] 0 10
     in
-    n6
+    stripZ n6
 
 
+{- Given a List of Int b, and an Int len, compute n - b, where n = a List of 9, len long.
+   Say what?  This is the step where we subtract bottom from "999" as described in the algorithm,
+   generalized so that we subtract bottom from a List of 9 as long as the top.
+-}
+md_sub2 : List Int -> Int -> List Int
+md_sub2 bottom len =
+    if len <= 0 then
+        bottom
+    else
+        case bottom of
+            [] ->
+                9 :: md_sub2 [] (len - 1)
+            [x] ->
+                9 - x :: md_sub2 [] (len - 1)
+            x::xs ->
+                9 - x :: md_sub2 xs (len - 1)
 
+
+--md_sub3 : List Int -> Int -> Int
+--md_sub3 bottom len =
+    --case bottom of
+        --[] ->
+            --9
+        --[x] ->
+            --9
+        --x::xs ->
+            --9
+            
 {- Given a List of Int, starting at the tail (the msb)
    successively and recursively remove all zeros, if any, and return the resulting trimmed list.
 -}

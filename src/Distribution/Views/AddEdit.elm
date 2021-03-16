@@ -10,7 +10,7 @@ import Flash exposing (viewFlash)
 import Html exposing (Html, a, button, div, h1, input, label, option, p, select, table, td, text, tr)
 import Html.Attributes exposing (checked, class, href, name, selected, type_, value)
 import Html.Events exposing (onClick, onInput)
-import IntField exposing (IntField(..), intFieldToInt, intFieldToString, intValidationClass)
+import IntField exposing (IntField(..), intFieldToString, intValidationClass)
 import Model
 import Msg exposing (Msg(..))
 import Template exposing (template)
