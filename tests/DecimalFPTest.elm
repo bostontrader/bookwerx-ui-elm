@@ -37,7 +37,7 @@ dfp_addTest =
         , test "[1] + [1, 2]" (\_ -> Expect.equal (dfp_add (DFP [1] 0 Positive) (DFP [1,2] 0 Positive)) (DFP [2,2] 0 Positive))
         , test "1.2 + 3" (\_ -> Expect.equal (dfp_add (DFP [2, 1] -1 Positive) (DFP [3] 0 Positive)) (DFP [2, 4] -1 Positive))
         , test "4.9 + 1" (\_ -> Expect.equal (dfp_add (DFP [9,4] -1 Positive) (DFP [1] 0 Positive)) (DFP [9, 5] -1 Positive))
-        , test "49 + 1" (\_ -> Expect.equal (dfp_add (DFP [9,4] 0 Positive) (DFP [1] 0 Positive)) (DFP [0, 5] 0 Positive))
+        , test "49 + 1" (\_ -> Expect.equal (dfp_add (DFP [9,4] 0 Positive) (DFP [1] 0 Positive)) (DFP [5] 1 Positive))
         , test "490 + 1" (\_ -> Expect.equal (dfp_add (DFP [9,4] 1 Positive) (DFP [1] 0 Positive)) (DFP [1,9,4] 0 Positive))
         , test "490 + 0.1" (\_ -> Expect.equal (dfp_add (DFP [9,4] 1 Positive) (DFP [1] -1 Positive)) (DFP [1,0,9,4] -1 Positive))
 
@@ -45,8 +45,8 @@ dfp_addTest =
         , test "[1] + -[1]" (\_ -> Expect.equal (dfp_add (DFP [1] 0 Positive) (DFP [1] 0 Negative)) (DFP [] 0 Zero))
         , test "[1] + -[3]" (\_ -> Expect.equal (dfp_add (DFP [1] 0 Positive) (DFP [3] 0 Negative)) (DFP [2] 0 Negative))
         , test "[3] + -[2]" (\_ -> Expect.equal (dfp_add (DFP [3] 0 Positive) (DFP [2] 0 Negative)) (DFP [1] 0 Positive))
-        , test "[1] + -[1, 2]" (\_ -> Expect.equal (dfp_add (DFP [1] 0 Positive) (DFP [1,2] 0 Negative)) (DFP [0,2] 0 Negative))
-        , test "[1,2] + -[1]" (\_ -> Expect.equal (dfp_add (DFP [1,2] 0 Positive) (DFP [1] 0 Negative)) (DFP [0,2] 0 Positive))
+        , test "[1] + -[1, 2]" (\_ -> Expect.equal (dfp_add (DFP [1] 0 Positive) (DFP [1,2] 0 Negative)) (DFP [2] 1 Negative))
+        , test "[1,2] + -[1]" (\_ -> Expect.equal (dfp_add (DFP [1,2] 0 Positive) (DFP [1] 0 Negative)) (DFP [2] 1 Positive))
         , test "1.2 + -3" (\_ -> Expect.equal (dfp_add (DFP [2, 1] -1 Positive) (DFP [3] 0 Negative)) (DFP [8, 1] -1 Negative))
         , test "4.9 + -1" (\_ -> Expect.equal (dfp_add (DFP [9,4] -1 Positive) (DFP [1] 0 Negative)) (DFP [9, 3] -1 Positive))
         , test "49 + -1" (\_ -> Expect.equal (dfp_add (DFP [9,4] 0 Positive) (DFP [1] 0 Negative)) (DFP [8, 4] 0 Positive))
@@ -57,8 +57,8 @@ dfp_addTest =
         , test "-[1] + [1]" (\_ -> Expect.equal (dfp_add (DFP [1] 0 Negative) (DFP [1] 0 Positive)) (DFP [] 0 Zero))
         , test "-[1] + [3]" (\_ -> Expect.equal (dfp_add (DFP [1] 0 Negative) (DFP [3] 0 Positive)) (DFP [2] 0 Positive))
         , test "-[3] + [2]" (\_ -> Expect.equal (dfp_add (DFP [3] 0 Negative) (DFP [2] 0 Positive)) (DFP [1] 0 Negative))
-        , test "-[1] + [1, 2]" (\_ -> Expect.equal (dfp_add (DFP [1] 0 Negative) (DFP [1,2] 0 Positive)) (DFP [0,2] 0 Positive))
-        , test "-[1,2] + [1]" (\_ -> Expect.equal (dfp_add (DFP [1,2] 0 Negative) (DFP [1] 0 Positive)) (DFP [0,2] 0 Negative))
+        , test "-[1] + [1, 2]" (\_ -> Expect.equal (dfp_add (DFP [1] 0 Negative) (DFP [1,2] 0 Positive)) (DFP [2] 1 Positive))
+        , test "-[1,2] + [1]" (\_ -> Expect.equal (dfp_add (DFP [1,2] 0 Negative) (DFP [1] 0 Positive)) (DFP [2] 1 Negative))
         , test "-1.2 + 3" (\_ -> Expect.equal (dfp_add (DFP [2, 1] -1 Negative) (DFP [3] 0 Positive)) (DFP [8, 1] -1 Positive))
         , test "-4.9 + 1" (\_ -> Expect.equal (dfp_add (DFP [9,4] -1 Negative) (DFP [1] 0 Positive)) (DFP [9, 3] -1 Negative))
         , test "-49 + 1" (\_ -> Expect.equal (dfp_add (DFP [9,4] 0 Negative) (DFP [1] 0 Positive)) (DFP [8,4] 0 Negative))
@@ -73,13 +73,13 @@ dfp_addTest =
         , test "-[1,2] + -[1]" (\_ -> Expect.equal (dfp_add (DFP [1,2] 0 Negative) (DFP [1] 0 Negative)) (DFP [2,2] 0 Negative))
         , test "-1.2 + -3" (\_ -> Expect.equal (dfp_add (DFP [2, 1] -1 Negative) (DFP [3] 0 Negative)) (DFP [2, 4] -1 Negative))
         , test "-4.9 + -1" (\_ -> Expect.equal (dfp_add (DFP [9,4] -1 Negative) (DFP [1] 0 Negative)) (DFP [9, 5] -1 Negative))
-        , test "-49 + -1" (\_ -> Expect.equal (dfp_add (DFP [9,4] 0 Negative) (DFP [1] 0 Negative)) (DFP [0, 5] 0 Negative))
+        , test "-49 + -1" (\_ -> Expect.equal (dfp_add (DFP [9,4] 0 Negative) (DFP [1] 0 Negative)) (DFP [5] 1 Negative))
         , test "-490 + -1" (\_ -> Expect.equal (dfp_add (DFP [9,4] 1 Negative) (DFP [1] 0 Negative)) (DFP [1, 9, 4] 0 Negative))
         , test "-490 + -0.1" (\_ -> Expect.equal (dfp_add (DFP [9,4] 1 Negative) (DFP [1] -1 Negative)) (DFP [1,0,9,4] -1 Negative))
 
         -- other
         , test "big + small" (\_ -> Expect.equal (dfp_add (DFP
-            [9, 0, 0, 0, 0 ,0, 0, 8, 4, 1, 2] -8 Positive) (DFP [1] -8 Positive)) (DFP [0, 1, 0, 0, 0 ,0, 0, 8, 4, 1, 2] -8 Positive))
+            [9, 0, 0, 0, 0 ,0, 0, 8, 4, 1, 2] -8 Positive) (DFP [1] -8 Positive)) (DFP [1, 0, 0, 0 ,0, 0, 8, 4, 1, 2] -7 Positive))
         ]
 
 
@@ -164,6 +164,9 @@ dfp_fmtTest =
         , test "[5,5,5] 1, p = 3" (\_ -> Expect.equal (dfp_fmt (DFP [5,5,5] 1 Positive) 3) (DFPFmt "6000" True))
         , test "[5,5,5] 1, p = 4" (\_ -> Expect.equal (dfp_fmt (DFP [5,5,5] 1 Positive) 4) (DFPFmt "10000" True))
         , test "[5,5,5] 1, p = 5" (\_ -> Expect.equal (dfp_fmt (DFP [5,5,5] 1 Positive) 5) (DFPFmt "0" True))
+
+        , test "[0,9,1,5,0,9,9,2,4] -7, p = -6" (\_ -> Expect.equal (dfp_fmt (DFP [0,9,1,5,0,9,9,2,4] -7 Positive) -6) (DFPFmt "42.990519" False))
+        , test "[0,9,1,5,0,9,9,2,4] -7, p = -7" (\_ -> Expect.equal (dfp_fmt (DFP [0,9,1,5,0,9,9,2,4] -7 Positive) -7) (DFPFmt "42.9905190" True))
         ]
 
 

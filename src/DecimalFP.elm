@@ -124,104 +124,104 @@ dfp_add dfp1 dfp2 =
     let
         -- normalize to identical exponents
         ( n1, n2 ) = dfp_norm_exp dfp1 dfp2
+        -- there are 9 permutations of Positive, Negative, and Zero.  But this simplifies to:
+        ret_val = case ( n1.sign, n2.sign ) of
+            -- +a + +b is easy, just add them via md_addition
+            ( Positive, Positive ) ->
+                DFP (md_add n1.amount n2.amount 0 10) n1.exp Positive
+
+            -- both exponents are the same
+            -- +a + -b = subtract abs(b) from a via md_subtraction
+            ( Positive, Negative ) ->
+                let
+                    cmp =
+                        md_compare n1.amount n2.amount
+                in
+                if cmp == -1 then
+                    -- abs(a) < abs(b)
+                    let
+                        diff =
+                            md_sub n2.amount n1.amount
+                    in
+                    case diff of
+                        Just d ->
+                            DFP d n1.exp Negative
+
+                        -- both exponents are the same
+                        Nothing ->
+                            DFP [] 0 Zero
+
+                else if cmp == 0 then
+                    DFP [] 0 Zero
+
+                else
+                    -- abs(a) > abs(b)
+                    --just do the subtraction and return positive
+                    let
+                        diff =
+                            md_sub n1.amount n2.amount
+                    in
+                    case diff of
+                        Just d ->
+                            DFP d n1.exp Positive
+
+                        -- both exponents are the same
+                        Nothing ->
+                            DFP [] 0 Zero
+
+            -- -a + +b = subtract abs(a) from b via md_subtraction
+            ( Negative, Positive ) ->
+                let
+                    cmp =
+                        md_compare n1.amount n2.amount
+                in
+                if cmp == -1 then
+                    -- abs(a) < abs(b)
+                    let
+                        diff =
+                            md_sub n2.amount n1.amount
+                    in
+                    case diff of
+                        Just d ->
+                            DFP d n1.exp Positive
+
+                        -- both exponents are the same
+                        Nothing ->
+                            DFP [] 0 Zero
+
+                else if cmp == 0 then
+                    DFP [] 0 Zero
+
+                else
+                    -- abs(a) > abs(b)
+                    --just do the subtraction and return positive
+                    let
+                        diff = md_sub n1.amount n2.amount
+                    in
+                    case diff of
+                        Just d ->
+                            DFP d n1.exp Negative
+
+                        -- both exponents are the same
+                        Nothing ->
+                            DFP [] 0 Zero
+
+            -- -a + -a is easy, neg(neg a + neg b)  example: -5 + -6 = -11
+            ( Negative, Negative ) ->
+                let
+                    sum =
+                        md_add n1.amount n2.amount 0 10
+                in
+                DFP sum n1.exp Negative
+
+            -- both exponents are the same
+            ( Zero, _ ) ->
+                n2
+
+            ( _, Zero ) ->
+                n1
     in
-    -- there are 9 permutations of Positive, Negative, and Zero.  But this simplifies to:
-    case ( n1.sign, n2.sign ) of
-        -- +a + +b is easy, just add them via md_addition
-        ( Positive, Positive ) ->
-            DFP (md_add n1.amount n2.amount 0 10) n1.exp Positive
-
-        -- both exponents are the same
-        -- +a + -b = subtract abs(b) from a via md_subtraction
-        ( Positive, Negative ) ->
-            let
-                cmp =
-                    md_compare n1.amount n2.amount
-            in
-            if cmp == -1 then
-                -- abs(a) < abs(b)
-                let
-                    diff =
-                        md_sub n2.amount n1.amount
-                in
-                case diff of
-                    Just d ->
-                        DFP d n1.exp Negative
-
-                    -- both exponents are the same
-                    Nothing ->
-                        DFP [] 0 Zero
-
-            else if cmp == 0 then
-                DFP [] 0 Zero
-
-            else
-                -- abs(a) > abs(b)
-                --just do the subtraction and return positive
-                let
-                    diff =
-                        md_sub n1.amount n2.amount
-                in
-                case diff of
-                    Just d ->
-                        DFP d n1.exp Positive
-
-                    -- both exponents are the same
-                    Nothing ->
-                        DFP [] 0 Zero
-
-        -- -a + +b = subtract abs(a) from b via md_subtraction
-        ( Negative, Positive ) ->
-            let
-                cmp =
-                    md_compare n1.amount n2.amount
-            in
-            if cmp == -1 then
-                -- abs(a) < abs(b)
-                let
-                    diff =
-                        md_sub n2.amount n1.amount
-                in
-                case diff of
-                    Just d ->
-                        DFP d n1.exp Positive
-
-                    -- both exponents are the same
-                    Nothing ->
-                        DFP [] 0 Zero
-
-            else if cmp == 0 then
-                DFP [] 0 Zero
-
-            else
-                -- abs(a) > abs(b)
-                --just do the subtraction and return positive
-                let
-                    diff = md_sub n1.amount n2.amount
-                in
-                case diff of
-                    Just d ->
-                        DFP d n1.exp Negative
-
-                    -- both exponents are the same
-                    Nothing ->
-                        DFP [] 0 Zero
-
-        -- -a + -a is easy, neg(neg a + neg b)  example: -5 + -6 = -11
-        ( Negative, Negative ) ->
-            let
-                sum =
-                    md_add n1.amount n2.amount 0 10
-            in
-            DFP sum n1.exp Negative
-
-        -- both exponents are the same
-        ( Zero, _ ) ->
-            n2
-
-        ( _, Zero ) ->
-            n1
-
+        dfp_norm ret_val
 
 
 {- Given a DFP, produce a string representing the digits of the amount only.  No sign, no rounding, no other formatting. -}
@@ -294,6 +294,7 @@ dfp_fmt dfp p =
 
             else
                 s2
+
     in
     -- If dfp_norm != norm(dfp) then there are digits obscured by rounding.
     DFPFmt (sign ++ s3) (not (dfp_equal dfpn (dfp_norm dfp)))
