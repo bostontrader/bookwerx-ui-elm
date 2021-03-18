@@ -21,7 +21,7 @@ type Msg
     | ApikeyMsgA Apikey.MsgB
     | BserverMsgA Bserver.MsgB
     | CategoryMsgA Category.MsgB
-    | ClearHttpLog
+    --| ClearHttpLog
     | CurrencyMsgA Currency.MsgB
     | DistributionMsgA Distribution.MsgB
     | LinkClicked Browser.UrlRequest

@@ -25,21 +25,19 @@ import Translate exposing (Language(..))
 import Util exposing (getRemoteDataStatusMessage)
 
 
-accountsUpdate : MsgB -> Nav.Key -> Language -> Time.Posix -> Account.Model.Model -> { accounts : Account.Model.Model, cmd : Cmd Msg, log : List String, flashMessages : List FlashMsg }
+accountsUpdate : MsgB -> Nav.Key -> Language -> Time.Posix -> Account.Model.Model -> { accounts : Account.Model.Model, cmd : Cmd Msg, flashMessages : List FlashMsg }
 accountsUpdate accountMsgB key language currentTime model =
     case accountMsgB of
         -- delete
         DeleteAccount url ->
             { accounts = model
             , cmd = deleteAccountCommand url
-            , log = [ "DELETE " ++ url ]
             , flashMessages = []
             }
 
         AccountDeleted response ->
             { accounts = model
             , cmd = Nav.pushUrl key (extractUrl R.AccountsIndex)
-            , log = [ getRemoteDataStatusMessage response language ]
             , flashMessages = [ FlashMsg (getRemoteDataStatusMessage response language) FlashSuccess (expires currentTime flashMessageDuration) ]
             }
 
@@ -47,21 +45,18 @@ accountsUpdate accountMsgB key language currentTime model =
         UpdateCurrencyID newCurrencyID ->
             { accounts = { model | editBuffer = updateCurrencyID model.editBuffer newCurrencyID }
             , cmd = Cmd.none
-            , log = []
             , flashMessages = []
             }
 
         UpdateDecimalPlaces newValue ->
             { accounts = { model | decimalPlaces = newValue }
             , cmd = Cmd.none
-            , log = []
             , flashMessages = []
             }
 
         UpdateTitle newTitle ->
             { accounts = { model | editBuffer = updateTitle model.editBuffer newTitle }
             , cmd = Cmd.none
-            , log = []
             , flashMessages = []
             }
 
@@ -69,7 +64,6 @@ accountsUpdate accountMsgB key language currentTime model =
         GetManyAccounts url ->
             { accounts = { model | wdAccounts = RemoteData.Loading }
             , cmd = getManyAccountsCommand url
-            , log = [ "GET " ++ url ]
             , flashMessages = []
             }
 
@@ -87,7 +81,6 @@ accountsUpdate accountMsgB key language currentTime model =
                                 []
                 }
             , cmd = Cmd.none
-            , log = [ getRemoteDataStatusMessage newAccountsB language ]
             , flashMessages = []
             }
 
@@ -95,7 +88,6 @@ accountsUpdate accountMsgB key language currentTime model =
         GetAccountDistributionJoineds url ->
             { accounts = { model | wdDistributionJoineds = RemoteData.Loading }
             , cmd = getAccountDistributionJoinedsCommand url
-            , log = [ "GET " ++ url ]
             , flashMessages = []
             }
 
@@ -113,7 +105,6 @@ accountsUpdate accountMsgB key language currentTime model =
                                 []
                 }
             , cmd = Cmd.none
-            , log = []
             , flashMessages = []
             }
 
@@ -121,7 +112,6 @@ accountsUpdate accountMsgB key language currentTime model =
         GetOneAccount url ->
             { accounts = { model | wdAccount = RemoteData.Loading }
             , cmd = getOneAccountCommand url
-            , log = [ "GET " ++ url ]
             , flashMessages = []
             }
 
@@ -135,7 +125,6 @@ accountsUpdate accountMsgB key language currentTime model =
                         -- Here we ignore whatever error message comes from the decoder because we should never get any such error and it's otherwise too much trouble to deal with it.
                         model
             , cmd = Cmd.none
-            , log = [ getRemoteDataStatusMessage response language ]
             , flashMessages = []
             }
 
@@ -143,14 +132,12 @@ accountsUpdate accountMsgB key language currentTime model =
         PostAccount url contentType body ->
             { accounts = model
             , cmd = postAccountCommand url contentType body
-            , log = [ "POST " ++ url ++ " " ++ contentType ++ " " ++ body ]
             , flashMessages = []
             }
 
         AccountPosted response ->
             { accounts = model
             , cmd = Nav.pushUrl key (extractUrl R.AccountsIndex)
-            , log = [ getRemoteDataStatusMessage response language ]
             , flashMessages = [ FlashMsg (getRemoteDataStatusMessage response language) FlashSuccess (expires currentTime flashMessageDuration) ]
             }
 
@@ -158,14 +145,12 @@ accountsUpdate accountMsgB key language currentTime model =
         PutAccount url contentType body ->
             { accounts = model
             , cmd = putAccountCommand url contentType body
-            , log = [ "PUT " ++ url ++ " " ++ contentType ++ " " ++ body ]
             , flashMessages = []
             }
 
         AccountPutted response ->
             { accounts = model
             , cmd = Nav.pushUrl key (extractUrl R.AccountsIndex)
-            , log = [ getRemoteDataStatusMessage response language ]
             , flashMessages = [ FlashMsg (getRemoteDataStatusMessage response language) FlashSuccess (expires currentTime flashMessageDuration) ]
             }
 

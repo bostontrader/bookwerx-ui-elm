@@ -12,7 +12,7 @@ import Translate exposing (Language)
 import Util exposing (getRemoteDataStatusMessage)
 
 
-update : Report.Msg.Msg -> Language -> Report.Model.Model -> { report : Report.Model.Model, cmd : Cmd Msg, log : List String, flashMessages : List FlashMsg }
+update : Report.Msg.Msg -> Language -> Report.Model.Model -> { report : Report.Model.Model, cmd : Cmd Msg, flashMessages : List FlashMsg }
 update msgB language model =
     case msgB of
         Report.Msg.DistributionsReceivedA key wdDistributionReports ->
@@ -58,7 +58,6 @@ update msgB language model =
                             , distributionReportsR = distributionReports
                         }
             , cmd = Cmd.none
-            , log = [ getRemoteDataStatusMessage wdDistributionReports language ]
             , flashMessages = []
             }
 
@@ -76,14 +75,12 @@ update msgB language model =
                                 SumsDecorated []
                 }
             , cmd = Cmd.none
-            , log = [ getRemoteDataStatusMessage wdDistributionReports language ]
             , flashMessages = []
             }
 
         Report.Msg.FormChanged fmodel ->
             { report = { model | form = fmodel }
             , cmd = Cmd.none
-            , log = []
             , flashMessages = []
             }
 
@@ -94,7 +91,6 @@ update msgB language model =
             in
             { report = { model | wdDistributionReports = RemoteData.Loading, reportType = Just Stock }
             , cmd = getDistributionsCmdB url
-            , log = [ "GET " ++ url ]
             , flashMessages = []
             }
 
@@ -105,7 +101,6 @@ update msgB language model =
             in
             { report = { model | wdDistributionReports = RemoteData.Loading, reportType = Just Flow }
             , cmd = getDistributionsCmdB url
-            , log = [ "GET " ++ url ]
             , flashMessages = []
             }
 
@@ -139,13 +134,6 @@ update msgB language model =
                     , getDistributionsCmdA urls.revenueURL Revenue
                     , getDistributionsCmdA urls.expensesURL Expenses
                     ]
-            , log =
-                [ "GET " ++ urls.assetsURL
-                , "GET " ++ urls.liabilitiesURL
-                , "GET " ++ urls.equityURL
-                , "GET " ++ urls.revenueURL
-                , "GET " ++ urls.expensesURL
-                ]
             , flashMessages = []
             }
 
@@ -170,23 +158,17 @@ update msgB language model =
                     [ getDistributionsCmdA urls.revenueURL Revenue
                     , getDistributionsCmdA urls.expensesURL Expenses
                     ]
-            , log =
-                [ "GET " ++ urls.revenueURL
-                , "GET " ++ urls.expensesURL
-                ]
             , flashMessages = []
             }
 
         Report.Msg.ToggleOmitZeros ->
             { report = { model | omitZeros = not model.omitZeros }
             , cmd = Cmd.none
-            , log = []
             , flashMessages = []
             }
 
         Report.Msg.UpdateDecimalPlaces newValue ->
             { report = { model | decimalPlaces = newValue }
             , cmd = Cmd.none
-            , log = []
             , flashMessages = []
             }

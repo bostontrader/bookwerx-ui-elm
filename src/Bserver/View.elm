@@ -48,15 +48,7 @@ leftContent model =
                     }
                 )
             ]
-        , p []
-            [ text
-                (tx model.language
-                    { e = "Also notice the HTTP Log. It provides a log of the same information for all the HTTP traffic during this session."
-                    , c = "还要注意HTTP日志。它为会话期间的所有HTTP通信提供了相同信息的日志。"
-                    , p = "Also notice the HTTP Log. It provides a log of the same information for all the HTTP traffic during this session."
-                    }
-                )
-            ]
+
         , viewHttpPanel
             ("GET " ++ model.bservers.baseURL)
             (getRemoteDataStatusMessage model.bservers.wdBserver model.language)

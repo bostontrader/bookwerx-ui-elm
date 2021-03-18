@@ -20,21 +20,19 @@ import Translate exposing (Language(..))
 import Util exposing (getRemoteDataStatusMessage)
 
 
-acctcatsUpdate : MsgB -> Nav.Key -> Language -> Time.Posix -> Acctcat.Model.Model -> { acctcats : Acctcat.Model.Model, cmd : Cmd Msg, log : List String, flashMessages : List FlashMsg }
+acctcatsUpdate : MsgB -> Nav.Key -> Language -> Time.Posix -> Acctcat.Model.Model -> { acctcats : Acctcat.Model.Model, cmd : Cmd Msg, flashMessages : List FlashMsg }
 acctcatsUpdate acctcatMsgB key language currentTime model =
     case acctcatMsgB of
         -- delete
         DeleteAcctcat url ->
             { acctcats = model
             , cmd = deleteAcctcatCommand url
-            , log = [ "DELETE " ++ url ]
             , flashMessages = []
             }
 
         AcctcatDeleted response ->
             { acctcats = model
             , cmd = Nav.pushUrl key (extractUrl Route.CategoriesIndex)
-            , log = [ getRemoteDataStatusMessage response English ]
             , flashMessages = [ FlashMsg (getRemoteDataStatusMessage response language) FlashSuccess (expires currentTime flashMessageDuration) ]
             }
 
@@ -42,24 +40,13 @@ acctcatsUpdate acctcatMsgB key language currentTime model =
         UpdateAccountID newAccountID ->
             { acctcats = { model | editBuffer = updateAccountID model.editBuffer newAccountID }
             , cmd = Cmd.none
-            , log = []
             , flashMessages = []
             }
 
-        --UpdateAcctcatAccount newSymbol ->
-        --let
-        --n = Debug.log "select" newSymbol
-        --in
-        --{ acctcats = model
-        --, cmd = Cmd.none
-        --, log = []
-        --, flashMessages = []
-        --}
         -- getMany
         GetManyAcctcats category_id url ->
             { acctcats = { model | wdAcctcats = RemoteData.Loading, category_id = category_id }
             , cmd = getManyAcctcatsCommand url
-            , log = [ "GET " ++ url ]
             , flashMessages = []
             }
 
@@ -77,42 +64,21 @@ acctcatsUpdate acctcatMsgB key language currentTime model =
                                 []
                 }
             , cmd = Cmd.none
-            , log = [ getRemoteDataStatusMessage newAcctcatsB English ]
             , flashMessages = []
             }
 
-        -- getOne
-        --GetOneAcctcat url ->
-        --{ acctcats = { model | wdAcctcat = RemoteData.Loading }
-        --, cmd = getOneAcctcatCommand url
-        --, log = [ "GET " ++ url ]
-        --, flashMessages = []
-        --}
-        --AcctcatReceived response ->
-        --{ acctcats =
-        --case decodeString acctcatDecoder (getRemoteDataStatusMessage response) of
-        --Ok value ->
-        --{ model | editBuffer = value }
-        --Err error ->
-        -- in case of err, see the wdAcctcats raw string
-        --model
-        --, cmd = Cmd.none
-        --, log = [ getRemoteDataStatusMessage response ]
-        --, flashMessages = []
-        --}
+
         -- post
         PostAcctcat url contentType body ->
             --( model, postAcctcatCommand model model.acctcats.editAcctcat )
             { acctcats = model
             , cmd = postAcctcatCommand url contentType body
-            , log = [ "POST " ++ url ++ " " ++ contentType ++ " " ++ body ]
             , flashMessages = []
             }
 
         AcctcatPosted response ->
             { acctcats = model
             , cmd = Nav.pushUrl key (extractUrl Route.CategoriesIndex)
-            , log = [ getRemoteDataStatusMessage response English ]
             , flashMessages = [ FlashMsg (getRemoteDataStatusMessage response language) FlashSuccess (expires currentTime flashMessageDuration) ]
             }
 

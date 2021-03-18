@@ -23,21 +23,19 @@ import Translate exposing (Language(..))
 import Util exposing (getRemoteDataStatusMessage)
 
 
-categoriesUpdate : MsgB -> Nav.Key -> Language -> Time.Posix -> Category.Model.Model -> { categories : Model, cmd : Cmd Msg, log : List String, flashMessages : List FlashMsg }
+categoriesUpdate : MsgB -> Nav.Key -> Language -> Time.Posix -> Category.Model.Model -> { categories : Model, cmd : Cmd Msg, flashMessages : List FlashMsg }
 categoriesUpdate categoryMsgB key language currentTime model =
     case categoryMsgB of
         -- delete
         DeleteCategory url ->
             { categories = model
             , cmd = deleteCategoryCommand url
-            , log = [ "DELETE " ++ url ]
             , flashMessages = []
             }
 
         CategoryDeleted response ->
             { categories = model
             , cmd = Nav.pushUrl key (extractUrl Route.CategoriesIndex)
-            , log = [ getRemoteDataStatusMessage response language ]
             , flashMessages = [ FlashMsg (getRemoteDataStatusMessage response language) FlashSuccess (expires currentTime flashMessageDuration) ]
             }
 
@@ -45,21 +43,18 @@ categoriesUpdate categoryMsgB key language currentTime model =
         UpdateCategoryAccount _ ->
             { categories = model
             , cmd = Cmd.none
-            , log = []
             , flashMessages = []
             }
 
         UpdateSymbol newSymbol ->
             { categories = { model | editBuffer = updateSymbol model.editBuffer newSymbol }
             , cmd = Cmd.none
-            , log = []
             , flashMessages = []
             }
 
         UpdateTitle newTitle ->
             { categories = { model | editBuffer = updateTitle model.editBuffer newTitle }
             , cmd = Cmd.none
-            , log = []
             , flashMessages = []
             }
 
@@ -67,7 +62,6 @@ categoriesUpdate categoryMsgB key language currentTime model =
         GetManyCategories url ->
             { categories = { model | wdCategories = RemoteData.Loading }
             , cmd = getManyCategoriesCommand url
-            , log = [ "GET " ++ url ]
             , flashMessages = []
             }
 
@@ -85,7 +79,6 @@ categoriesUpdate categoryMsgB key language currentTime model =
                                 []
                 }
             , cmd = Cmd.none
-            , log = [ getRemoteDataStatusMessage newCategoriesB language ]
             , flashMessages = []
             }
 
@@ -93,7 +86,6 @@ categoriesUpdate categoryMsgB key language currentTime model =
         GetOneCategory url ->
             { categories = { model | wdCategory = RemoteData.Loading }
             , cmd = getOneCategoryCommand url
-            , log = [ "GET " ++ url ]
             , flashMessages = []
             }
 
@@ -107,7 +99,6 @@ categoriesUpdate categoryMsgB key language currentTime model =
                         -- Here we ignore whatever error message comes from the decoder because we should never get any such error and it's otherwise too much trouble to deal with it.
                         model
             , cmd = Cmd.none
-            , log = [ getRemoteDataStatusMessage response language ]
             , flashMessages = []
             }
 
@@ -116,14 +107,12 @@ categoriesUpdate categoryMsgB key language currentTime model =
             --( model, postCategoryCommand model model.categories.editCategory )
             { categories = model
             , cmd = postCategoryCommand url contentType body
-            , log = [ "POST " ++ url ++ " " ++ contentType ++ " " ++ body ]
             , flashMessages = []
             }
 
         CategoryPosted response ->
             { categories = model
             , cmd = Nav.pushUrl key (extractUrl Route.CategoriesIndex)
-            , log = [ getRemoteDataStatusMessage response language ]
             , flashMessages = [ FlashMsg (getRemoteDataStatusMessage response language) FlashSuccess (expires currentTime flashMessageDuration) ]
             }
 
@@ -131,14 +120,12 @@ categoriesUpdate categoryMsgB key language currentTime model =
         PutCategory url contentType body ->
             { categories = model
             , cmd = putCategoryCommand url contentType body
-            , log = [ "PUT " ++ url ++ " " ++ contentType ++ " " ++ body ]
             , flashMessages = []
             }
 
         CategoryPutted response ->
             { categories = model
             , cmd = Nav.pushUrl key (extractUrl Route.CategoriesIndex)
-            , log = [ getRemoteDataStatusMessage response language ]
             , flashMessages = [ FlashMsg (getRemoteDataStatusMessage response language) FlashSuccess (expires currentTime flashMessageDuration) ]
             }
 

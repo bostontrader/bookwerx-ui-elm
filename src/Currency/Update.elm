@@ -23,21 +23,19 @@ import Translate exposing (Language(..))
 import Util exposing (getRemoteDataStatusMessage)
 
 
-currenciesUpdate : MsgB -> Nav.Key -> Language -> Time.Posix -> Currency.Model.Model -> { currencies : Currency.Model.Model, cmd : Cmd Msg, log : List String, flashMessages : List FlashMsg }
+currenciesUpdate : MsgB -> Nav.Key -> Language -> Time.Posix -> Currency.Model.Model -> { currencies : Currency.Model.Model, cmd : Cmd Msg, flashMessages : List FlashMsg }
 currenciesUpdate currencyMsgB key language currentTime model =
     case currencyMsgB of
         -- delete
         DeleteCurrency url ->
             { currencies = model
             , cmd = deleteCurrencyCommand url
-            , log = [ "DELETE " ++ url ]
             , flashMessages = []
             }
 
         CurrencyDeleted response ->
             { currencies = model
             , cmd = Nav.pushUrl key (extractUrl CurrenciesIndex)
-            , log = [ getRemoteDataStatusMessage response language ]
             , flashMessages = [ FlashMsg (getRemoteDataStatusMessage response language) FlashSuccess (expires currentTime flashMessageDuration) ]
             }
 
@@ -45,14 +43,12 @@ currenciesUpdate currencyMsgB key language currentTime model =
         UpdateSymbol newSymbol ->
             { currencies = { model | editBuffer = updateSymbol model.editBuffer newSymbol }
             , cmd = Cmd.none
-            , log = []
             , flashMessages = []
             }
 
         UpdateTitle newTitle ->
             { currencies = { model | editBuffer = updateTitle model.editBuffer newTitle }
             , cmd = Cmd.none
-            , log = []
             , flashMessages = []
             }
 
@@ -60,7 +56,6 @@ currenciesUpdate currencyMsgB key language currentTime model =
         GetManyCurrencies url ->
             { currencies = { model | wdCurrencies = RemoteData.Loading }
             , cmd = getManyCurrenciesCommand url
-            , log = [ "GET " ++ url ]
             , flashMessages = []
             }
 
@@ -78,7 +73,6 @@ currenciesUpdate currencyMsgB key language currentTime model =
                                 []
                 }
             , cmd = Cmd.none
-            , log = [ getRemoteDataStatusMessage newCurrenciesB language ]
             , flashMessages = []
             }
 
@@ -86,7 +80,6 @@ currenciesUpdate currencyMsgB key language currentTime model =
         GetOneCurrency url ->
             { currencies = { model | wdCurrency = RemoteData.Loading }
             , cmd = getOneCurrencyCommand url
-            , log = [ "GET " ++ url ]
             , flashMessages = []
             }
 
@@ -100,7 +93,6 @@ currenciesUpdate currencyMsgB key language currentTime model =
                         -- Here we ignore whatever error message comes from the decoder because we should never get any such error and it's otherwise too much trouble to deal with it.
                         model
             , cmd = Cmd.none
-            , log = [ getRemoteDataStatusMessage response language ]
             , flashMessages = []
             }
 
@@ -108,14 +100,12 @@ currenciesUpdate currencyMsgB key language currentTime model =
         PostCurrency url contentType body ->
             { currencies = model
             , cmd = postCurrencyCommand url contentType body
-            , log = [ "POST " ++ url ++ " " ++ contentType ++ " " ++ body ]
             , flashMessages = []
             }
 
         CurrencyPosted response ->
             { currencies = model
             , cmd = Nav.pushUrl key (extractUrl CurrenciesIndex)
-            , log = [ getRemoteDataStatusMessage response language ]
             , flashMessages = [ FlashMsg (getRemoteDataStatusMessage response language) FlashSuccess (expires currentTime flashMessageDuration) ]
             }
 
@@ -123,14 +113,12 @@ currenciesUpdate currencyMsgB key language currentTime model =
         PutCurrency url contentType body ->
             { currencies = model
             , cmd = putCurrencyCommand url contentType body
-            , log = [ "PUT " ++ url ++ " " ++ contentType ++ " " ++ body ]
             , flashMessages = []
             }
 
         CurrencyPutted response ->
             { currencies = model
             , cmd = Nav.pushUrl key (extractUrl CurrenciesIndex)
-            , log = [ getRemoteDataStatusMessage response language ]
             , flashMessages = [ FlashMsg (getRemoteDataStatusMessage response language) FlashSuccess (expires currentTime flashMessageDuration) ]
             }
 

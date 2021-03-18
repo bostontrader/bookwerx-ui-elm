@@ -12,20 +12,18 @@ import Translate exposing (Language)
 import Util exposing (getRemoteDataStatusMessage)
 
 
-lintUpdate : MsgB -> Language -> Lint.Model.Model -> { lint : Lint.Model.Model, cmd : Cmd Msg, log : List String, flashMessages : List FlashMsg }
+lintUpdate : MsgB -> Language -> Lint.Model.Model -> { lint : Lint.Model.Model, cmd : Cmd Msg, flashMessages : List FlashMsg }
 lintUpdate lintMsgB language model =
     case lintMsgB of
         GetLintCategories url ->
             { lint = { model | wdLints = RemoteData.Loading, linter = "categories" }
             , cmd = getLintsCmd url
-            , log = [ "GET " ++ url ]
             , flashMessages = []
             }
 
         GetLintCurrencies url ->
             { lint = { model | wdLints = RemoteData.Loading, linter = "currencies" }
             , cmd = getLintsCmd url
-            , log = [ "GET " ++ url ]
             , flashMessages = []
             }
 
@@ -43,35 +41,5 @@ lintUpdate lintMsgB language model =
                                 []
                 }
             , cmd = Cmd.none
-            , log = [ getRemoteDataStatusMessage wdLints language ]
             , flashMessages = []
             }
-
-
-
---UpdatePrecision newValue ->
---{ lint =
---case newValue |> String.toInt |> Result.toMaybe of
---Nothing ->
---{ model | precision = IntField Nothing newValue }
---Just v ->
---{ model | precision = IntField (Just v) newValue }
---, cmd = Cmd.none
---, log = []
---, flash = []
---}
-
-
-
---UpdateSOF newValue ->
---{ lint =
---if newValue == "stock" then
---{ model | sof = Just(Stock) }
---else if newValue == "flow" then
---{ model | sof = Just(Flow) }
---else
---model
---, cmd = Cmd.none
---, log = []
---, flash = []
---}

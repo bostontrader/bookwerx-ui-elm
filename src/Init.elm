@@ -58,7 +58,7 @@ initialModel route key url =
     , currentTime = Time.millisToPosix 0
     , drcr_format = C.initialDRCRFormat
     , flashMessages = []
-    , http_log = modelAfterAPIKey.http_log
+    --, http_log = modelAfterAPIKey.http_log
     , key = key
     , tutorialLevel = 0
     , tutorialActive = True
@@ -110,7 +110,7 @@ modelAfterAPIKey =
         , wdCategory = RemoteData.NotAsked
         , editBuffer = emptyCategory
         }
-    , http_log = []
+    --, http_log = []
     , currencies =
         { currencies = []
         , wdCurrencies = RemoteData.NotAsked

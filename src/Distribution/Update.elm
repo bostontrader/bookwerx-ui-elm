@@ -28,21 +28,19 @@ import Types exposing (DRCR(..))
 import Util exposing (getRemoteDataStatusMessage)
 
 
-distributionsUpdate : MsgB -> Nav.Key -> Language -> Time.Posix -> Distribution.Model.Model -> { distributions : Distribution.Model.Model, cmd : Cmd Msg, log : List String, flashMessages : List FlashMsg }
+distributionsUpdate : MsgB -> Nav.Key -> Language -> Time.Posix -> Distribution.Model.Model -> { distributions : Distribution.Model.Model, cmd : Cmd Msg, flashMessages : List FlashMsg }
 distributionsUpdate distributionMsgB key language currentTime model =
     case distributionMsgB of
         -- delete
         DeleteDistribution url ->
             { distributions = model
             , cmd = deleteDistributionCommand url
-            , log = [ "DELETE " ++ url ]
             , flashMessages = []
             }
 
         DistributionDeleted response ->
             { distributions = model
             , cmd = Nav.pushUrl key (extractUrl DistributionsIndex)
-            , log = [ getRemoteDataStatusMessage response language ]
             , flashMessages = [ FlashMsg (getRemoteDataStatusMessage response language) FlashSuccess (expires currentTime flashMessageDuration) ]
             }
 
@@ -50,7 +48,6 @@ distributionsUpdate distributionMsgB key language currentTime model =
         GetManyDistributionJoineds url ->
             { distributions = { model | wdDistributionJoineds = RemoteData.Loading }
             , cmd = getManyDistributionJoinedsCommand url
-            , log = [ "GET " ++ url ]
             , flashMessages = []
             }
 
@@ -68,7 +65,6 @@ distributionsUpdate distributionMsgB key language currentTime model =
                                 []
                 }
             , cmd = Cmd.none
-            , log = [ getRemoteDataStatusMessage newDistributionJoineds language ]
             , flashMessages = []
             }
 
@@ -76,7 +72,6 @@ distributionsUpdate distributionMsgB key language currentTime model =
         GetOneDistribution url ->
             { distributions = { model | wdDistribution = RemoteData.Loading }
             , cmd = getOneDistributionCommand url
-            , log = [ "GET " ++ url ]
             , flashMessages = []
             }
 
@@ -90,7 +85,6 @@ distributionsUpdate distributionMsgB key language currentTime model =
                         -- Here we ignore whatever error message comes from the decoder because we should never get any such error and it's otherwise too much trouble to deal with it.
                         model
             , cmd = Cmd.none
-            , log = [ getRemoteDataStatusMessage response language ]
             , flashMessages = []
             }
 
@@ -98,14 +92,12 @@ distributionsUpdate distributionMsgB key language currentTime model =
         PutDistribution url contentType body ->
             { distributions = model
             , cmd = putDistributionCommand url contentType body
-            , log = [ "PUT " ++ url ++ " " ++ contentType ++ " " ++ body ]
             , flashMessages = []
             }
 
         DistributionPutted response ->
             { distributions = model
             , cmd = Nav.pushUrl key (extractUrl DistributionsIndex)
-            , log = [ getRemoteDataStatusMessage response language ]
             , flashMessages = [ FlashMsg (getRemoteDataStatusMessage response language) FlashSuccess (expires currentTime flashMessageDuration) ]
             }
 
@@ -113,63 +105,54 @@ distributionsUpdate distributionMsgB key language currentTime model =
         PostDistribution url contentType body ->
             { distributions = model
             , cmd = postDistributionCommand url contentType body
-            , log = [ "POST " ++ url ++ " " ++ contentType ++ " " ++ body ]
             , flashMessages = []
             }
 
         DistributionPosted response ->
             { distributions = model
             , cmd = Nav.pushUrl key (extractUrl DistributionsIndex)
-            , log = [ getRemoteDataStatusMessage response language ]
             , flashMessages = [ FlashMsg (getRemoteDataStatusMessage response language) FlashSuccess (expires currentTime flashMessageDuration) ]
             }
 
         UpdateAccountID newValue ->
             { distributions = { model | editBuffer = updateAccountID model.editBuffer newValue }
             , cmd = Cmd.none
-            , log = []
             , flashMessages = []
             }
 
         UpdateFilterCategoryID newValue ->
             { distributions = { model | editBuffer = updateCategoryFilterID model.editBuffer newValue }
             , cmd = Cmd.none
-            , log = []
             , flashMessages = []
             }
 
         UpdateFilterCurrencyID newValue ->
             { distributions = { model | editBuffer = updateCurrencyFilterID model.editBuffer newValue }
             , cmd = Cmd.none
-            , log = []
             , flashMessages = []
             }
 
         UpdateAmount newValue ->
             { distributions = { model | editBuffer = updateAmount model.editBuffer newValue }
             , cmd = Cmd.none
-            , log = []
             , flashMessages = []
             }
 
         UpdateAmountExp newValue ->
             { distributions = { model | editBuffer = updateAmountExp model.editBuffer newValue }
             , cmd = Cmd.none
-            , log = []
             , flashMessages = []
             }
 
         UpdateDecimalPlaces newValue ->
             { distributions = { model | decimalPlaces = newValue }
             , cmd = Cmd.none
-            , log = []
             , flashMessages = []
             }
 
         UpdateDRCR newValue ->
             { distributions = { model | editBuffer = updateDRCR newValue model.editBuffer }
             , cmd = Cmd.none
-            , log = []
             , flashMessages = []
             }
 

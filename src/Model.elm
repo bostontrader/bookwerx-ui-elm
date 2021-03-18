@@ -33,7 +33,7 @@ type alias Model =
     , key : Nav.Key -- needed for navigation
     , lint : Lint.Model.Model
     , flashMessages : List FlashMsg
-    , http_log : List String
+    --, http_log : List String
     , language : Language
     , report : Report.Model.Model
     , transactions : Transaction.Model.Model
@@ -53,7 +53,7 @@ type alias ModelAfterAPIKey =
     , categories : Category.Model.Model
     , currencies : Currency.Model.Model
     , distributions : Distribution.Model.Model
-    , http_log : List String
+    --, http_log : List String
     , lint : Lint.Model.Model
     , report : Report.Model.Model
     , transactions : Transaction.Model.Model

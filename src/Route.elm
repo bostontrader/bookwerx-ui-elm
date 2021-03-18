@@ -20,7 +20,6 @@ type Route
     | DistributionsAdd
     | DistributionsEdit String
     | DistributionsIndex
-    | HttpLog
     | Lint
     | NotFound
     | ReportRoute

@@ -36,7 +36,7 @@ matchRoute =
         , map DistributionsAdd (s "distributions" </> s "add")
         , map DistributionsEdit (s "distributions" </> string)
         , map DistributionsIndex (s "distributions")
-        , map HttpLog (s "http_log")
+        --, map HttpLog (s "http_log")
         , map Lint (s "lint")
         , map ReportRoute (s "report")
         , map Settings (s "settings")
@@ -66,9 +66,6 @@ extractUrl route =
 
         DistributionsIndex ->
             "/distributions"
-
-        HttpLog ->
-            "/http_log"
 
         Lint ->
             "/lint"

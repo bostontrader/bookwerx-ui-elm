@@ -46,8 +46,8 @@ update msgA model =
         UpdateCurrentTime time ->
             ( { model | currentTime = time }, Cmd.none )
 
-        ClearHttpLog ->
-            ( { model | http_log = [] }, Cmd.none )
+        --ClearHttpLog ->
+            --( { model | http_log = [] }, Cmd.none )
 
         TimeoutFlashElements posix ->
             ( { model
@@ -80,7 +80,7 @@ update msgA model =
                                 newModel.currentTime
                                 newModel.accounts
                     in
-                    ( { newModel | accounts = n.accounts, http_log = List.append n.log newModel.http_log }, n.cmd )
+                    ( { newModel | accounts = n.accounts }, n.cmd )
 
                 AccountsEdit id ->
                     let
@@ -99,14 +99,14 @@ update msgA model =
                                 newModel.currentTime
                                 newModel.accounts
                     in
-                    ( { newModel | accounts = n.accounts, http_log = List.append n.log newModel.http_log }, n.cmd )
+                    ( { newModel | accounts = n.accounts }, n.cmd )
 
                 AccountsIndex ->
                     let
                         n =
                             accountsUpdate (GetManyAccounts (newModel.bservers.baseURL ++ "/accounts?apikey=" ++ newModel.apikeys.apikey)) newModel.key newModel.language newModel.currentTime newModel.accounts
                     in
-                    ( { newModel | accounts = n.accounts, http_log = List.append n.log newModel.http_log }, n.cmd )
+                    ( { newModel | accounts = n.accounts }, n.cmd )
 
                 AcctcatsAdd ->
                     let
@@ -150,7 +150,6 @@ update msgA model =
                     in
                     ( { newModel
                         | acctcats = n.acctcats
-                        , http_log = List.append n.log newModel.http_log
                       }
                     , n.cmd
                     )
@@ -172,14 +171,14 @@ update msgA model =
                                 newModel.currentTime
                                 newModel.categories
                     in
-                    ( { newModel | categories = n.categories, http_log = List.append n.log newModel.http_log }, n.cmd )
+                    ( { newModel | categories = n.categories }, n.cmd )
 
                 CategoriesIndex ->
                     let
                         n =
                             categoriesUpdate (GetManyCategories (newModel.bservers.baseURL ++ "/categories?apikey=" ++ newModel.apikeys.apikey)) newModel.key newModel.language newModel.currentTime newModel.categories
                     in
-                    ( { newModel | categories = n.categories, http_log = List.append n.log newModel.http_log }, n.cmd )
+                    ( { newModel | categories = n.categories }, n.cmd )
 
                 CurrenciesEdit id ->
                     let
@@ -198,14 +197,14 @@ update msgA model =
                                 newModel.currentTime
                                 newModel.currencies
                     in
-                    ( { newModel | currencies = n.currencies, http_log = List.append n.log newModel.http_log }, n.cmd )
+                    ( { newModel | currencies = n.currencies }, n.cmd )
 
                 CurrenciesIndex ->
                     let
                         n =
                             currenciesUpdate (GetManyCurrencies (newModel.bservers.baseURL ++ "/currencies?apikey=" ++ newModel.apikeys.apikey)) newModel.key newModel.language newModel.currentTime newModel.currencies
                     in
-                    ( { newModel | currencies = n.currencies, http_log = List.append n.log newModel.http_log }, n.cmd )
+                    ( { newModel | currencies = n.currencies }, n.cmd )
 
                 DistributionsEdit id ->
                     let
@@ -224,7 +223,7 @@ update msgA model =
                                 newModel.currentTime
                                 newModel.distributions
                     in
-                    ( { newModel | distributions = n.distributions, http_log = List.append n.log newModel.http_log }, n.cmd )
+                    ( { newModel | distributions = n.distributions }, n.cmd )
 
                 DistributionsIndex ->
                     let
@@ -243,7 +242,7 @@ update msgA model =
                                 newModel.currentTime
                                 newModel.distributions
                     in
-                    ( { newModel | distributions = n.distributions, http_log = List.append n.log newModel.http_log }, n.cmd )
+                    ( { newModel | distributions = n.distributions }, n.cmd )
 
                 ReportRoute ->
                     let
@@ -275,14 +274,14 @@ update msgA model =
                                 newModel.currentTime
                                 newModel.transactions
                     in
-                    ( { newModel | transactions = n.transactions, http_log = List.append n.log newModel.http_log }, n.cmd )
+                    ( { newModel | transactions = n.transactions }, n.cmd )
 
                 TransactionsIndex ->
                     let
                         n =
                             transactionsUpdate (GetManyTransactions (newModel.bservers.baseURL ++ "/transactions?apikey=" ++ newModel.apikeys.apikey)) newModel.key newModel.language newModel.currentTime newModel.transactions
                     in
-                    ( { newModel | transactions = n.transactions, http_log = List.append n.log newModel.http_log }, n.cmd )
+                    ( { newModel | transactions = n.transactions }, n.cmd )
 
                 _ ->
                     ( newModel, Cmd.none )
@@ -318,7 +317,6 @@ update msgA model =
             ( updateTutorialLevel
                 { model
                     | accounts = n.accounts
-                    , http_log = List.append n.log model.http_log
                     , flashMessages = List.append model.flashMessages n.flashMessages
                 }
             , n.cmd
@@ -332,7 +330,6 @@ update msgA model =
             ( updateTutorialLevel
                 { model
                     | acctcats = n.acctcats
-                    , http_log = List.append n.log model.http_log
                     , flashMessages = List.append model.flashMessages n.flashMessages
                 }
             , n.cmd
@@ -348,13 +345,11 @@ update msgA model =
                     { model
                         | accounts = modelAfterAPIKey.accounts
                         , currencies = modelAfterAPIKey.currencies
-                        , http_log = modelAfterAPIKey.http_log
                     }
             in
             ( updateTutorialLevel
                 { newModel
                     | apikeys = newApikeys.apikeys
-                    , http_log = List.append newApikeys.log model.http_log
                 }
             , newApikeys.cmd
             )
@@ -387,7 +382,7 @@ update msgA model =
                             initialModel model.currentRoute model.key model.url
 
                 newModel1 =
-                    { newModel | bservers = newBservers.bservers, http_log = List.append newBservers.log newModel.http_log }
+                    { newModel | bservers = newBservers.bservers }
             in
             ( updateTutorialLevel newModel1, newBservers.cmd )
 
@@ -399,7 +394,6 @@ update msgA model =
             ( updateTutorialLevel
                 { model
                     | categories = n.categories
-                    , http_log = List.append n.log model.http_log
                     , flashMessages = List.append model.flashMessages n.flashMessages
                 }
             , n.cmd
@@ -413,7 +407,6 @@ update msgA model =
             ( updateTutorialLevel
                 { model
                     | currencies = n.currencies
-                    , http_log = List.append n.log model.http_log
                     , flashMessages = List.append model.flashMessages n.flashMessages
                 }
             , n.cmd
@@ -427,7 +420,6 @@ update msgA model =
             ( updateTutorialLevel
                 { model
                     | distributions = n.distributions
-                    , http_log = List.append n.log model.http_log
                     , flashMessages = List.append model.flashMessages n.flashMessages
                 }
             , n.cmd
@@ -441,7 +433,6 @@ update msgA model =
             in
             ( { model
                 | lint = n.lint
-                , http_log = List.append n.log model.http_log
                 , flashMessages = List.append model.flashMessages n.flashMessages
               }
             , n.cmd
@@ -454,7 +445,6 @@ update msgA model =
             in
             ( { model
                 | report = n.report
-                , http_log = List.append n.log model.http_log
                 , flashMessages = List.append model.flashMessages n.flashMessages
               }
             , n.cmd
@@ -468,7 +458,6 @@ update msgA model =
             ( updateTutorialLevel
                 { model
                     | transactions = n.transactions
-                    , http_log = List.append n.log model.http_log
                     , flashMessages = List.append model.flashMessages n.flashMessages
                 }
             , n.cmd

@@ -9,7 +9,7 @@ import Translate exposing (Language(..))
 import Util exposing (getRemoteDataStatusMessage)
 
 
-bserverUpdate : MsgB -> Language -> Bserver.Model.Model -> { bservers : Bserver.Model.Model, cmd : Cmd Msg, log : List String }
+bserverUpdate : MsgB -> Language -> Bserver.Model.Model -> { bservers : Bserver.Model.Model, cmd : Cmd Msg }
 bserverUpdate bserverMsgB language model =
     case bserverMsgB of
         -- ping
@@ -17,15 +17,13 @@ bserverUpdate bserverMsgB language model =
             { bservers =
                 { model | wdBserver = RemoteData.Loading }
             , cmd = pingBserverCommand bserverURL
-            , log = [ "GET " ++ model.baseURL ]
             }
 
         PingReceived response ->
             { bservers =
                 { model | wdBserver = response }
             , cmd = Cmd.none
-            , log = [ getRemoteDataStatusMessage response language ]
             }
 
         UpdateBserverURL newURL ->
-            { bservers = { model | baseURL = newURL }, cmd = Cmd.none, log = [] }
+            { bservers = { model | baseURL = newURL }, cmd = Cmd.none }

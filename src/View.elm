@@ -17,7 +17,6 @@ import Distribution.Views.AddEdit
 import Distribution.Views.List
 import Html exposing (Html, a, div, h3, p, text)
 import Html.Attributes exposing (class, href)
-import HttpLog.View
 import Lint.View
 import Model
 import Msg exposing (Msg)
@@ -144,11 +143,6 @@ view model =
                         ]
                     )
                 ]
-            , title = "Bookwerx UI"
-            }
-
-        HttpLog ->
-            { body = [ HttpLog.View.view model ]
             , title = "Bookwerx UI"
             }
 

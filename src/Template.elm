@@ -63,7 +63,6 @@ template model leftContent mainContent =
 
                   else
                     div [] []
-                , a [ href (extractUrl HttpLog), class "navbar-item button is-link", style "margin-left" "0.2em" ] [ tx model.language { e = "HTTP Log", c = "HTTP的日志", p = "HTTP Log" } |> text ]
                 , a [ href (extractUrl Settings), class "navbar-item button is-link", style "margin-left" "0.2em" ] [ tx model.language { e = "Settings", c = "设置", p = "shèzhì" } |> text ]
                 ]
             ]
