@@ -180,6 +180,8 @@ dfp_fromStringTest =
         , test "1x2" (\_ -> Expect.equal (dfp_fromString "1x2") (DFP  [2, 1] 0 Positive))
         , test "1.x2" (\_ -> Expect.equal (dfp_fromString "1.x2") (DFP  [2, 1] -1 Positive))
         , test "-1" (\_ -> Expect.equal (dfp_fromString "-1") (DFP  [1] 0 Negative))
+        , test "50" (\_ -> Expect.equal (dfp_fromString "50") (DFP  [5] 1 Positive))
+        , test "-50" (\_ -> Expect.equal (dfp_fromString "-50") (DFP  [5] 1 Negative))
         ]
 
 
@@ -194,7 +196,8 @@ dfp_fromStringExpTest =
         , test "-1, 5" (\_ -> Expect.equal (dfp_fromStringExp "-1" 5) (DFP  [1] 5 Negative))
         , test "3141592653589792, 0" (\_ -> Expect.equal (dfp_fromStringExp "3141592653589792" 0) (DFP  [2,9,7,9,8,5,3,5,6,2,9,5,1,4,1,3] 0 Positive))
         , test "201808048762, -8" (\_ -> Expect.equal (dfp_fromStringExp "201808048762" -8) (DFP  [2,6,7,8,4,0,8,0,8,1,0,2] -8 Positive))
-
+        , test "500, 0" (\_ -> Expect.equal (dfp_fromStringExp "500" 0) (DFP  [5] 2 Positive))
+        , test "-500, 0" (\_ -> Expect.equal (dfp_fromStringExp "-500" 0) (DFP  [5] 2 Negative))
         ]
 
 dfp_negTest : Test

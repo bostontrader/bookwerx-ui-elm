@@ -361,19 +361,20 @@ dfp_fromString s =
             else
                 Zero
     in
-    case dp of
-        -- The prior index or existence of a decimal point determines the exponent
-        [] ->
-            -- no decimal point, exp = 0
-            DFP n2 0 sign
+    dfp_norm (
+        case dp of
+            -- The prior index or existence of a decimal point determines the exponent
+            [] ->
+                -- no decimal point, exp = 0
+                DFP n2 0 sign
 
-        [ x ] ->
-            DFP n2 (x - slen) sign
+            [ x ] ->
+                DFP n2 (x - slen) sign
 
-        _ :: _ ->
-            -- More than one decimal point is too much for my brain. It's got me under pressure!  Just return a Zero.
-            DFP [] 0 Zero
-
+            _ :: _ ->
+                -- More than one decimal point is too much for my brain. It's got me under pressure!  Just return a Zero.
+                DFP [] 0 Zero
+    )
 
 {- Given a string of the digits 0-9 only, and an optional first character of '-', as well as
    an exponent, return a DFP.  For the string, any character that's not 0-9 or - is simply ignored.  We wil always get a DFP,
@@ -407,13 +408,14 @@ dfp_fromStringExp s exp =
             c2d n1
 
     in
-    if List.length n2 == 0 then
-        DFP n2 0 Zero
-    else if negSign then
-        DFP n2 exp Negative
-    else
-        DFP n2 exp Positive
-
+        dfp_norm (
+            if List.length n2 == 0 then
+                DFP n2 0 Zero
+            else if negSign then
+                DFP n2 exp Negative
+            else
+                DFP n2 exp Positive
+        )
 
 
 {- Given a DFP reverse the sign. -}
