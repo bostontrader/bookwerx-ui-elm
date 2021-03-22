@@ -57,11 +57,7 @@ viewDistributionJoined language p runtot dj drcr =
         ([ td [] [ text dj.tx_time ]
          , td [] [ text dj.tx_notes ]
          ]
-            --++ viewDFP (DFP dj.amountbt dj.amount_exp Positive) p drcr
-            --++ viewDFP (DFP [] dj.amount_exp Positive) p drcr
             ++ viewDFP (dfp_fromStringExp dj.amountbt dj.amount_exp) p drcr
-
-            --++ viewDFP (DecimalFP.dfp_add (DFP dj.amount dj.amount_exp Positive) runtot) p drcr
             ++ viewDFP (DecimalFP.dfp_add ( dfp_fromStringExp dj.amountbt dj.amount_exp) runtot) p drcr
 
             ++ [ td []
@@ -153,5 +149,5 @@ viewTransactionsTable : Model.Model -> List DistributionJoined -> Html Msg
 viewTransactionsTable model distributionJoineds =
     table [ class "table is-striped" ]
         [ thead [] [ viewTableHeader model.language model.drcr_format ]
-        , tbody [] (viewDistributionJoineds model (DFP [] 0 Positive) distributionJoineds)
+        , tbody [] (viewDistributionJoineds model (DFP [] 0 Zero) distributionJoineds)
         ]

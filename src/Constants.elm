@@ -14,7 +14,7 @@ import Types exposing (DRCRFormat(..))
 
 bwuiVersion : String
 bwuiVersion =
-    "1.8.0"
+    "1.9.0"
 
 
 

@@ -4,7 +4,7 @@
         "email": "bostontrader@gmail.com",
         "url": "https://github.com/bostontrader"
     },
-    "version": "1.8.0",
+    "version": "1.9.0",
     "dependencies": {
         "elm": "0.19.1-5"
     },
