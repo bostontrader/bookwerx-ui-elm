@@ -4,18 +4,31 @@ import Account.Account exposing (AccountJoined)
 import Account.Model
 import Account.MsgB exposing (MsgB(..))
 import Category.Category exposing (CategoryShort)
+import Category.Model
 import Flash exposing (viewFlash)
-import Html exposing (Html, a, button, div, h3, li, p, table, tbody, td, text, th, thead, tr, ul)
-import Html.Attributes exposing (class, href, style)
-import Html.Events exposing (onClick)
+import Html exposing (Html, a, button, div, h3, input, label, li, option, p, select, table, tbody, td, text, th, thead, tr, ul)
+import Html.Attributes exposing (checked, class, href, selected, style, type_, value)
+import Html.Events exposing (onClick, onInput)
 import Model
 import Msg exposing (Msg(..))
 import RemoteData
 import Template exposing (template)
 import Translate exposing (Language, tx, tx_delete, tx_edit)
-import Util exposing (getRemoteDataStatusMessage)
+import Util exposing (getCategorySymbol, getRemoteDataStatusMessage)
 import ViewHelpers exposing (viewHttpPanel)
 
+-- Give a Category.Model and a selected_id, return a List of option for the Categories
+buildCategorySelect : Category.Model.Model -> Int -> List (Html msg)
+buildCategorySelect model selected_id =
+    List.append [ option [ value "-1" ] [ text "All categories" ] ] <|
+        List.map
+            (\category ->
+                option
+                    [ value (String.fromInt category.id), selected (category.id == selected_id) ]
+                    [ text (category.symbol ++ "- " ++ category.title) ]
+            )
+        <|
+            List.sortBy .title model.categories
 
 leftContent : Model.Model -> Html Msg
 leftContent model =
@@ -120,11 +133,59 @@ viewAccountsPanel model account_model =
 
 viewAccountsTable : Model.Model -> List AccountJoined -> Html Msg
 viewAccountsTable model accounts =
-    table [ class "table is-striped" ]
-        [ thead [] [ viewTableHeader model.language ]
-        , tbody [] (List.map (viewAccount model) (List.sortBy .title accounts))
-        ]
 
+    let
+        categoryFilterSymbol = getCategorySymbol model.categories model.accounts.editBuffer.category_filter_id
+
+        filterUI = if List.length model.categories.categories == 0 then
+                div[][]
+            else
+                div[]
+                    [ div [ class "field is-grouped" ]
+                        [ label [ class "checkbox mr-4"]
+                            [ p[ class "has-text-weight-bold"] [ text "Not"]
+                            , input
+                                [ checked model.accounts.editBuffer.category_filter_invert
+                                , onClick (AccountMsgA ToggleFilterCategoryInvert)
+                                , type_ "checkbox"
+                                ][]
+                            ]
+                        , div[]
+                            [ label [ class "label" ] [ text "Show category" ]
+                            , div [ class "control" ]
+                                [ div [ class "select" ]
+                                    [ select [ onInput (\newValue -> AccountMsgA (UpdateFilterCategoryID newValue)) ]
+                                        (buildCategorySelect model.categories model.distributions.editBuffer.category_filter_id)
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+
+        filteredAccounts = if model.accounts.editBuffer.category_filter_id == -1 then
+                if model.accounts.editBuffer.category_filter_invert then
+                    []
+                else
+                    accounts
+            else
+                if model.accounts.editBuffer.category_filter_invert then
+                    (List.filter
+                        (\a -> not (List.any (\b -> b.category_symbol == categoryFilterSymbol) a.categories) ) accounts)
+                else
+                    (List.filter
+                        (\a -> List.any (\b -> b.category_symbol == categoryFilterSymbol) a.categories ) accounts)
+
+
+    in
+    div[]
+        [ filterUI
+        , table [ class "table is-striped" ]
+            [ thead [] [ viewTableHeader model.language ]
+            , tbody []
+                (List.map (viewAccount model)
+                    (List.sortBy .title filteredAccounts))
+            ]
+        ]
 
 viewCategories : List CategoryShort -> Html Msg
 viewCategories categories =

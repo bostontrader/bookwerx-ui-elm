@@ -210,8 +210,6 @@ buildAccountSelect selected_currency_id model =
 
 
 -- Give a Category.Model and a selected_id, return a List of option for the Categories
-
-
 buildCategorySelect : Category.Model.Model -> Int -> List (Html msg)
 buildCategorySelect model selected_id =
     List.append [ option [ value "-1" ] [ text "None Selected" ] ] <|
@@ -227,8 +225,6 @@ buildCategorySelect model selected_id =
 
 
 -- This is duplicated from Account/Views/AddEdit.  Factor these out.
-
-
 buildCurrencySelect : Model.Model -> Int -> List (Html msg)
 buildCurrencySelect model selected_id =
     List.append [ option [ value "-1" ] [ text "None Selected" ] ]

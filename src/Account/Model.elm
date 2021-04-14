@@ -1,8 +1,7 @@
 module Account.Model exposing (Model)
 
-import Account.Account exposing (Account, AccountJoined)
+import Account.Account exposing (AccountEB, AccountJoined)
 import Distribution.Distribution exposing (DistributionJoined)
-import IntField exposing (IntField(..))
 import RemoteData exposing (WebData)
 
 
@@ -12,7 +11,7 @@ type alias Model =
     , wdAccounts : WebData String
 
     -- GetOne will respond with a 4 state RemoteData response.  If the response is "success" the response is a raw string that shall be decoded as a single Account, -or- if it cannot be decoded it shall be assumed to be an error reported from the server.  This is used for add/edit.  editBuffer is a conveniant place to assemble the value for a new Account or to modify the values of an existing Account, even if other joined fields are present.
-    , editBuffer : Account
+    , editBuffer : AccountEB
     , wdAccount : WebData String
 
     -- How many decimal places do we want to see in the Account's list of transactions?

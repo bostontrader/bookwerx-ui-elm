@@ -1,6 +1,6 @@
 module Init exposing (emptyAcctcat, init, initialModel, modelAfterAPIKey)
 
-import Account.Account exposing (Account)
+import Account.Account exposing (AccountEB)
 import Acctcat.Acctcat exposing (Acctcat)
 import Browser.Navigation as Nav
 import Category.Category exposing (Category)
@@ -22,9 +22,9 @@ import Types exposing (DRCR(..))
 import Url
 
 
-emptyAccount : Account
-emptyAccount =
-    Account -1 "" -1 ""
+emptyAccountEB : AccountEB
+emptyAccountEB =
+    AccountEB -1 "" -1 False -1 ""
 
 
 emptyAcctcat : Acctcat
@@ -93,7 +93,7 @@ modelAfterAPIKey =
         { accounts = []
         , wdAccounts = RemoteData.NotAsked
         , wdAccount = RemoteData.NotAsked
-        , editBuffer = emptyAccount
+        , editBuffer = emptyAccountEB
         , decimalPlaces = 2
         , distributionJoineds = []
         , wdDistributionJoineds = RemoteData.NotAsked

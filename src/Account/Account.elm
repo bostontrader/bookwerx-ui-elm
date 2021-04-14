@@ -8,8 +8,6 @@ import Json.Decode.Pipeline exposing (required)
 
 
 -- This alias and decoder directly matches a struct in bookwerx-core.
-
-
 type alias AccountCurrency =
     { account_id : Int
     , title : String
@@ -26,9 +24,6 @@ accountCurrencyDecoder =
 
 
 
--- Legacy aliai.  Clean this up
-
-
 type alias Account =
     { id : Int
     , apikey : String
@@ -36,6 +31,15 @@ type alias Account =
     , title : String
     }
 
+-- Augmented to serve as our editBuffer
+type alias AccountEB =
+    { id : Int
+    , apikey : String
+    , category_filter_id : Int
+    , category_filter_invert : Bool
+    , currency_id : Int
+    , title : String
+    }
 
 type alias AccountJoined =
     { id : Int

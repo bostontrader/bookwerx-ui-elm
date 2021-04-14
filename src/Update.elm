@@ -46,9 +46,6 @@ update msgA model =
         UpdateCurrentTime time ->
             ( { model | currentTime = time }, Cmd.none )
 
-        --ClearHttpLog ->
-            --( { model | http_log = [] }, Cmd.none )
-
         TimeoutFlashElements posix ->
             ( { model
                 | flashMessages =
@@ -101,12 +98,24 @@ update msgA model =
                     in
                     ( { newModel | accounts = n.accounts }, n.cmd )
 
+                --AccountsIndex ->
+                    --let
+                        --n =
+                            --accountsUpdate (GetManyAccounts (newModel.bservers.baseURL ++ "/accounts?apikey=" ++ newModel.apikeys.apikey)) newModel.key newModel.language newModel.currentTime newModel.accounts
+                    --in
+                    --( { newModel | accounts = n.accounts }, n.cmd )
+
+                -- When we request the accounts index we must also get the categories index because
+                -- the former requires the latter for UI purposes
                 AccountsIndex ->
                     let
-                        n =
+                        n1 =
                             accountsUpdate (GetManyAccounts (newModel.bservers.baseURL ++ "/accounts?apikey=" ++ newModel.apikeys.apikey)) newModel.key newModel.language newModel.currentTime newModel.accounts
+                        n2 =
+                            categoriesUpdate (GetManyCategories (newModel.bservers.baseURL ++ "/categories?apikey=" ++ newModel.apikeys.apikey)) newModel.key newModel.language newModel.currentTime newModel.categories
+
                     in
-                    ( { newModel | accounts = n.accounts }, n.cmd )
+                    ( { newModel | accounts = n1.accounts, categories = n2.categories }, Cmd.batch[n1.cmd,n2.cmd] )
 
                 AcctcatsAdd ->
                     let

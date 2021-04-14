@@ -2,7 +2,7 @@ module Account.Views.AddEdit exposing (view)
 
 -- Add and Edit are very similar. Unify them thus...
 
-import Account.Account exposing (Account)
+import Account.Account exposing (AccountEB)
 import Account.MsgB exposing (MsgB(..))
 import Currency.Model
 import Flash exposing (viewFlash)
@@ -17,7 +17,7 @@ import Types exposing (AEMode(..))
 import ViewHelpers exposing (viewHttpPanel)
 
 
-addeditForm : Language -> Account -> List (Html Msg) -> Html Msg
+addeditForm : Language -> AccountEB -> List (Html Msg) -> Html Msg
 addeditForm language editBuffer currencyOptions =
     div [ class "box" ]
         [ div [ class "field" ]

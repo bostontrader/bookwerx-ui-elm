@@ -7,7 +7,7 @@ import Account.API.GetOne exposing (getOneAccountCommand)
 import Account.API.JSON exposing (accountDecoder, accountJoinedsDecoder)
 import Account.API.Post exposing (postAccountCommand)
 import Account.API.Put exposing (putAccountCommand)
-import Account.Account exposing (Account)
+import Account.Account exposing (AccountEB)
 import Account.Model
 import Account.MsgB exposing (MsgB(..))
 import Browser.Navigation as Nav
@@ -119,7 +119,10 @@ accountsUpdate accountMsgB key language currentTime model =
             { accounts =
                 case decodeString accountDecoder (getRemoteDataStatusMessage response language) of
                     Ok value ->
-                        { model | editBuffer = value }
+                        -- convert incoming Account to AccountEB
+                        { model | editBuffer =
+                            (AccountEB value.id value.apikey -1 False value.currency_id value.title )
+                        }
 
                     Err _ ->
                         -- Here we ignore whatever error message comes from the decoder because we should never get any such error and it's otherwise too much trouble to deal with it.
@@ -154,8 +157,37 @@ accountsUpdate accountMsgB key language currentTime model =
             , flashMessages = [ FlashMsg (getRemoteDataStatusMessage response language) FlashSuccess (expires currentTime flashMessageDuration) ]
             }
 
+        UpdateFilterCategoryID newValue ->
+            { accounts = { model | editBuffer = updateCategoryFilterID model.editBuffer newValue }
+            , cmd = Cmd.none
+            , flashMessages = []
+            }
 
-updateCurrencyID : Account -> String -> Account
+        ToggleFilterCategoryInvert ->
+            { accounts = { model | editBuffer = toggleFilterCategoryInvert model.editBuffer }
+            , cmd = Cmd.none
+            , flashMessages = []
+            }
+
+
+toggleFilterCategoryInvert : AccountEB -> AccountEB
+toggleFilterCategoryInvert eb =
+    { eb | category_filter_invert = not eb.category_filter_invert}
+
+updateCategoryFilterID : AccountEB -> String -> AccountEB
+updateCategoryFilterID d newValue =
+    { d
+        | category_filter_id =
+            case String.toInt newValue of
+                Just v ->
+                    v
+
+                Nothing ->
+                    -1
+    }
+
+
+updateCurrencyID : AccountEB -> String -> AccountEB
 updateCurrencyID c newValue =
     { c
         | currency_id =
@@ -168,6 +200,6 @@ updateCurrencyID c newValue =
     }
 
 
-updateTitle : Account -> String -> Account
+updateTitle : AccountEB -> String -> AccountEB
 updateTitle c newTitle =
     { c | title = newTitle }

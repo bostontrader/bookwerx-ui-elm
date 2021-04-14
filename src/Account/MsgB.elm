@@ -31,4 +31,6 @@ type
       -- edit
     | UpdateCurrencyID String
     | UpdateDecimalPlaces Int
+    | UpdateFilterCategoryID String
+    | ToggleFilterCategoryInvert
     | UpdateTitle String
