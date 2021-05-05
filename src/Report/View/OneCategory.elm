@@ -1,6 +1,6 @@
 module Report.View.OneCategory exposing (viewOneCategory)
 
-import DecimalFP exposing (DFP, Sign(..))
+import DecimalFP exposing (DFP, Sign(..), dfp_add)
 import Dict exposing (Dict)
 import Html exposing (Html, div, h3, p, table, tbody, td, text, tfoot, th, thead, tr)
 import Html.Attributes exposing (class, style)
@@ -72,14 +72,19 @@ viewOneCategory model webdata sumsDecorated title language =
 
 
 -- Take all BalanceResultDecorated found in SumsDecorated and split them into individual groups by currency.
-
-
 dictByCurrency : List BalanceResultDecorated -> Dict String (List BalanceResultDecorated)
 dictByCurrency input =
     List.foldl
         combiner
         Dict.empty
         input
+
+
+-- Given a List BalanceResultDecorated containing the balances of accounts all of the same currency
+-- calculate their sum
+calcSum : List BalanceResultDecorated -> DFP
+calcSum list =
+    List.foldl (\a b -> dfp_add a.sum b) (DFP [] 0 Zero) list
 
 
 combiner : BalanceResultDecorated -> Dict String (List BalanceResultDecorated) -> Dict String (List BalanceResultDecorated)
@@ -101,19 +106,8 @@ viewAccount brd decimalPlaces =
         ([ td [] [ text (String.fromInt brd.account.account_id) ]
          , td [] [ text brd.account.title ]
          ]
-            --++ viewDFP brd.sum decimalPlaces DRCR
-            ++ viewDFP (DFP [] 0 Zero) decimalPlaces DRCR
+            ++ viewDFP brd.sum decimalPlaces DRCR
         )
-
-
-
---calcSum : List BalanceResultDecorated -> DFPx
---calcSum list =
---List.foldl
---(\a b -> dfp_addx a.sum b)
---(DFPx 0 0)
---list
--- Given a List BalanceResultDecorated containing the balances of accounts all of the same currency
 
 
 viewCurrencySection : List BalanceResultDecorated -> Report.Model.Model -> Maybe String -> Language -> Html Msg
@@ -137,8 +131,6 @@ viewCurrencySection lbrd model _ language =
 
 
 -- Given a List BalanceResultDecorated containing the balances of accounts all of the same currency
-
-
 viewCurrencySectionB : List BalanceResultDecorated -> Report.Model.Model -> String -> Language -> List (Html Msg)
 viewCurrencySectionB lbrd model currencySymbol language =
     [ table [ class "table is-striped" ]
@@ -149,7 +141,6 @@ viewCurrencySectionB lbrd model currencySymbol language =
                 ++ dvColumnHeader (tx language { e = "Amount", c = "量", p = "Liàng" }) DRCR
             )
         , tbody []
-            --(List.map (\brd -> viewAccount brd model.decimalPlaces) lbrd)
             (lbrd
                 |> List.filter (\_ -> True)
                 |> List.map (\brd -> viewAccount brd model.decimalPlaces)
@@ -159,8 +150,7 @@ viewCurrencySectionB lbrd model currencySymbol language =
                 ([ td [] []
                  , td [ class "has-text-right has-text-weight-bold" ] [ text (tx language { e = "Total", c = "总", p = "zǒng" } ++ " " ++ currencySymbol) ]
                  ]
-                    --++ viewDFP (calcSum lbrd) model.decimalPlaces DRCR
-                    ++ viewDFP (DFP [] 0 Zero) model.decimalPlaces DRCR
+                    ++ viewDFP (calcSum lbrd) model.decimalPlaces DRCR
                 )
             ]
         ]

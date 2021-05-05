@@ -33,10 +33,7 @@ type alias FModel =
     Form.View.Model FValues
 
 
-
 -- These are the raw values from the form.
-
-
 type alias FValues =
     { category : String
     , categoryAssets : String

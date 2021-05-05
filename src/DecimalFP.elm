@@ -11,7 +11,7 @@
    a parameterized number base, but some of the higher-level functions are hardwired for base 10.
 
    Given base 10, all of the digits should be restricted to being _only_ 0 - 9 inclusive.  Any function documentation that
-   accepts a List of Int should included these constraints by reference.
+   accepts a List of Int should include these constraints by reference.
 
    This module exposes several functions.  Functions that start with "dfp" are for actual use by the application.  There
    are also a variety of "md" (multi-digit) functions that are also exposed.  These functions are used to implement the
@@ -28,14 +28,16 @@
    The Elm way is to use Maybes.  However, doing so introduces numerous tedious issues in dealing with Maybes.  Instead,
    we use a variety of ad-hoc return values that "seem sensible" in the given circumstances.  All of our tests pass
    and this problem is most prevalent in the "md" and other functions that are simply not intended for public use,
-   so this is an issue of minimal consequence.  Again, feel free to Maybeize this if you're feeling too unclean doing
+   so this is an issue of minimal consequence.  Feel free to Maybeize this if you're feeling too unclean doing
    it our way.
 
 -}
 
 
-module DecimalFP exposing (DFP, DFPFmt, Sign(..), dfp_abs, dfp_add, dfp_equal, dfp_fmt, dfp_fromString, dfp_fromStringExp, dfp_neg, dfp_norm, dfp_norm_exp, dfp_round, dnc, insertDp, md_add, md_compare, md_fromString, md_sub, stripZ)
+module DecimalFP exposing (DFP, DFPi, DFPFmt, Sign(..), dfpDecoder, dfpiDecoder, dfp_abs, dfp_add, dfp_equal, dfp_fmt, dfp_fromString, dfp_fromStringExp, dfp_neg, dfp_norm, dfp_norm_exp, dfp_round, dnc, insertDp, md_add, md_compare, md_fromString, md_sub, stripZ)
 
+import Json.Decode exposing (Decoder, andThen, fail, int, string, succeed)
+import Json.Decode.Pipeline exposing (required)
 
 type Sign
     = Positive
@@ -49,6 +51,11 @@ type alias DFP =
     , sign : Sign
     }
 
+-- This is an intermediate format for use when parsing incoming JSON.
+type alias DFPi =
+    { amount : String
+    , exp : Int
+    }
 
 
 {- A string representing a DFP, with a decimal point, for UI purposes.  This is produced by dfp_fmt with some
@@ -61,6 +68,40 @@ type alias DFPFmt =
     { s : String
     , r : Bool -- True = loss of precision due to rounding.
     }
+
+dfpiDecoder : Decoder DFPi
+dfpiDecoder =
+    Json.Decode.succeed DFPi
+        |> required "amount" string
+        |> required "exp" int
+
+dfpDecoder : Decoder DFP
+dfpDecoder =
+    Json.Decode.succeed DFP
+        |> required "amount" (Json.Decode.list int)
+        |> required "exp" int
+        |> required "sign" signDecoder
+
+-- assuming server will send int value of 0 for Image or 1 for Video
+signDecoder: Decoder Sign
+signDecoder =
+    string |> andThen (\postTypeString ->
+        case postTypeString of
+            "Positive" ->
+                succeed Positive
+
+
+            "Negative" ->
+                succeed Negative
+
+            "Zero" ->
+                succeed Zero
+
+            _ ->
+                fail "invalid sign"
+
+    )
+
 
 {- Map the characters '0' - '9' to the Ints 0 - 9 -}
 c2d : List Char -> List Int

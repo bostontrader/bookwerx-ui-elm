@@ -1,7 +1,6 @@
 module ViewHelpers exposing (dvColumnHeader, viewDFP, viewHttpPanel)
 
-import DecimalFP exposing (DFP, Sign(..), dfp_abs, dfp_fmt)
-import DecimalFPx exposing (DFPFmtx)
+import DecimalFP exposing (DFP, DFPFmt, Sign(..), dfp_abs, dfp_fmt)
 import Html exposing (Html, div, label, p, td, text, th)
 import Html.Attributes exposing (class, style)
 import Msg exposing (Msg)
@@ -23,9 +22,7 @@ dvColumnHeader heading drcr =
 
 
 -- Given a DFPFmt, determine which class, if any, to use in display CSS.
-
-
-roClass : DFPFmtx -> String
+roClass : DFPFmt -> String
 roClass dfpfmt =
     if dfpfmt.r then
         "has-text-danger"
@@ -41,8 +38,6 @@ roClass dfpfmt =
    Int p - The quantity of decimal places to display.  Note that this function internally negates that in order to display according to the suitable power of 10.
    DRCRFormat drcr
 -}
-
-
 viewDFP : DFP -> Int -> DRCRFormat -> List (Html Msg)
 viewDFP dv p drcr =
     let
@@ -55,6 +50,7 @@ viewDFP dv p drcr =
                 Positive ->
                     [ td
                         [ class "has-text-right"
+                        --, class (roClass dfp_fmt1)
                         , class (roClass dfp_fmt1)
                         ]
                         [ text dfp_fmt1.s ]

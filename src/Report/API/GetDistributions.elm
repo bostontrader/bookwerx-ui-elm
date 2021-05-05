@@ -27,8 +27,6 @@ getDistributionsCmdA url bssection =
 
 
 -- get distributions for a category that is not specifically known as a part of the BS or PNL.
-
-
 getDistributionsCmdB : String -> Cmd Msg
 getDistributionsCmdB url =
     Http.request

@@ -169,11 +169,11 @@ viewAccountsTable model accounts =
                     accounts
             else
                 if model.accounts.editBuffer.category_filter_invert then
-                    (List.filter
-                        (\a -> not (List.any (\b -> b.category_symbol == categoryFilterSymbol) a.categories) ) accounts)
+                    List.filter
+                        (\a -> not (List.any (\b -> b.category_symbol == categoryFilterSymbol) a.categories) ) accounts
                 else
-                    (List.filter
-                        (\a -> List.any (\b -> b.category_symbol == categoryFilterSymbol) a.categories ) accounts)
+                    List.filter
+                        (\a -> List.any (\b -> b.category_symbol == categoryFilterSymbol) a.categories ) accounts
 
 
     in

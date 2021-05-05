@@ -46,9 +46,8 @@ template model leftContent mainContent =
 
                   else
                     div [] []
-                , if model.tutorialLevel >= 6 then
+                , if model.tutorialLevel >= 5 then
                     a [ href (extractUrl ReportRoute), class "navbar-item button is-link", style "margin-left" "0.2em" ] [ text "Report" ]
-
                   else
                     div [] []
 

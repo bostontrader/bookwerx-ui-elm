@@ -121,7 +121,7 @@ accountsUpdate accountMsgB key language currentTime model =
                     Ok value ->
                         -- convert incoming Account to AccountEB
                         { model | editBuffer =
-                            (AccountEB value.id value.apikey -1 False value.currency_id value.title )
+                            AccountEB value.id value.apikey -1 False value.currency_id value.title
                         }
 
                     Err _ ->

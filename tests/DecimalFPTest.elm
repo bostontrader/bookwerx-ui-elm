@@ -63,7 +63,7 @@ dfp_addTest =
         , test "-4.9 + 1" (\_ -> Expect.equal (dfp_add (DFP [9,4] -1 Negative) (DFP [1] 0 Positive)) (DFP [9, 3] -1 Negative))
         , test "-49 + 1" (\_ -> Expect.equal (dfp_add (DFP [9,4] 0 Negative) (DFP [1] 0 Positive)) (DFP [8,4] 0 Negative))
         , test "-490 + 1" (\_ -> Expect.equal (dfp_add (DFP [9,4] 1 Negative) (DFP [1] 0 Positive)) (DFP [9,8,4] 0 Negative))
-        , test "-490 + 0.1" (\_ -> Expect.equal (dfp_add (DFP [9,4] 1 Positive) (DFP [1] -1 Positive)) (DFP [1,0,9,4] -1 Positive))
+        , test "-490 + 0.1" (\_ -> Expect.equal (dfp_add (DFP [9,4] 1 Negative) (DFP [1] -1 Positive)) (DFP [9, 9, 8, 4] -1 Negative))
 
         -- Negative + Negative
         , test "-[1] + -[1]" (\_ -> Expect.equal (dfp_add (DFP [1] 0 Negative) (DFP [1] 0 Negative)) (DFP [2] 0 Negative))

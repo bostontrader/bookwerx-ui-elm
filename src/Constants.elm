@@ -11,33 +11,20 @@ module Constants exposing
 import Translate exposing (Language(..))
 import Types exposing (DRCRFormat(..))
 
-
+-- sync with package.json
 bwuiVersion : String
 bwuiVersion =
-    "1.10.0"
-
-
-
--- sync with package.json
--- sync with package.json
+    "1.11.0"
 
 
 flashMessageDuration : Int
 flashMessageDuration =
-    5000
-
-
-
--- milliseconds
+    5000 -- milliseconds
 
 
 flashMessagePollInterval : Float
 flashMessagePollInterval =
-    5000
-
-
-
--- milliseconds
+    5000 -- milliseconds
 
 
 initialBserver : String
